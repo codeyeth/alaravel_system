@@ -12,6 +12,7 @@
     <link rel="stylesheet" id="main-stylesheet" data-version="1.1.0" href="{{ asset('shards_template/styles/shards-dashboards.1.1.0.min.css') }}">
     <link rel="stylesheet" href="{{ asset('shards_template/styles/extras.1.1.0.min.css') }}">
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+      <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" ></script>
     
     @livewireStyles
 </head>

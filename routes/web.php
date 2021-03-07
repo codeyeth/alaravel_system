@@ -28,3 +28,21 @@ Route::get('/user_mgt', [App\Http\Controllers\RrUserManagementController::class,
 
 Route::resource('add_user', 'RrUserManagementController');
 Route::resource('change_pass', 'RrChangePasswordController');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//J Routes
+Route::resource('delivery', 'DeliveryjController');
+Route::get('/create_dr_number', 'DeliveryjController@create_dr');
