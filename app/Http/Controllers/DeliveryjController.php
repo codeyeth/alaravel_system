@@ -27,11 +27,25 @@ class DeliveryjController extends Controller
         //
     }
 
-    public function create_dr()
-    {   $breadcrumb = "Create New DR";
+
+    public function reports()
+    {   $breadcrumb = "DR Reports Management";
         $sidebar = "Delivery";
-        return view('j-views.delivery.delivery_create')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+        return view('j-views.delivery.delivery_reports')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
     }
+
+    public function ob()
+    {   $breadcrumb = "Offical Ballot";
+        $sidebar = "Delivery";
+        return view('j-views.delivery.delivery_ob')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+    }
+
+    public function fts()
+    {   $breadcrumb = "FTS";
+        $sidebar = "Delivery";
+        return view('j-views.delivery.delivery_fts')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+    }
+
 
 
     

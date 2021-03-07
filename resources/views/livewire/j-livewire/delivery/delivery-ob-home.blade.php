@@ -1,29 +1,8 @@
-<div>
-<div>
-
-<div class="row">
-        <div class="col-lg-12 mb-4">
-            <div class="card card-small mb-1">
-                <div class="card-header border-bottom">
-                   
-
-                <ul class="nav nav-tabs justify-content-end" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link"  href="{{ asset('/delivery_ob') }}">OB</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('/delivery_fts') }}">FTS</a>
-                </li>
-            </ul>
-
-            <div class="row">
-
-<div class="col-lg col-md-6 col-sm-6 mb-4">
-  <div class="stats-small stats-small--1 card card-small">
+<div class="stats-small stats-small--1 card card-small">
     <div class="card-body p-0 d-flex">
       <div class="d-flex flex-column m-auto">
         <div class="stats-small__data text-center">
-          <span class="stats-small__label text-uppercase">Total Ballot ID of Delivery With DR No</span>
+          <span class="stats-small__label text-uppercase">Total Offical Ballots in Delivery</span>
           <h6 class="stats-small__value count my-3">2,390</h6>
         </div>
         <div class="stats-small__data">
@@ -35,19 +14,13 @@
       <canvas height="120" class="blog-overview-stats-small-1"></canvas>
     </div>
   </div>
-</div>
-
-</div>
-                </div>
-                <div class="card-body pt-0 pb-3 text-center">
+ 
                     <div class="row border-bottom py-2 mb-0 bg-light">
                         <div class="col-12 col-sm-12">
                             <input class="form-control form-control-lg mb-0" type="text" placeholder="Search by Ballot ID or DR No." wire:model="search">
                         </div>
                     </div>
-                </div>
-                
-                <ul class="list-group list-group-flush">
+                   <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
                 
                         <table class="table table-hover mb-0">
@@ -83,10 +56,3 @@
                       
                     </li>
                 </ul>
-            </div>
-        </div>
-    </div>
-
-
-</div>
-</div>
