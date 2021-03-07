@@ -5,6 +5,7 @@ namespace App\Http\Livewire\RrUserManagement;
 use Livewire\Component;
 use App\Models\Division;
 use App\Models\Section;
+use App\Models\ComelecRoles;
 
 class EditUser extends Component
 {
@@ -17,11 +18,18 @@ class EditUser extends Component
     public $userRole;
     //ROLES
     public $is_user_mgt;
+    public $is_ballot_tracking;
+    public $is_dr;
+    public $is_gazette;
+    public $is_motorpool;
     
     public $divisionsList = [];
     public $sectionsList = [];
+    public $comelecRolesList = [];
     public $selectedDivision = null;
     public $selectedSection = null;
+    public $selectedComelecRole = null;
+    public $selectedBarcodedReceiver = null;
     public $selected = null;
     
     
@@ -63,10 +71,18 @@ class EditUser extends Component
         
         $this->selectedDivision = Division::where('division', $this->post->division)->value('id');
         $this->sectionsList = Section::where('division_id', $this->selectedDivision)->get();
-
+        $this->comelecRolesList = ComelecRoles::all();
+        $this->selectedComelecRole = $this->post->comelec_role ;
+        $this->selectedBarcodedReceiver = $this->post->barcoded_receiver ;
+        // dd($this->post->barcoded_receiver);
+        
         $this->selectedSection = Section::where('division_id', $this->selectedDivision)->where('section', $this->post->section)->value('id');
         $this->userRole = $this->post->user_role;
         $this->is_user_mgt = $this->post->is_user_mgt;
+        $this->is_ballot_tracking = $this->post->is_ballot_tracking;
+        $this->is_dr = $this->post->is_dr;
+        $this->is_gazette = $this->post->is_gazette;
+        $this->is_motorpool = $this->post->is_motorpool;
     }
     
     public function updated($propertyName){

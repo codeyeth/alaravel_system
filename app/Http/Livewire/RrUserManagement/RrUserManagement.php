@@ -5,6 +5,7 @@ namespace App\Http\Livewire\RrUserManagement;
 use Livewire\Component;
 use App\Models\Division;
 use App\Models\Section;
+use App\Models\ComelecRoles;
 
 class RrUserManagement extends Component
 {
@@ -15,6 +16,7 @@ class RrUserManagement extends Component
     
     public $divisionsList = [];
     public $sectionsList = [];
+    public $comelecRolesList = [];
     public $selectedDivision = null;
     public $selected = null;
     
@@ -49,6 +51,7 @@ class RrUserManagement extends Component
     
     public function mount(){
         $this->divisionsList = Division::all();
+        $this->comelecRolesList = ComelecRoles::all();
     }
     
     public function updated($propertyName){

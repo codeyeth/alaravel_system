@@ -40,6 +40,15 @@
           </a>
         </li>
         @endif
+
+        @if(Auth::user()->is_ballot_tracking)
+        <li class="nav-item">
+          <a class="nav-link {{ $sidebar == 'Ballot Tracking' ? 'active' : ' ' }}" href="{{ asset('/ballot_tracking') }}">
+            <i class="material-icons">bar_chart</i>
+            <span>Comelec Ballot Tracking</span>
+          </a>
+        </li>
+        @endif
         
         @endif
         

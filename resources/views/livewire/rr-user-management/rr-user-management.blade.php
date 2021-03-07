@@ -4,12 +4,12 @@
             .requiredTag{
                 color: red;
             }
-            input{
+            /* input{
                 text-transform: uppercase;
-            }
+            } */
         </style>
         
-        <div class="col-lg-8 mb-4">
+        <div class="col-lg-12 mb-4">
             <div class="card card-small mb-1">
                 <div class="card-header border-bottom">
                     <h6 class="m-0">User Details</h6>
@@ -82,38 +82,93 @@
                         </div>
                     </li>
                     
-                    
-                    <li class="list-group-item p-0 px-3 pt-3">
+                    {{-- <li class="list-group-item p-0 px-3 pt-3">
                         <div class="row">
                             <div class="col-sm-12 col-md-4 mb-3">
                                 <strong class="text-muted d-block mb-2">User Role <span class="requiredTag">&bullet;</span></strong>
                                 <select id="user_role" name="user_role" class="form-control" required>
                                     <option disabled selected value="">Select user role</option>
-                                    <option value="Super Administrator">Super Administrator</option>
                                     <option value="Adminisrator">Administrator</option>
                                     <option value="User">User</option>
                                 </select>
                                 
                             </div>
                         </div>
-                    </li>
+                    </li> --}}
                     
-                    <li class="list-group-item p-0 px-3 pt-3">
+                    <li class="list-group-item p-0 px-3 pt-3" >
                         
                         <div class="row">
                             <div class="col-sm-12 col-md-4 mb-3">
-                                <strong class="text-muted d-block mb-2">Modules</strong>
+                                <strong class="text-muted d-block mb-2">Modules <small> | Checked modules will be Accessible for this User</small></strong>
+                                
                                 <fieldset>
                                     <div class="custom-control custom-checkbox mb-1">
-                                        <input type="checkbox" class="custom-control-input" id="user_mgt" name="user_mgt" value="1">
-                                        <label class="custom-control-label" for="user_mgt">User Management</label>
+                                        <input type="checkbox" class="custom-control-input" id="is_user_mgt" name="is_user_mgt" value="1">
+                                        <label class="custom-control-label" for="is_user_mgt">User Management</label>
+                                    </div>
+                                </fieldset>
+                                
+                                <fieldset>
+                                    <div class="custom-control custom-checkbox mb-1">
+                                        <input type="checkbox" class="custom-control-input" id="is_ballot_tracking" name="is_ballot_tracking" value="1">
+                                        <label class="custom-control-label" for="is_ballot_tracking">Comelec Ballot Tracking</label>
+                                    </div>
+                                </fieldset>
+                                
+                                <fieldset>
+                                    <div class="custom-control custom-checkbox mb-1">
+                                        <input type="checkbox" class="custom-control-input" id="is_dr" name="is_dr" value="1">
+                                        <label class="custom-control-label" for="is_dr">SMD Deliver Receipt</label>
+                                    </div>
+                                </fieldset>
+                                
+                                <fieldset>
+                                    <div class="custom-control custom-checkbox mb-1">
+                                        <input type="checkbox" class="custom-control-input" id="is_gazette" name="is_gazette" value="1">
+                                        <label class="custom-control-label" for="is_gazette">Gazette Storage (Composing)</label>
+                                    </div>
+                                </fieldset>
+                                
+                                <fieldset>
+                                    <div class="custom-control custom-checkbox mb-1">
+                                        <input type="checkbox" class="custom-control-input" id="is_motorpool" name="is_motorpool" value="1">
+                                        <label class="custom-control-label" for="is_motorpool">Motorpool Request System</label>
                                     </div>
                                 </fieldset>
                             </div>
                             
+                            <div class="col-sm-12 col-md-4 mb-3">
+                                <strong class="text-muted d-block mb-2">For Comelec Users <small> | Just leave it Untouched for NPO Users</small></strong>
+                                <strong class="text-muted d-block mb-2"><small>Comelec Role</small></strong>
+                                <select id="comelec_role" name="comelec_role" class="form-control" >
+                                    @if(count($comelecRolesList) > 0)
+                                    <option disabled selected value="">Select Comelec Role here</option>
+                                    @foreach($comelecRolesList as $post)
+                                    <option value="{{$post->comelec_role}}">{{ Str::title($post->comelec_role) }}</option>
+                                    @endforeach
+                                    @else
+                                    <option disabled selected>No Comelec Roles available</option>
+                                    @endif                
+                                </select>
+
+                                <strong class="text-muted d-block mb-2"><small>Barcoded Items Receiver</small></strong>
+                                <select id="barcoded_receiver" name="barcoded_receiver" class="form-control" >
+                                    @if(count($comelecRolesList) > 0)
+                                    <option disabled selected value="">Select Receiver here</option>
+                                    @foreach($comelecRolesList as $post)
+                                    <option value="{{$post->comelec_role}}">{{ Str::title($post->comelec_role) }}</option>
+                                    @endforeach
+                                    @else
+                                    <option disabled selected>No Comelec Roles available</option>
+                                    @endif                
+                                </select>
+
+                            </div>
+                            
                         </div>
+                        
                     </li>
-                    
                     
                     <li class="list-group-item px-3">
                         <button type="submit" class="btn btn-accent">Add User</button>

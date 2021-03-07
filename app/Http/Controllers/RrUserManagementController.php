@@ -75,17 +75,47 @@ class RrUserManagementController extends Controller
         $post->position = Str::upper($request->input('position'));
         $post->division = Division::where('id', $request->input('division') )->value('division');
         $post->section = Section::where('id', $request->input('section') )->value('section');
-        $post->user_role = $request->input('user_role');
+        // $post->user_role = $request->input('user_role');
         
         //FIXED PASSWORD
         $post->password = Hash::make('12345678');
         $post->password_string = '12345678';
         
-        if( $request->input('user_mgt') == null){
+        if( $request->input('is_user_mgt') == null){
             $post->is_user_mgt = false;
         }else{
             $post->is_user_mgt = true;
         }
+        
+        if( $request->input('is_ballot_tracking') == null){
+            $post->is_ballot_tracking = false;
+        }else{
+            $post->is_ballot_tracking = true;
+        }
+        
+        if( $request->input('is_dr') == null){
+            $post->is_dr = false;
+        }else{
+            $post->is_dr = true;
+        }
+        
+        if( $request->input('is_gazette') == null){
+            $post->is_gazette = false;
+        }else{
+            $post->is_gazette = true;
+        }
+        
+        if( $request->input('is_motorpool') == null){
+            $post->is_motorpool = false;
+        }else{
+            $post->is_motorpool = true;
+        }
+
+        $post->comelec_role = $request->input('comelec_role');
+        $post->barcoded_receiver = $request->input('barcoded_receiver');
+        
+        $post->created_by_id = Auth::user()->id;
+        $post->created_by_name = Auth::user()->name;
         
         $post->save();
         
@@ -149,7 +179,7 @@ class RrUserManagementController extends Controller
         $post->position = Str::upper($request->input('position'));
         $post->division = Division::where('id', $request->input('division') )->value('division');
         $post->section = Section::where('id', $request->input('section') )->value('section');
-        $post->user_role = $request->input('user_role');
+        // $post->user_role = $request->input('user_role');
         
         
         if( $request->input('user_mgt') == null){
@@ -158,6 +188,33 @@ class RrUserManagementController extends Controller
             $post->is_user_mgt = true;
         }
         
+        if( $request->input('is_ballot_tracking') == null){
+            $post->is_ballot_tracking = false;
+        }else{
+            $post->is_ballot_tracking = true;
+        }
+        
+        if( $request->input('is_dr') == null){
+            $post->is_dr = false;
+        }else{
+            $post->is_dr = true;
+        }
+        
+        if( $request->input('is_gazette') == null){
+            $post->is_gazette = false;
+        }else{
+            $post->is_gazette = true;
+        }
+        
+        if( $request->input('is_motorpool') == null){
+            $post->is_motorpool = false;
+        }else{
+            $post->is_motorpool = true;
+        }
+        
+        $post->comelec_role = $request->input('comelec_role');
+        $post->barcoded_receiver = $request->input('barcoded_receiver');
+
         $post->save();
         
         return back()->with('success', 'User Created Successfully!')
