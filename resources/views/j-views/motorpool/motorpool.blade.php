@@ -2,7 +2,7 @@
 
 @section('content')
 
-@livewire('j-livewire.motorpool.motorpool')
+@livewire('j-livewire.motorpool.motorpool-main')
 @livewire('j-livewire.motorpool.add-request')
 
 @endsection

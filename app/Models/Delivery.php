@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MotorpoolRequest extends Model
+class Delivery extends Model
 {
     use HasFactory;
-    protected $fillable = ['reason','is_approved'];
+    protected $fillable = ['BALLOT_ID'];
 }

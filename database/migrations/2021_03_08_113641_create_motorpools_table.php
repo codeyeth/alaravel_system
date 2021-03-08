@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateMotorpoolRequestsTable extends Migration
+class CreateMotorpoolsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateMotorpoolRequestsTable extends Migration
      */
     public function up()
     {
-        Schema::create('motorpool_requests', function (Blueprint $table) {
+        Schema::create('motorpools', function (Blueprint $table) {
             $table->id();
             $table->string('transaction_id');
             $table->string('request_id');
@@ -39,6 +39,6 @@ class CreateMotorpoolRequestsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('motorpool_requests');
+        Schema::dropIfExists('motorpools');
     }
 }

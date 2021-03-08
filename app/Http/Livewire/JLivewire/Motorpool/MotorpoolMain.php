@@ -4,12 +4,10 @@ namespace App\Http\Livewire\JLivewire\Motorpool;
 
 use Livewire\Component;
 use Livewire\WithPagination;
-use App\Models\MotorpoolRequest;
+use App\Models\Motorpool;
 use Illuminate\Support\Facades\DB;
 
-
-
-class Motorpool extends Component
+class MotorpoolMain extends Component
 {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
@@ -26,7 +24,7 @@ class Motorpool extends Component
 
     public function edit($id)
     {
-        $user = MotorpoolRequest::where('id',$id)->first();
+        $user = Motorpool::where('id',$id)->first();
         $this->user_id = $id;
         $this->reason = $user->reason;
      
@@ -49,7 +47,7 @@ class Motorpool extends Component
 
     public function update()
     {
-         $user = MotorpoolRequest::find($this->user_id);
+         $user = Motorpool::find($this->user_id);
             $user->update([
                 'reason' => $this->reason,
                 'is_approved' => $this->action,
@@ -66,7 +64,7 @@ class Motorpool extends Component
         
         if($this->accessTable == false){
             // $this->pendingRequestList = AddRequest::where('is_approved', 0)->orderBy('created_at', 'DESC')->paginate(10);
-            $this->pendingRequestList = MotorpoolRequest::all();
+            $this->pendingRequestList = Motorpool::all();
         }
         // $this->requestCount = AddRequest::count();
         // dd($this->requestList);
@@ -77,8 +75,8 @@ class Motorpool extends Component
     {
         // return view('livewire.request-form.request-list');
         
-        return view('livewire.j-livewire.motorpool.motorpool', [
-            'requestList' => MotorpoolRequest::
+        return view('livewire.j-livewire.motorpool.motorpool-main', [
+            'requestList' => Motorpool::
             where('is_approved', true)->
             orWhere('request_id', 'like', '%'.$this->search.'%')->
             orWhere('emp_name', 'like', '%'.$this->search.'%')->
@@ -92,4 +90,5 @@ class Motorpool extends Component
             ]);
             
         }
+   
 }

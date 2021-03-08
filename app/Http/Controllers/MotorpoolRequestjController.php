@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Str;
-use App\Models\MotorpoolRequest;
+use App\Models\Motorpool;
 
 class MotorpoolRequestjController extends Controller
 {
@@ -40,9 +40,9 @@ class MotorpoolRequestjController extends Controller
     public function store(Request $request)
     {
         $now = Carbon::now();
-        $incremental = MotorpoolRequest::count() + 1;
+        $incremental = Motorpool::count() + 1;
         
-        $newTechRequest = new MotorpoolRequest;
+        $newTechRequest = new Motorpool;
         $newTechRequest->transaction_id = Str::uuid();
         $newTechRequest->request_id = 'MTRPOOL_RQST' . $now->year . $incremental;
         

@@ -15,6 +15,14 @@ class CreateDeliveriesTable extends Migration
     {
         Schema::create('deliveries', function (Blueprint $table) {
             $table->id();
+            $table->string('DR_NO')->nullable();
+            $table->string('BALLOT_ID')->nullable();
+            $table->string('CLUSTERED_PREC')->nullable();
+            $table->string('REGION')->nullable();
+            $table->string('PROV_NAME')->nullable();
+            $table->string('MUN_NAME')->nullable();
+            $table->string('BGY_NAME')->nullable();
+            $table->string('CLUSTER_TOTAL')->nullable();
             $table->timestamps();
         });
     }

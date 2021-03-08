@@ -2,6 +2,6 @@
 
 @section('content')
 
-@livewire('j-livewire.delivery.delivery')
+@livewire('j-livewire.delivery.delivery-main')
 
 @endsection
