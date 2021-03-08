@@ -58,6 +58,23 @@
             <span>Change Password</span>
           </a>
         </li>
+
+        <li class="nav-item">
+          <a class="nav-link {{ $sidebar == 'Motorpool Request' ? 'active' : ' ' }}" href="{{ asset('/motorpool_request') }}">
+            <i class="material-icons">bar_chart</i>
+            <span>Motorpool Request</span>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link {{ $sidebar == 'Delivery' ? 'active' : ' ' }}" href="{{ asset('/delivery') }}">
+            <i class="material-icons">bar_chart</i>
+            <span>Delivery</span>
+          </a>
+        </li>
+
+    
+        
         
         {{-- <li class="nav-item">
           <a class="nav-link " href="add-new-post.html">
