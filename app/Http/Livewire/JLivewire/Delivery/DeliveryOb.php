@@ -5,7 +5,7 @@ namespace App\Http\Livewire\JLivewire\Delivery;
 use Livewire\Component;
 use App\Models\Delivery;
 
-class DeliveryCreate extends Component
+class DeliveryOb extends Component
 {
     public $ballotlists = [];
     public $users, $name, $email, $user_id;
@@ -26,17 +26,8 @@ class DeliveryCreate extends Component
         ];
     }
 
-    public function render()
-    {
-        return view('livewire.j-livewire.delivery.delivery-create');
-    }
-    
-    public function store()
-    {
-        //create model and add fillable, create clearfields and reset
-      
-
-         foreach ($this->ballotlists as $ballotlist){
+    private function save(){
+        foreach ($this->ballotlists as $ballotlist){
             Delivery::create(['BALLOT_ID' => $ballotlist['ballot_id']]);
         }
         $this->ballotlists = [
@@ -45,4 +36,18 @@ class DeliveryCreate extends Component
 
         session()->flash('message', 'DR Number Created!.');
     }
+
+    public function render()
+    {
+        return view('livewire.j-livewire.delivery.delivery-ob');
+    }
+    
+  
+     
+    public function storeob()
+    {
+        $this->save();
+        //create model and add fillable, create clearfields and reset
+    }
+
 }

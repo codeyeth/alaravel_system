@@ -49,4 +49,10 @@ Route::resource('change_pass', 'RrChangePasswordController');
 
 //J Routes
 Route::resource('delivery', 'DeliveryjController');
-Route::get('/create_dr_number', 'DeliveryjController@create_dr');
+Route::resource('motorpool_request', 'MotorpoolRequestjController');
+
+Route::get('/delivery_ob', 'DeliveryjController@ob');
+Route::get('/delivery_fts', 'DeliveryjController@fts');
+Route::get('reports/pdf', ['as' => 'set', 'uses' => 'MotorpoolRequestjController@pdf']);
+
+

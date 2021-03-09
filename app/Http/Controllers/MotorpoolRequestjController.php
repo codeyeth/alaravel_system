@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Str;
+use App\Models\Motorpool;
 
-class DeliveryjController extends Controller
+class MotorpoolRequestjController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -12,9 +15,10 @@ class DeliveryjController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   $breadcrumb = "Delivery";
-        $sidebar = "Delivery";
-        return view('j-views.delivery.delivery')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+    {
+        $breadcrumb = "Motorpool Request";
+        $sidebar = "Motorpool Request";
+        return view('j-views.motorpool.motorpool')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
     }
 
     /**
@@ -27,31 +31,6 @@ class DeliveryjController extends Controller
         //
     }
 
-
-    public function reports()
-    {   $breadcrumb = "DR Reports Management";
-        $sidebar = "Delivery";
-        return view('j-views.delivery.delivery_reports')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
-    }
-
-    public function ob()
-    {   $breadcrumb = "Offical Ballot";
-        $sidebar = "Delivery";
-        return view('j-views.delivery.delivery_ob')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
-    }
-
-    public function fts()
-    {   $breadcrumb = "FTS";
-        $sidebar = "Delivery";
-        return view('j-views.delivery.delivery_fts')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
-    }
-
-
-
-    
-
-    
-
     /**
      * Store a newly created resource in storage.
      *
@@ -60,7 +39,23 @@ class DeliveryjController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $now = Carbon::now();
+        $incremental = Motorpool::count() + 1;
+        
+        $newTechRequest = new Motorpool;
+        $newTechRequest->transaction_id = Str::uuid();
+        $newTechRequest->request_id = 'MTRPOOL_RQST' . $now->year . $incremental;
+        
+        $newTechRequest->emp_name = Str::upper($request->input('empName'));
+        $newTechRequest->division_chief = Str::upper($request->input('chiefName'));
+        $newTechRequest->destination = Str::upper($request->input('destination'));
+        $newTechRequest->date = Str::upper($request->input('date'));
+        $newTechRequest->time = Str::upper($request->input('time'));
+        $newTechRequest->purpose = Str::upper($request->input('purpose'));
+        
+        $newTechRequest->save();
+        
+        return back()->with('success', 'Request Added Successfully')->with('now', $now);
     }
 
     /**
