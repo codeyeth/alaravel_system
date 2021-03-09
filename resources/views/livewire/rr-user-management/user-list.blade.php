@@ -116,11 +116,26 @@
                                     <span class="{{ $is_motorpool == true ? 'text-success' : 'text-danger'}}">
                                         <i class="material-icons">{{ $is_motorpool == true ? 'check' : 'clear'}}</i>
                                     </span> <small>Motorpool Request System</small>
-                                </div>
+                                </div>                                
                             </div>
-                            
+
+                            <hr>
+
+                            <div class="blog-comments__meta text-muted">
+                                <small><b>Comelec Role </b></small>
+                                <a class="text-secondary" href="#">{{ $comelec_role }}</a>
+                                ->
+                                <small><b>Barcoded Receiver </b></small>
+                                <a class="text-secondary" href="#">{{ $barcoded_receiver }}</a>
+                            </div>
+
                         </div>
+
+                        
                     </div>
+
+                 
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

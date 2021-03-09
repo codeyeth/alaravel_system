@@ -24,6 +24,9 @@ class UserList extends Component
     public $is_dr;
     public $is_gazette;
     public $is_motorpool;
+
+    public $comelec_role;
+    public $barcoded_receiver;
     
     public function modalUserDetail($userID){
         $modalUser = User::find($userID);   
@@ -36,6 +39,8 @@ class UserList extends Component
         $this->is_dr = $modalUser->is_dr;
         $this->is_gazette = $modalUser->is_gazette;
         $this->is_motorpool = $modalUser->is_motorpool;
+        $this->comelec_role = $modalUser->comelec_role;
+        $this->barcoded_receiver = $modalUser->barcoded_receiver;
     }
     
     public function mount(){
