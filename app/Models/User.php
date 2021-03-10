@@ -22,6 +22,7 @@ class User extends Authenticatable
         'password',
         'is_search_mode',
         'is_verification_type_bad',
+        'is_ballot_in',
     ];
     
     /**

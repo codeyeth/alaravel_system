@@ -33,7 +33,7 @@ class ExportExcelBallotDate implements FromQuery, WithHeadings, WithMapping, Sho
     public function headings(): array
     {
         return [
-            ['ID', 'BALLOT ID', 'ACTION', 'OLD_STATUS', 'NEW STATUS', 'STATUS BY ID', 'STATUS BY NAME', 'STATUS BY AT' ],
+            ['ID', 'BALLOT ID', 'OLD_STATUS', 'TYPE', 'STATUS BY ID', 'STATUS BY NAME', 'STATUS BY AT' ],
         ];
     }
     
@@ -41,12 +41,17 @@ class ExportExcelBallotDate implements FromQuery, WithHeadings, WithMapping, Sho
     {
         $status_by_at = Carbon::create($date_history->status_by_at);
         
+        if( $date_history->old_status == 'PRINTER' ){
+            $old_status = 'SHEETER';
+        }else{
+            $old_status = $date_history->old_status;
+        }
+        
         return [
             $date_history->id,
             $date_history->ballot_id,
-            $date_history->action,
-            $date_history->old_status,
-            $date_history->new_status,
+            $old_status,
+            $date_history->new_status_type,
             $date_history->status_by_id,
             $date_history->status_by_name,
             $status_by_at->toDayDateTimeString(),

@@ -4,8 +4,8 @@
         <span aria-hidden="true">×</span>
     </button>
     <i class="fa fa-info mx-2"></i>
-    <strong>STATIC NOTIFICATION!</strong>
-    {!!session('success')!!} |  {{ \Carbon\Carbon::parse(session('now'))->toDayDateTimeString() }}
+    {{-- <strong>STATIC NOTIFICATION!</strong> --}}
+    <strong style="font-size: 150%">  {!! Str::upper(session('success')) !!} </strong> |  {{ \Carbon\Carbon::parse(session('now'))->toDayDateTimeString() }}
 </div>
 @endif
 
