@@ -16,7 +16,7 @@
     
     {{-- CDN --}}
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-    {{-- <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" ></script> --}}
+     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.1/dist/alpine.min.js" ></script> 
     
     {{-- DATE PICKER FILES --}}
     <script src="{{ asset ('shards_template/scripts/ajax_jquery.min.js') }}"></script>

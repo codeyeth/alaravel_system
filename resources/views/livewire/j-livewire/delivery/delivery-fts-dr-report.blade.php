@@ -1,44 +1,41 @@
 
 
 
-
+ {{ Form::open(['route' => 'view', 'method' => 'GET', 'autocomplete'=>'off'])}}
                 <div class="card card-small">
                   <div class="card-header border-bottom">
-                    <h6 class="m-0">Generate DR for OB</h6>
+                    <h6 class="m-0">Generate DR for FTS</h6>
                   </div>
                   <div class="card-body pt-0">
                     <div class="row border-bottom py-2 bg-light">
 
                     <div class="col-12 col-sm-2">
-                    <input type="text" class="input-sm form-control" placeholder="Ballot ID">
+                    <input type="text" class="input-sm form-control" name="search" id="search" placeholder="DR No.">
                       </div>
 
                       <div class="col-12 col-sm-3">
-                        <div id="blog-overview-date-range" class="input-daterange input-group input-group-sm my-auto ml-auto mr-auto ml-sm-auto mr-sm-0" >
-                          <input type="text" class="input-sm form-control">
-                          <span class="input-group-append">
-                            <span class="input-group-text">
-                              <i class="material-icons"></i>
-                            </span>
-                          </span>
-                        </div>
+                      <input type="date" name="issued_date" id="issued_date"  class="input-sm form-control" autocomplete="off"> 
                       </div>
 
                       <div class="col-12 col-sm-3">
-                      <select id="inputState" class="form-control">
-                      <option selected>Copies by...</option>
-                                  <option>All</option>
-                                  <option>Comelec</option>
-                                  <option>COA</option>
-                                  <option>NPO</option>
+                      <select name="issued_to" id="issued_to" class="form-control">
+                      <option selected>Copies</option>
+                      <option>COMELEC_INSPECTORATE</option>
+                      <option>COMELEC_BPG1</option>
+                      <option>COMELEC_BPG2</option>
+                      <option>COA_COMELEC</option>
+                      <option>COMELEC_DELIVERY</option>
+                      <option>NPO_DELIVERY1</option>
+                      <option>NPO_DELIVERY2</option>
+                      <option>NPO_MONITORING</option>
                                 </select>
                       </div>
-
                       <div class="col-12 col-sm-2">
-                    <input type="text" class="input-sm form-control" placeholder="Issued by..">
+                    <input type="text" name="issued_by" id="issued_by" class="input-sm form-control" placeholder="Issued by..">
                       </div>
                       <div class="col-12 col-sm-2">
-                        <button type="button" class="btn btn-sm btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0">Print &rarr;</button>
+                      {{ Form::submit('Generate PDF &rarr;',['class'=>'btn btn-sm btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0']) }}
+                      {{ Form::close() }}
                       </div>
                     </div>
                    
@@ -48,7 +45,7 @@
                   </div>
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
-                      
+                    @if (count($ballotList) > 0)
                         <table class="table table-hover mb-0">
                             <thead class="bg-light">
                                 <tr>
@@ -61,22 +58,22 @@
                                 </tr>
                             </thead>
                             <tbody>
-                             
+                            @foreach ($ballotList as $item)
                                 <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                <td>{{ $item->BALLOT_ID }}</td>
+                                    <td>{{ $item->DR_NO }}</td>
+                                    <td>{{ $item->PROV_NAME }} {{ $item->MUN_NAME}} {{ $item->BGY_NAME }}</td>
+                                    <td>{{ $item->CLUSTERED_PREC }}</td>
+                                    <td>{{ $item->CLUSTER_TOTAL }}</td>
+                                    <td>{{ $item->created_at }}</td>
                                 </tr>
-                  
+                                @endforeach
                             </tbody>
                         </table>
-                  
+                        @else
                         <br>
                         <p style="text-align: center">No users found.</p>    
-                 
+                        @endif
                     </li>
                     <div class="text-center"> 
      
@@ -84,7 +81,9 @@
                 </ul>
                 </div>
               
-
+                <div class="text-center"> 
+        {{ $ballotList->links() }}
+    </div>
 
 
 

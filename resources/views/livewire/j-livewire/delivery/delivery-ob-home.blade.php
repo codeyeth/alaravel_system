@@ -2,8 +2,8 @@
     <div class="card-body p-0 d-flex">
       <div class="d-flex flex-column m-auto">
         <div class="stats-small__data text-center">
-          <span class="stats-small__label text-uppercase">Total Offical Ballots in Delivery</span>
-          <h6 class="stats-small__value count my-3">2,390</h6>
+        <span class="stats-small__label text-uppercase">{{$ballotListCountTitle}}</span>
+          <h6 class="stats-small__value count my-3">{{$ballotListCount}}</h6>
         </div>
         <div class="stats-small__data">
          <!--if you want to add percentage od increase
@@ -22,7 +22,7 @@
                     </div>
                    <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
-                
+                    @if (count($ballotList) > 0)
                         <table class="table table-hover mb-0">
                             <thead class="bg-light">
                                 <tr>
@@ -35,24 +35,27 @@
                                 </tr>
                             </thead>
                             <tbody>
-                              
+                            @foreach ($ballotList as $item)
                                 <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
+                                    <td>{{ $item->BALLOT_ID }}</td>
+                                    <td>{{ $item->DR_NO }}</td>
+                                    <td>{{ $item->PROV_NAME }} {{ $item->MUN_NAME}} {{ $item->BGY_NAME }}</td>
+                                    <td>{{ $item->CLUSTERED_PREC }}</td>
+                                    <td>{{ $item->CLUSTER_TOTAL }}</td>
+                                    <td>{{ $item->created_at }}</td>
                                 </tr>
-            
+                                @endforeach
                             </tbody>
                         </table>
-                   
+                        @else
                         <br>
                         <p style="text-align: center">Not found.</p>    
-                     
+                        @endif
                     </li>
                     <li class="list-group-item px-3">
                       
                     </li>
                 </ul>
+                <div class="text-center"> 
+        {{ $ballotList->links() }}
+    </div>

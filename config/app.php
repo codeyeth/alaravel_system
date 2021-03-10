@@ -163,6 +163,8 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         //ADDED BY RR
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        //ADDED BY j
+        Elibyy\TCPDF\ServiceProvider::class,
         /*
         * Package Service Providers...
         */
@@ -229,6 +231,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         //ADDED BY RR
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        //ADDED BY j
+        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class
     ],
     
 ];
