@@ -22,7 +22,7 @@
             @foreach ($ballotlists as $index => $ballotlist)
             <tr>
                 <td>
-                    <input type="text" name="ballotlists[{{$index}}][ballot_id]" class="form-control" wire:model="ballotlists.{{$index}}.ballot_id" />
+                    <input type="text" name="ballotlists[{{$index}}][ballot_id]" class="form-control" wire:model="ballotlists.{{$index}}.ballot_id" wire:keyup="searchBallotId($event.target.value, {{ $index }})"/>
                 </td>
                 <td>
                     <input type="text" name="ballotlists[{{$index}}][clustered_precint]" class="form-control" wire:model="ballotlists.{{$index}}.clustered_precint" />
@@ -48,4 +48,3 @@
             <button  wire:click.prevent="storefts()" class="btn btn-primary"><i class="material-icons">save</i> Save </button>
         </div>
     </div>
-    
