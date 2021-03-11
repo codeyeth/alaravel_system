@@ -20,6 +20,8 @@ class DeliveryFts extends Component
     public $saveCount;
     public $searchBallotsResultMessage;
     public $search_dr_fts = '';
+    public $datefrom ='';
+    public $dateto = '';
     public $showSaveBtn = false;
     
     public function addBallot()
@@ -95,10 +97,34 @@ class DeliveryFts extends Component
                 $drftslist = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->where('DR_NO', $this->search_dr_fts)->paginate(5);
                 $drftslistresult = 'Search Result Found: '.DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->where('DR_NO', $this->search_dr_fts)->count();
             }
-            return view('livewire.j-livewire.delivery.delivery-fts',compact('ballotList','ballotListCount','ballotListCountTitle','drftslist','drftslistresult'));
+            if ($this->datefrom == '' || $this->dateto == '' ){
+                $dailyftslist = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->paginate(5);
+                $dailyftslistresult = '';
+            }else{
+            $dailyftslist = DB::table('deliveries')->where('BALLOT_ID','<>','')
+            ->Where('BALLOT_ID', 'like', '%F_%')
+            ->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->datefrom.' 00:00:00', $this->dateto.' 23:59:59'))->paginate(5);
+            $dailyftslistresult = 'Search Result Found: '.DB::table('deliveries')  ->where('BALLOT_ID','!=','')
+            ->Where('BALLOT_ID', 'like', '%F_%')
+            ->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->datefrom.' 00:00:00', $this->dateto.' 23:59:59'))->count();
+           
+            }
+            return view('livewire.j-livewire.delivery.delivery-fts',compact('ballotList','ballotListCount','ballotListCountTitle','drftslist','drftslistresult','dailyftslist','dailyftslistresult'));
+            
         }
-        
-        public function storefts(){
+        function storefts(){
             $this->save();
         }
+
+    
+    
+    
+    
+    
+    
+    
+    
+        
+        
+      
     }

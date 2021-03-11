@@ -10,7 +10,7 @@
                     <div class="row border-bottom py-2 bg-light">
 
                     <div class="col-12 col-sm-6">
-                    <input type="datetime-local" name="datefrom" id="dfrom"  wire:model="datefrom" class="input-sm form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
+                    <input type="datetime-local" name="datefromdaily" id="dfrom"  wire:model="datefrom" class="input-sm form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
                       </div>
                       <div class="col-12 col-sm-6">
                     <input type="datetime-local" wire:model="dateto" name="dateto" id="dto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
