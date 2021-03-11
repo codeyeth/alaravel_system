@@ -3,6 +3,16 @@
     
     <br>
     
+    @if ($ballotIn == false && $searchMode == false)
+    <h5 class="text-primary"> BALLOT OUT MODE 
+        @if ($verificationBadMode == true && Auth::user()->comelec_role == 'VERIFICATION')
+        <small class="text-danger"> VERIFICATION BAD MODE </small>
+        @endif
+    </h5> 
+    
+    @endif
+    
+    
     <div class="row">
         <div class="col-lg-4 col-sm-12">
             <div class="input-group mb-3">
@@ -25,7 +35,14 @@
             </div>
         </div>
         
-        @if ( Auth::user()->comelec_role == 'VERIFICATION' )
+        <div class="col-lg-1 col-sm-12">
+            <div class="custom-control custom-toggle custom-toggle-lg mb-1">
+                <input type="checkbox" id="customToggle3" name="customToggle3" class="custom-control-input custom-control-lg" wire:click="ballotInToggle" {{ $ballotIn == true ? 'checked' : '' }}>
+                <label class="custom-control-label" for="customToggle3">BALLOT IN</label>
+            </div>
+        </div>
+        
+        @if ( Auth::user()->comelec_role == 'VERIFICATION' && $ballotIn == false)
         <div class="col-lg-1 col-sm-12">
             <div class="custom-control custom-toggle custom-toggle-lg mb-1">
                 <input type="checkbox" id="customToggle2" name="customToggle2" class="custom-control-input custom-control-lg" wire:click="verificationBadModeToggle" {{ $verificationBadMode == true ? 'checked' : '' }}>
@@ -50,22 +67,39 @@
                 @if ( $searchMode == true )
                 <div class="card-body pt-0 pb-1">
                     <div class="row border-bottom py-2 bg-light">
-                        <div class="col-12 col-sm-6">
-                            <div id="" class="input-daterange input-group input-group-lg my-auto ml-auto mr-auto ml-sm-auto mr-sm-0" style="max-width: 350px;">
+                        <div class="col-12 col-sm-5">
+                            <div id="" class="input-daterange input-group my-auto ml-auto mr-auto ml-sm-auto mr-sm-0" >
                                 <input type="text" class="form-control" id="dateFrom" name="dateFrom" placeholder="Date From" wire:model="dateFrom" onchange="this.dispatchEvent(new InputEvent('input'))" required/>
                                 <input type="text" class="form-control" id="dateTo" name="dateTo" placeholder="Date To" wire:model="dateTo" onchange="this.dispatchEvent(new InputEvent('input'))" required/>
                                 &ThickSpace;
-                                <button type="button" class="btn btn-sm btn-primary ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0" wire:click="exportDateBallot">Generate</button>
+                                <button type="button" class="btn btn-primary ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0" wire:click="exportDateBallot">Generate base on Date</button>
                             </div>
                         </div>
-                        <div class="col-12 col-sm-6">
-                            <button type="button" class="btn btn-sm btn-secondary ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0">Generate base on Status</button>
-                            <button type="button" class="btn btn-sm btn-success ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0" wire:click="exportAllBallotHistory">Generate Full Report</button>
+                        {{-- <div class="col-12 col-sm-3">
+                            <select id="statusReport" name="statusReport" class="form-control ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0" wire:model="statusSelected">
+                                @if(count($comelecRolesList) > 0)
+                                <option disabled selected value="">Select Status here</option>
+                                @foreach($comelecRolesList as $post)
+                                <option value="{{$post->comelec_role}}">{{ Str::title($post->comelec_role) }}</option>
+                                @endforeach
+                                @else
+                                <option disabled selected>No Status available</option>
+                                @endif                
+                            </select>
+                        </div>
+                        
+                        <div class="col-12 col-sm-2">
+                            <button type="button" class="btn btn-block btn-secondary ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0" wire:click="exportStatusBallotHistory">Generate base on Status</button>
+                        </div> --}}
+                        
+                        <div class="col-12 col-sm-2">
+                            <button type="button" class="btn btn-block btn-success ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0" wire:click="exportAllBallotHistory">Generate All Available History</button>
                         </div>
                     </div>
                 </div>
                 @endif
                 
+                {{-- TABLE --}}
                 <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
                         @if (count($userList) > 0)
@@ -89,7 +123,7 @@
                                     <td align="right"><small>{{ $item->bgy_name }} {{ $item->mun_name }} {{ $item->prov_name }}</small> </td>
                                     <td align="left"><small> {{ $item->pollplace }}</small> </td>
                                     <td align="right">
-                                        @if ($item->current_status == 'SHEETER')
+                                        @if ($item->current_status == 'PRINTER')
                                         <span class="text-danger"><b> BALLOT NOT YET PRINTED </b></span> 
                                         @else
                                         {{ $item->current_status }}
@@ -99,7 +133,7 @@
                                         @if ( $item->status_updated_by == Auth::user()->name )
                                         <span class="text-success"><b> YOU </b></span>
                                         @else
-                                        <span class="text-primary"><b> {{ $item->status_updated_by }} </b></span>
+                                        <span class="text-primary"><b>{{ $item->status_updated_by }} </b></span>
                                         @endif
                                         
                                         @if ($item->status_updated_at == null)
@@ -131,6 +165,7 @@
         {{ $userList->links() }}
     </div>
     
+    {{-- MODAL HISTORY --}}
     <div class="modal fade" id="modalBallotHistory" tabindex="-1" role="dialog" aria-labelledby="modalUserDetail" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
@@ -148,9 +183,9 @@
                                 <tr>
                                     <th scope="col" class="border-0">#</th>
                                     <th scope="col" class="border-0" style="text-align: right">Ballot ID</th>
-                                    <th scope="col" class="border-0" style="text-align: right">Action</th>
-                                    <th scope="col" class="border-0" style="text-align: right">Old Status/Location</th>
-                                    <th scope="col" class="border-0" style="text-align: left">New Status/Location</th>
+                                    {{-- <th scope="col" class="border-0" style="text-align: right">Action</th> --}}
+                                    {{-- <th scope="col" class="border-0" style="text-align: right">Old Status/Location</th> --}}
+                                    <th scope="col" class="border-0" style="text-align: left">Status/Location</th>
                                     <th scope="col" class="border-0" style="text-align: right">Status BY</th>
                                 </tr>
                             </thead>
@@ -159,68 +194,75 @@
                                 <tr>
                                     <td>{{ $history_item->id }}</td>
                                     <td align="right"><b> {{ $history_item->ballot_id }} </b></td>
-                                    <td align="right"><b> {{ $history_item->action }} </b></td>
-                                    <td align="right"><b> {{ $history_item->old_status }} </b></td>
-                                    <td align="left"><b> {{ $history_item->new_status }} </b></td>
-                                    <td align="right">
-                                        {{-- {{ $history_item->status_by_name }}  --}}
-                                        @if ( $history_item->status_by_name == Auth::user()->name )
-                                        <span class="text-success"><b> YOU </b></span>
+                                    {{-- <td align="right"><b> {{ $history_item->action }} </b></td> --}}
+                                    {{-- <td align="right"><b> {{ $history_item->old_status }} - <span class="text-primary"> {{ $history_item->old_status_type }} </span></b></td> --}}
+                                    <td align="left"><b>
+                                        @if ( $history_item->old_status == 'PRINTER' )
+                                        SHEETER
                                         @else
-                                        <span class="text-primary"><b> {{ $history_item->status_by_name }} </b></span>
+                                        {{ $history_item->old_status }}
                                         @endif
                                         
-                                        @if ($history_item->status_by_at == null)
-                                        <span class="text-danger"><b> BALLOT NOT YET PRINTED </b></span>
-                                        @else
-                                        <small> {{ \Carbon\Carbon::parse($history_item->status_by_at)->diffForHumans() }} </small>
-                                        {{ \Carbon\Carbon::parse($history_item->status_by_at)->toDayDateTimeString() }}
-                                        @endif
-                                    </td>
-                                </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        @else
-                        <br>
-                        <p style="text-align: center">No Ballot History found.</p>
-                        @endif
+                                        - <span class="text-info"> {{ $history_item->new_status_type }} </span></b></td>
+                                        <td align="right">
+                                            {{-- {{ $history_item->status_by_name }}  --}}
+                                            @if ( $history_item->status_by_name == Auth::user()->name )
+                                            <span class="text-success"><b> YOU </b></span>
+                                            @else
+                                            <span class="text-primary"><b> {{ $history_item->status_by_name }} </b></span>
+                                            @endif
+                                            
+                                            @if ($history_item->status_by_at == null)
+                                            <span class="text-danger"><b> BALLOT NOT YET PRINTED </b></span>
+                                            @else
+                                            <small> {{ \Carbon\Carbon::parse($history_item->status_by_at)->diffForHumans() }} </small>
+                                            {{ \Carbon\Carbon::parse($history_item->status_by_at)->toDayDateTimeString() }}
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            @else
+                            <br>
+                            <p style="text-align: center">No Ballot History found.</p>
+                            @endif
+                        </div>
+                        
                     </div>
-                    
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    
-                    @if ($ballotHistoryCount > 0 && Auth::user()->is_search_mode == true )
-                    <button type="button" class="btn btn-success" wire:click.preventDefault="exportSingleBallotHistory({{ $exportSingleId }})">Export History</button>
-                    @endif
-                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        
+                        @if ($ballotHistoryCount > 0 && Auth::user()->is_search_mode == true )
+                        <button type="button" class="btn btn-success" wire:click.preventDefault="exportSingleBallotHistory({{ $exportSingleId }})">Export History</button>
+                        @endif
+                        
+                    </div>
                 </div>
             </div>
         </div>
+        
+        <script type="text/javascript">
+            $('#dateFrom').datetimepicker({
+                format: 'yyyy-mm-dd',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 0
+            });
+            $('#dateTo').datetimepicker({
+                format: 'yyyy-mm-dd',
+                weekStart: 1,
+                todayBtn:  1,
+                autoclose: 1,
+                todayHighlight: 1,
+                startView: 2,
+                minView: 2,
+                forceParse: 0
+            });
+        </script>
+        
     </div>
-    
-    <script type="text/javascript">
-        $('#dateFrom').datetimepicker({
-            format: 'yyyy-mm-dd',
-            weekStart: 1,
-            todayBtn:  1,
-            autoclose: 1,
-            todayHighlight: 1,
-            startView: 2,
-            minView: 2,
-            forceParse: 0
-        });
-        $('#dateTo').datetimepicker({
-            format: 'yyyy-mm-dd',
-            weekStart: 1,
-            todayBtn:  1,
-            autoclose: 1,
-            todayHighlight: 1,
-            startView: 2,
-            minView: 2,
-            forceParse: 0
-        });
-    </script>
-    
-</div>

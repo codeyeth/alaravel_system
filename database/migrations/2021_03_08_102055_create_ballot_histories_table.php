@@ -17,8 +17,11 @@ class CreateBallotHistoriesTable extends Migration
             $table->id();
             $table->string('ballot_id');            
             $table->string('action');      
-            $table->string('old_status')->nullable();            
+            $table->string('old_status');            
+            $table->string('old_status_type')->nullable();            
             $table->string('new_status');            
+            $table->string('new_status_type')->nullable();            
+            $table->string('for')->nullable();            
             $table->string('status_by_id');            
             $table->string('status_by_name');
             $table->string('status_by_at');

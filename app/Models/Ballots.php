@@ -10,6 +10,7 @@ class Ballots extends Model
     use HasFactory;
     protected $fillable = [
         'current_status',
+        'new_status_type',
         'status_updated_by_id',
         'status_updated_by',
         'status_updated_at',

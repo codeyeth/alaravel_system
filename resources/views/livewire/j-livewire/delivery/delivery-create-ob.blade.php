@@ -22,7 +22,7 @@
                                 @foreach ($ballotlists as $index => $ballotlist)
                                     <tr>
                                         <td>
-                                            <input type="text" name="ballotlists[{{$index}}][ballot_id]" class="form-control" wire:model="ballotlists.{{$index}}.ballot_id" wire:change="modalUserDetail(2)" />
+                                            <input type="text" name="ballotlists[{{$index}}][ballot_id]" class="form-control" wire:model="ballotlists.{{$index}}.ballot_id" wire:keyup="searchBallotId" />
                                         </td>
                                         <td>
                                             <input type="text" name="ballotlists[{{$index}}][clustered_precint]" class="form-control" wire:model="ballotlists.{{$index}}.clustered_precint"   />

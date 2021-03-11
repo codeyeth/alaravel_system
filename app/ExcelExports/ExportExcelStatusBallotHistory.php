@@ -11,19 +11,19 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 // use Maatwebsite\Excel\Concerns\WithStyles;
 use Carbon\Carbon;
 
-class ExportExcelSingleBallotHistory implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
+class ExportExcelStatusBallotHistory implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
 {
-    public $ballotIdToExcel;
+    public $statusSelected;
     
-    public function __construct($ballotIdToExcel)
+    public function __construct($statusSelected)
     {
-        $this->ballotIdToExcel = $ballotIdToExcel;
+        $this->statusSelected = $statusSelected;
     }
     
     public function query()
     {
-        $single_history = BallotHistory::query()->where('ballot_id', $this->ballotIdToExcel);
-        return $single_history;
+        $status_history = BallotHistory::query()->where('new_status', $this->statusSelected);
+        return $status_history;
     }
     
     public function headings(): array
@@ -33,23 +33,23 @@ class ExportExcelSingleBallotHistory implements FromQuery, WithHeadings, WithMap
         ];
     }
     
-    public function map($single_history): array
+    public function map($status_history): array
     {
-        $status_by_at = Carbon::create($single_history->status_by_at);
+        $status_by_at = Carbon::create($status_history->status_by_at);
         
-        if( $single_history->old_status == 'PRINTER' ){
+        if( $status_history->old_status == 'PRINTER' ){
             $old_status = 'SHEETER';
         }else{
-            $old_status = $single_history->old_status;
+            $old_status = $status_history->old_status;
         }
 
         return [
-            $single_history->id,
-            $single_history->ballot_id,
+            $status_history->id,
+            $status_history->ballot_id,
             $old_status,
-            $single_history->new_status_type,
-            $single_history->status_by_id,
-            $single_history->status_by_name,
+            $status_history->new_status_type,
+            $status_history->status_by_id,
+            $status_history->status_by_name,
             $status_by_at->toDayDateTimeString(),
         ];
     }
