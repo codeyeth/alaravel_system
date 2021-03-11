@@ -117,7 +117,6 @@ class DeliveryFts extends Component
             $this->save();
         }
 
-    }
     
     
     
@@ -125,10 +124,8 @@ class DeliveryFts extends Component
     
     
     
-            return view('livewire.j-livewire.delivery.delivery-fts',compact('ballotList','ballotListCount','ballotListCountTitle','drftslist','drftslistresult'));
-        }
+    
         
-        public function storefts(){
-            $this->save();
-        }
+        
+      
     }
