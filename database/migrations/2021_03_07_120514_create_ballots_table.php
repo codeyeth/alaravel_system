@@ -22,7 +22,7 @@ class CreateBallotsTable extends Migration
             $table->string('pollplace');       
             $table->string('pollstreet');       
             $table->string('cluster_no');       
-            $table->string('clustereed_prec');       
+            $table->string('clustered_prec');       
             $table->string('cluster_total');       
             $table->string('group_no');       
             $table->string('ballot_id'); 
