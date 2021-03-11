@@ -81,9 +81,7 @@ class DeliveryOb extends Component
         
         public function render()
         {
-            
-            
-            
+    
                 if ($this->search == ''){
                     $ballotList = DB::table('deliveries')->Where('BALLOT_ID', 'not like', '%F_%')->paginate(5);
                     $ballotListCount = DB::table('deliveries')->Where('BALLOT_ID', 'not like', '%F_%')->count();
@@ -105,10 +103,10 @@ class DeliveryOb extends Component
                     $dailyoblist = DB::table('deliveries')->Where('BALLOT_ID', 'not like', '%F_%')->where('BALLOT_ID','!=','')->paginate(5);
                     $dailyoblistresult = '';
                 }else{
-                    $dailyoblist = DB::table('deliveries')->where('BALLOT_ID','<>','')
+                $dailyoblist = DB::table('deliveries')->where('BALLOT_ID','!=','')
                 ->Where('BALLOT_ID', 'not like', '%F_%')
                 ->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->datefrom.' 00:00:00', $this->dateto.' 23:59:59'))->paginate(5);
-                $dailyoblistresult = 'Search Result Found: '.DB::table('deliveries')  ->where('BALLOT_ID','<>','')
+                $dailyoblistresult = 'Search Result Found: '.DB::table('deliveries')  ->where('BALLOT_ID','!=','')
                 ->Where('BALLOT_ID', 'not like', '%F_%')
                 ->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->datefrom.' 00:00:00', $this->dateto.' 23:59:59'))->count();
           

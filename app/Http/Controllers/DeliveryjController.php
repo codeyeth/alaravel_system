@@ -134,8 +134,8 @@ class DeliveryjController extends Controller
 
      public function savepdfobdaily()
      {
-        $imagepath = public_path();
-        $from = request()->get('datefrom');
+     $imagepath = public_path();
+      $from = request()->get('datefrom');
       $to = request()->get('dateto');
       $issued_to = request()->get('issued_to');
       $issued_by = request()->get('issued_by');
