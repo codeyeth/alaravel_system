@@ -17,8 +17,10 @@ class DeliveryFts extends Component
     public $ballotlists = [];
     public $search = '';
     public $loopCount;
+    public $saveCount;
     public $searchBallotsResultMessage;
     public $search_dr_fts = '';
+    public $showSaveBtn = false;
     
     public function addBallot()
     {
@@ -29,6 +31,7 @@ class DeliveryFts extends Component
     {
         unset($this->ballotlists[$index]);
         $this->ballotlists = array_values($this->ballotlists);
+        $this->loopCount--;
     }
     public function mount()
     {
@@ -41,25 +44,35 @@ class DeliveryFts extends Component
         $searchResult = Ballots::where('ballot_id', $ballotId)->first();
         
         if($searchResult != null){
+            $this->showSaveBtn = true;
             $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
-            $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->bgy_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->prov_name;
+            $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
             $this->ballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
         }else{
-            $this->ballotlists[$indexKey]['clustered_precint'] =  "No Data Found!";
+            $this->showSaveBtn = false;
+            $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
             $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
             $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
         }
     }
     
-    private function save(){
+    public function save(){
         foreach ($this->ballotlists as $ballotlist){
+            $searchResult = Ballots::where('ballot_id', $ballotlist['ballot_id'])->first();
             Delivery::create([
                 'BALLOT_ID' => $ballotlist['ballot_id'],
                 'CLUSTERED_PREC' => $ballotlist['clustered_precint'],
-                'REGION' => $ballotlist['city_mun_prov'],
+                'PROV_NAME' => $searchResult->prov_name,
+                'MUN_NAME' => $searchResult->mun_name,
+                'BGY_NAME' => $searchResult->bgy_name,
                 'CLUSTER_TOTAL' => $ballotlist['quantity']
                 ]);
+                session()->flash('message', 'DR Number Created!');
             }
+            
+            $this->ballotlists = [
+                ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '']
+            ];
         }
         
         public function render()
@@ -84,14 +97,9 @@ class DeliveryFts extends Component
                 $drftslistresult = 'Search Result Found: '.DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->where('DR_NO', $this->search_dr_fts)->count();
             }
             return view('livewire.j-livewire.delivery.delivery-fts',compact('ballotList','ballotListCount','ballotListCountTitle','drftslist','drftslistresult'));
-            
-            
+        }
+        
+        public function storefts(){
+            $this->save();
         }
     }
-    
-    
-    
-    
-    
-    
-    
