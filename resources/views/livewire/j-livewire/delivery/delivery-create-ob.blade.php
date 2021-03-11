@@ -26,7 +26,7 @@
                                         </td>
                                         <td>
                                             <input type="text" name="ballotlists[{{$index}}][clustered_precint]" class="form-control" wire:model="ballotlists.{{$index}}.clustered_precint"   />
-                                            <a class="text-secondary" href="#">{{ $name }}</a>
+                                           
                                         </td>
                                         <td>
                                             <input type="text" name="ballotlists[{{$index}}][city_mun_prov]" class="form-control" wire:model="ballotlists.{{$index}}.city_mun_prov" />

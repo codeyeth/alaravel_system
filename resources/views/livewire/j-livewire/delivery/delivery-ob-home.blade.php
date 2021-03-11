@@ -2,7 +2,7 @@
     <div class="card-body p-0 d-flex">
       <div class="d-flex flex-column m-auto">
         <div class="stats-small__data text-center">
-        <span class="stats-small__label text-uppercase">{{$ballotListCountTitle}}</span>
+      <span class="stats-small__label text-uppercase">{{$ballotListCountTitle}}</span>
           <h6 class="stats-small__value count my-3">{{$ballotListCount}}</h6>
         </div>
         <div class="stats-small__data">

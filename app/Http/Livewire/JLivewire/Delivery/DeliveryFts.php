@@ -15,7 +15,7 @@ class DeliveryFts extends Component
     
     public $ballotlists = [];
     public $search = '';
-    public $loopCount;
+    public $search_dr_fts = '';
    
         
         public function addBallot()
@@ -53,23 +53,30 @@ class DeliveryFts extends Component
             public function render()
             {
                 if ($this->search == ''){
-                    return view('livewire.j-livewire.delivery.delivery-fts', [
-                        'ballotList' => DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->paginate(5),
-                        ]);
-                    }else{
-                        return view('livewire.j-livewire.delivery.delivery-fts', [
-                            'ballotList' => Delivery::where('BALLOT_ID', $this->search)->Where('BALLOT_ID', 'like', '%F_%')->paginate(5),
-                            ]);
-                        }
-                        
-                    }
-                    
-                    public function storefts()
-                    {
-                        $this->save();
-                        //create model and add fillable, create clearfields and reset
-                    }
-                    
-                    
+                    $ballotList = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->paginate(5);
+                    $ballotListCount = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->count();
+                    $ballotListCountTitle = 'Total FTS in Delivery'; 
+                   
+                }else{
+                    $ballotList = Delivery::where(function ($query) { $query->where('BALLOT_ID', 'like', '%F_%'); })->where(function ($query) {$query->where('BALLOT_ID', $this->search)->orWhere('DR_NO', $this->search); })->paginate(5);
+                    $ballotListCount =  Delivery::where(function ($query) { $query->where('BALLOT_ID', 'like', '%F_%'); })->where(function ($query) { $query->where('BALLOT_ID', $this->search)->orWhere('DR_NO', $this->search); })->count();
+                    $ballotListCountTitle = 'Search Result Found:';   
+            
                 }
+
+                if ($this->search_dr_fts == ''){
+                    $drftslist = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->paginate(5);
+                    $drftslistresult = '';
+                }else{
+                    $drftslist = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->where('DR_NO', $this->search_dr_fts)->paginate(5);
+                    $drftslistresult = 'Search Result Found: '.DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->where('DR_NO', $this->search_dr_fts)->count();
+                }
+                    return view('livewire.j-livewire.delivery.delivery-fts',compact('ballotList','ballotListCount','ballotListCountTitle','drftslist','drftslistresult'));
+             
+            }
+        }
+                    
+                
+            
+        
                 

@@ -1,5 +1,4 @@
-<form>
-{{$loopCount}}
+
                             @if (session()->has('message'))
                                 <div class="alert alert-success">
                             {{ session('message') }}
@@ -48,4 +47,4 @@
                             <div class="col-md-2">
                                 <button  wire:click.prevent="storefts()" class="btn btn-primary"><i class="material-icons">save</i> Save </button>
                             </div>
-                            </div></form>
+                            </div>

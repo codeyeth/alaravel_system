@@ -4,13 +4,13 @@
  {{ Form::open(['route' => 'view', 'method' => 'GET', 'autocomplete'=>'off'])}}
                 <div class="card card-small">
                   <div class="card-header border-bottom">
-                    <h6 class="m-0">Generate DR for FTS</h6>
+                    <h6 class="m-0">Generate DR for FTS <label style="float:right;"> {{$drftslistresult}} </label></h6></h6>
                   </div>
                   <div class="card-body pt-0">
                     <div class="row border-bottom py-2 bg-light">
 
                     <div class="col-12 col-sm-2">
-                    <input type="text" class="input-sm form-control" name="search" id="search" placeholder="DR No.">
+                    <input type="text" class="input-sm form-control" name="search" id="search" placeholder="DR No." wire:model="search_dr_fts">
                       </div>
 
                       <div class="col-12 col-sm-3">
@@ -45,7 +45,7 @@
                   </div>
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
-                    @if (count($ballotList) > 0)
+                    @if (count($drftslist) > 0)
                         <table class="table table-hover mb-0">
                             <thead class="bg-light">
                                 <tr>
@@ -58,7 +58,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach ($ballotList as $item)
+                            @foreach ($drftslist as $item)
                                 <tr>
                                 <td>{{ $item->BALLOT_ID }}</td>
                                     <td>{{ $item->DR_NO }}</td>
@@ -82,7 +82,7 @@
                 </div>
               
                 <div class="text-center"> 
-        {{ $ballotList->links() }}
+        {{ $drftslist->links() }}
     </div>
 
 
