@@ -12,7 +12,6 @@
     
     @endif
     
-    
     <div class="row">
         <div class="col-lg-4 col-sm-12">
             <div class="input-group mb-3">
