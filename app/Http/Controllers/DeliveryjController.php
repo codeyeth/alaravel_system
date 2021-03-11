@@ -147,7 +147,7 @@ class DeliveryjController extends Controller
       ->get();
       $total_row = $deliveries->count();
       $total_sum = $deliveries->sum('CLUSTER_TOTAL');
-
+      
          $view = \View::make('j-views.delivery.ob_daily_pdf',compact('deliveries','imagepath','total_row','total_sum'));
          $html_content = $view->render();
          PDF::SetTitle("List of users");

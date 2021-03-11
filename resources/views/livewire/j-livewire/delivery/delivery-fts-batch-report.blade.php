@@ -91,7 +91,7 @@
      
      </div>
                 </ul>
-                </div>
+                
                 <div class="text-center"> 
         {{ $ballotList->links() }}
     </div>

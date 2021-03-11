@@ -1,19 +1,19 @@
 
 
- {{ Form::open(['route' => 'view', 'method' => 'GET', 'autocomplete'=>'off'])}}
+ {{ Form::open(['route' => 'retrieve', 'method' => 'GET', 'autocomplete'=>'off'])}}
 
                 <div class="card card-small">
                   <div class="card-header border-bottom">
-                    <h6 class="m-0">Generate Daily Report for OB</h6>
+                    <h6 class="m-0">Generate Daily Report for OB <label style="float:right;"> {{$dailyoblistresult}} </label></h6> 
                   </div>
                   <div class="card-body pt-0">
                     <div class="row border-bottom py-2 bg-light">
 
                     <div class="col-12 col-sm-6">
-                    <input type="datetime-local" name="datefrom" id="dfrom" class="input-sm form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>">
+                    <input type="datetime-local" name="datefrom" id="dfrom"  wire:model="datefrom" class="input-sm form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
                       </div>
                       <div class="col-12 col-sm-6">
-                    <input type="datetime-local" name="dateto" id="dto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
+                    <input type="datetime-local" wire:model="dateto" name="dateto" id="dto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
                       </div>
 
                       <div class="col-12 col-sm-3">
@@ -27,7 +27,7 @@
                       <option>NPO_DELIVERY1</option>
                       <option>NPO_DELIVERY2</option>
                       <option>NPO_MONITORING</option>
-                                </select>
+                      </select>
                       </div>
 
                       <div class="col-12 col-sm-3">
@@ -45,7 +45,7 @@
                   </div>
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
-                    @if (count($ballotList) > 0)
+                    @if (count($dailyoblist) > 0)
                         <table class="table table-hover mb-0">
                             <thead class="bg-light">
                                 <tr>
@@ -58,7 +58,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach ($ballotList as $item)
+                            @foreach ($dailyoblist as $item)
                                 <tr>
                                     <td>{{ $item->BALLOT_ID }}</td>
                                     <td>{{ $item->DR_NO }}</td>
@@ -78,7 +78,10 @@
                         @endif
                     </li>
                     <div class="text-center"> 
-        {{ $ballotList->links() }}
+              
+             
+        {{ $dailyoblist->links() }}
+  
     </div>
                 </ul>
                 </div>

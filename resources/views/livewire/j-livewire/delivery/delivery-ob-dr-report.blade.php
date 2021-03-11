@@ -4,21 +4,22 @@
   {{ Form::open(['route' => 'search', 'method' => 'GET', 'autocomplete'=>'off'])}}
                 <div class="card card-small">
                   <div class="card-header border-bottom">
-                    <h6 class="m-0">Generate DR for OB</h6>
+                    <h6 class="m-0">Generate DR for OB <label style="float:right;"> {{$droblistresult}} </label></h6>
                   </div>
                   <div class="card-body pt-0">
                     <div class="row border-bottom py-2 bg-light">
                     <div class="col-12 col-sm-2">
-                    <input type="text" name="search" id="search" class="input-sm form-control" placeholder="DR No.">
+                    <input type="text" name="search" id="search" class="input-sm form-control" placeholder="DR No." wire:model="search_dr_ob">
                       </div>
 
                       <div class="col-12 col-sm-3">
-                          <input type="date" name="issued_date" id="issued_date"  class="input-sm form-control" autocomplete="off"> 
+                          <input type="date" name="issued_date" id="issued_date"  class="input-sm form-control" autocomplete="off" > 
                       </div>
 
                       <div class="col-12 col-sm-3">
                       <select name="issued_to" id="issued_to" class="form-control">
                       <option selected>Copies</option>
+                      <option>ALL</option>
                       <option>COMELEC_INSPECTORATE</option>
                       <option>COMELEC_BPG1</option>
                       <option>COMELEC_BPG2</option>
@@ -45,7 +46,7 @@
                   </div>
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
-                    @if (count($ballotList) > 0)
+                    @if (count($droblist) > 0)
                         <table class="table table-hover mb-0">
                             <thead class="bg-light">
                                 <tr>
@@ -58,7 +59,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                            @foreach ($ballotList as $item)
+                            @foreach ($droblist as $item)
                                 <tr>
                                     <td>{{ $item->DR_NO }}</td>
                                     <td>{{ $item->BALLOT_ID }}</td>
@@ -77,7 +78,7 @@
                         @endif
                     </li>
                     <div class="text-center"> 
-        {{ $ballotList->links() }}
+        {{ $droblist->links() }}
     </div>
                 </ul>
                 </div>
