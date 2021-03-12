@@ -62,9 +62,10 @@ class DeliveryFts extends Component
         }
         
         if($addOneField == true){
-            $this->dispatchBrowserEvent('searchSucceed', ['idFocus' => $indexKey]);
+            $idFocus = $indexKey + 1;
+            // dd($idFocus);
+            $this->dispatchBrowserEvent('searchSucceed', ['idFocus' => $idFocus]);
             $this->addBallot();
-            
         }
     }
     

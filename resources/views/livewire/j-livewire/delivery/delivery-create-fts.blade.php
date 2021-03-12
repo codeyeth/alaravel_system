@@ -51,12 +51,14 @@
         <input type="text" id="First">
         <script>
             window.addEventListener('searchSucceed', event => {
-              
-                $("focusBallot" + event.detail.idFocus).focus();
+                // $("focusBallot1").focus();
+                // alert("focusBallot" + event.detail.idFocus);
+                document.getElementById("focusBallot" + event.detail.idFocus).focus();
+
             })
-            windows.onload = function({
-                $("focusBallot0").focus();
-            });
+            window.onload = function() {
+                document.getElementById("focusBallot0").focus();
+            };
         </script>
         
     </div>
