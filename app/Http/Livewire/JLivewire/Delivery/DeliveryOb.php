@@ -26,6 +26,7 @@ class DeliveryOb extends Component
     
     
     
+    public $sample;
     
     public function addBallot()
     {
@@ -96,6 +97,11 @@ class DeliveryOb extends Component
         
         
         
+        
+        public function retrieve(){
+            
+        }
+               
         public function render()
         {
     

@@ -52,11 +52,19 @@ class DeliveryFts extends Component
             $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
             $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
             $this->ballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
+            $addOneField = true;
         }else{
             $this->showSaveBtn = false;
             $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
             $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
             $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
+            $addOneField = false;
+        }
+        
+        if($addOneField == true){
+            $this->dispatchBrowserEvent('searchSucceed', ['idFocus' => $indexKey]);
+            $this->addBallot();
+            
         }
     }
     
@@ -92,7 +100,6 @@ class DeliveryFts extends Component
                 $ballotList = Delivery::where(function ($query) { $query->where('BALLOT_ID', 'like', '%F_%'); })->where(function ($query) {$query->where('BALLOT_ID', $this->search)->orWhere('DR_NO', $this->search); })->paginate(5);
                 $ballotListCount =  Delivery::where(function ($query) { $query->where('BALLOT_ID', 'like', '%F_%'); })->where(function ($query) { $query->where('BALLOT_ID', $this->search)->orWhere('DR_NO', $this->search); })->count();
                 $ballotListCountTitle = 'Search Result Found:';   
-                
             }
             
             if ($this->search_dr_fts == ''){
@@ -106,13 +113,13 @@ class DeliveryFts extends Component
                 $dailyftslist = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->paginate(5);
                 $dailyftslistresult = '';
             }else{
-            $dailyftslist = DB::table('deliveries')->where('BALLOT_ID','<>','')
-            ->Where('BALLOT_ID', 'like', '%F_%')
-            ->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->datefrom.' 00:00:00', $this->dateto.' 23:59:59'))->paginate(5);
-            $dailyftslistresult = 'Search Result Found: '.DB::table('deliveries')  ->where('BALLOT_ID','!=','')
-            ->Where('BALLOT_ID', 'like', '%F_%')
-            ->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->datefrom.' 00:00:00', $this->dateto.' 23:59:59'))->count();
-           
+                $dailyftslist = DB::table('deliveries')->where('BALLOT_ID','<>','')
+                ->Where('BALLOT_ID', 'like', '%F_%')
+                ->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->datefrom.' 00:00:00', $this->dateto.' 23:59:59'))->paginate(5);
+                $dailyftslistresult = 'Search Result Found: '.DB::table('deliveries')  ->where('BALLOT_ID','!=','')
+                ->Where('BALLOT_ID', 'like', '%F_%')
+                ->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->datefrom.' 00:00:00', $this->dateto.' 23:59:59'))->count();
+                
             }
             return view('livewire.j-livewire.delivery.delivery-fts',compact('ballotList','ballotListCount','ballotListCountTitle','drftslist','drftslistresult','dailyftslist','dailyftslistresult'));
             
@@ -120,16 +127,5 @@ class DeliveryFts extends Component
         function storefts(){
             $this->save();
         }
-
-    
-    
-    
-    
-    
-    
-    
-    
-        
-        
-      
     }
+    

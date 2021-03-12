@@ -22,8 +22,8 @@
             @foreach ($ballotlists as $index => $ballotlist)
             <tr>
                 <td>
-                    <input type="text" name="ballotlists[{{$index}}][ballot_id]" class="form-control" wire:model="ballotlists.{{$index}}.ballot_id" 
-                    wire:keyup="searchBallotId($event.target.value, {{ $index }})"/>
+                    <input type="text" id="focusBallot{{$index}}" name="ballotlists[{{$index}}][ballot_id]" class="form-control" wire:model="ballotlists.{{$index}}.ballot_id" 
+                    wire:keyup="searchBallotId($event.target.value, {{ $index }})" />
                 </td>
                 <td>
                     <input type="text" name="ballotlists[{{$index}}][clustered_precint]" class="form-control" wire:model="ballotlists.{{$index}}.clustered_precint" readonly/>
@@ -48,4 +48,15 @@
         <div class="col-md-2">
             <button  wire:click.prevent="storefts" class="btn btn-primary"><i class="material-icons">save</i> Save </button>
         </div>
+        <input type="text" id="First">
+        <script>
+            window.addEventListener('searchSucceed', event => {
+              
+                $("focusBallot" + event.detail.idFocus).focus();
+            })
+            windows.onload = function({
+                $("focusBallot0").focus();
+            });
+        </script>
+        
     </div>

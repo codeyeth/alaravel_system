@@ -208,6 +208,7 @@ class BarcodeFunction extends Component
             
             //Export Date Range Ballot History
             public function exportDateBallot(){
+                // dd($this->dateFrom);
                 if($this->dateFrom != null &&  $this->dateTo != null){
                     $export = new ExportExcelBallotDate($this->dateFrom, $this->dateTo);
                     return Excel::download($export, 'date_ballot_history.xlsx');

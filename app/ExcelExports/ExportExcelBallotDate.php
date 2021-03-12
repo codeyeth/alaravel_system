@@ -10,6 +10,7 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 // use Maatwebsite\Excel\Concerns\WithStyles;
 use Carbon\Carbon;
+use DB;
 
 class ExportExcelBallotDate implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
 {
@@ -26,7 +27,9 @@ class ExportExcelBallotDate implements FromQuery, WithHeadings, WithMapping, Sho
     {
         $dateFrom = $this->dateFrom;
         $dateTo = $this->dateTo;
-        $date_history = BallotHistory::query()->where('status_by_at_date', '>=', $dateFrom)->where('status_by_at_date', '<=', $dateTo);
+        // $date_history = BallotHistory::query()->where('status_by_at_date', '>=', $dateFrom)->where('status_by_at_date', '<=', $dateTo);
+        $date_history = BallotHistory::query()->whereRaw('created_at >= ? AND created_at <= ?', array($dateFrom, $dateTo))->orderBy('id', 'ASC');
+        
         return $date_history;
     }
     
