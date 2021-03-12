@@ -43,7 +43,9 @@ class DeliveryFts extends Component
     }
     
     public function searchBallotId($ballotId, $indexKey){
-        $searchResult = Ballots::where('ballot_id', $ballotId)->first();
+        $searchResult = Ballots::where('ballot_id', $ballotId)
+        ->Where('ballot_id', 'like', '%F_%')
+        ->first();
         
         if($searchResult != null){
             $this->showSaveBtn = true;
@@ -60,7 +62,9 @@ class DeliveryFts extends Component
     
     public function save(){
         foreach ($this->ballotlists as $ballotlist){
-            $searchResult = Ballots::where('ballot_id', $ballotlist['ballot_id'])->first();
+            $searchResult = Ballots::where('ballot_id', $ballotlist['ballot_id'])
+            ->Where('ballot_id', 'like', '%F_%')
+            ->first();
             Delivery::create([
                 'BALLOT_ID' => $ballotlist['ballot_id'],
                 'CLUSTERED_PREC' => $ballotlist['clustered_precint'],

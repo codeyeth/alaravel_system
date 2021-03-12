@@ -1,24 +1,22 @@
-
-
-
  {{ Form::open(['route' => 'extract', 'method' => 'GET', 'autocomplete'=>'off'])}}
                 <div class="card card-small">
                   <div class="card-header border-bottom">
-                    <h6 class="m-0">Generate Batch Report for OB</h6>
+                    <h6 class="m-0">Generate Batch Report for OB<label style="float:right;"> {{$dailyoblistresult}} </label></h6>
                   </div>
                   <div class="card-body pt-0">
                     <div class="row border-bottom py-2 bg-light">
 
                     <div class="col-12 col-sm-4">
-                    <input type="datetime-local" name="datefrom" wire:model="datefrom" id="dfrom" class="input-sm form-control"placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
+                    <input type="datetime-local" name="datefrombatch" wire:model="datefrom" id="dfrom" class="input-sm form-control"placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
                       </div>
                       <div class="col-12 col-sm-4">
-                    <input type="datetime-local" name="dateto" id="dto" wire:model="dateto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
+                    <input type="datetime-local" name="datetobatch" id="dto" wire:model="dateto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
                       </div>
 
                       <div class="col-12 col-sm-4">
                       <select name="issued_to" id="issued_to" class="form-control">
                       <option selected>Copies</option>
+                      <option>ALL</option>
                       <option>COMELEC_INSPECTORATE</option>
                       <option>COMELEC_BPG1</option>
                       <option>COMELEC_BPG2</option>

@@ -1,7 +1,7 @@
 
 
 
- {{ Form::open(['route' => 'look', 'method' => 'GET', 'autocomplete'=>'off'])}}
+ {{ Form::open(['route' => 'pull', 'method' => 'GET', 'autocomplete'=>'off'])}}
                 <div class="card card-small">
                   <div class="card-header border-bottom">
                     <h6 class="m-0">Generate Batch Report for FTS  <label style="float:right;"> {{$dailyftslistresult}} </label></h6>
@@ -10,10 +10,10 @@
                     <div class="row border-bottom py-2 bg-light">
 
                     <div class="col-12 col-sm-4">
-                    <input type="datetime-local" name="datefrom" id="dfrom" wire:model="datefrom" class="input-sm form-control"placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
+                    <input type="datetime-local" name="datefrombatch" id="dfrom" wire:model="datefrom" class="input-sm form-control"placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
                       </div>
                       <div class="col-12 col-sm-4">
-                    <input type="datetime-local" name="dateto" id="dto"  wire:model="dateto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
+                    <input type="datetime-local" name="datetobatch" id="dto"  wire:model="dateto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
                       </div>
 
                       <div class="col-12 col-sm-4">

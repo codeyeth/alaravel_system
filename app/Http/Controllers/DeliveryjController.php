@@ -135,8 +135,8 @@ class DeliveryjController extends Controller
      public function savepdfobdaily()
      {
      $imagepath = public_path();
-      $from = request()->get('datefrom');
-      $to = request()->get('dateto');
+      $from = request()->get('datefromdaily');
+      $to = request()->get('datetodaily');
       $issued_to = request()->get('issued_to');
       $issued_by = request()->get('issued_by');
 
@@ -150,6 +150,19 @@ class DeliveryjController extends Controller
       
          $view = \View::make('j-views.delivery.ob_daily_pdf',compact('deliveries','imagepath','total_row','total_sum'));
          $html_content = $view->render();
+         
+
+                // Custom Footer
+        PDF::setFooterCallback(function($pdf) {
+
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+
+        });
          PDF::SetTitle("List of users");
          PDF::AddPage();
          PDF::writeHTML($html_content, true, false, true, false, '');
@@ -161,8 +174,8 @@ class DeliveryjController extends Controller
      public function savepdfobbatch()
      {
         $imagepath = public_path();
-        $from = request()->get('datefrom');
-        $to = request()->get('dateto');
+        $from = request()->get('datefrombatch');
+        $to = request()->get('datetobatch');
         $issued_to = request()->get('issued_to');
         $issued_by = request()->get('issued_by');
         $delivered_to = request()->get('delivered_to');
@@ -178,6 +191,19 @@ class DeliveryjController extends Controller
 
          $view = \View::make('j-views.delivery.ob_batch_pdf',compact('deliveries','imagepath','total_row','total_sum'));
          $html_content = $view->render();
+
+                    // Custom Footer
+        PDF::setFooterCallback(function($pdf) {
+
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+
+        });
+
          PDF::SetTitle("List of users");
          PDF::AddPage();
          PDF::writeHTML($html_content, true, false, true, false, '');
@@ -211,9 +237,10 @@ class DeliveryjController extends Controller
 
      public function savepdfftsdaily()
      {
+         for ($i = 0; $i < 5; $i++) {
         $imagepath = public_path();
-        $from = request()->get('datefrom');
-        $to = request()->get('dateto');
+        $from = request()->get('datefromdaily');
+        $to = request()->get('datetodaily');
         $issued_to = request()->get('issued_to');
         $issued_by = request()->get('issued_by');
 
@@ -227,21 +254,40 @@ class DeliveryjController extends Controller
 
          $view = \View::make('j-views.delivery.fts_daily_pdf',compact('deliveries','imagepath','total_row','total_sum'));
          $html_content = $view->render();
+         PDF::setFooterCallback(function($pdf) {
+
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+
+        });
+
          PDF::SetTitle("List of users");
          PDF::AddPage();
          PDF::writeHTML($html_content, true, false, true, false, '');
          // D is the change of these two functions. Including D parameter will avoid 
          // loading PDF in browser and allows downloading directly
-         PDF::Output('daily_fts.pdf', 'D');    
+
+         
+       $windows_user = "/".getenv("username");
+        PDF::Output('C:\Users'.$windows_user.'\Downloads\daily_fts' . $i .'.pdf', 'F');  
+         //PDF::reset();
+        //PDF::Output('dr_ob'. $i .'.pdf' , 'S');  
+        PDF::reset(); 
      }
+     
+    }
 
      public function savepdfftsbatch()
      {
          $imagepath = public_path();
-         $from = Input::get('datefrom');
-         $to = Input::get('dateto');
-         $issued_to = Input::get('issued_to');
-         $issued_by = Input::get('issued_by');
+         $from = request()->get('datefrombatch');
+         $to = request()->get('datetobatch');
+         $issued_to = request()->get('issued_to');
+         $issued_by = request()->get('issued_by');
       
          $deliveries = DB::table('deliveries')
          ->where('BALLOT_ID','<>','')
@@ -254,6 +300,17 @@ class DeliveryjController extends Controller
          $users = User::orderBy('id','asc')->get();
          $view = \View::make('j-views.delivery.fts_batch_pdf',compact('deliveries','imagepath','total_row','total_sum'));
          $html_content = $view->render();
+         PDF::setFooterCallback(function($pdf) {
+
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+
+        });
+
          PDF::SetTitle("List of users");
          PDF::AddPage();
          PDF::writeHTML($html_content, true, false, true, false, '');

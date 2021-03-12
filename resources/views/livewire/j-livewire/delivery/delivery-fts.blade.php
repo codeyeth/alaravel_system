@@ -14,18 +14,18 @@
                     <a class="nav-link active"  >FTS</a>
                 </li>
             </ul>
-            <ul class="nav nav-tabs" x-data="{ open: false }"  role="tablist">
+            <ul class="nav nav-tabs"   role="tablist">
                 <li class="nav-item">
-                    <a @click.prevent="$dispatch('dropdown-select', { element: 'one' })" class="nav-link" href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Create DR</a>
+                    <a class="nav-link" href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Create DR</a>
                 </li>
                 <li class="nav-item">
-                    <a @click.prevent="$dispatch('dropdown-select', { element: 'two' })" class="nav-link" href="#hats" role="tab" id="hats-tab" data-toggle="tab" aria-controls="hats">DR Number Report </a>
+                    <a  class="nav-link" href="#hats" role="tab" id="hats-tab" data-toggle="tab" aria-controls="hats">DR Number Report </a>
                 </li>
                 <li class="nav-item">
-                    <a @click.prevent="$dispatch('dropdown-select', { element: 'three' })" class="nav-link" href="#hats" role="tab" id="hats-tab" data-toggle="tab" aria-controls="hats">Daily DR Report </a>
+                    <a class="nav-link" href="#hats" role="tab" id="hats-tab" data-toggle="tab" aria-controls="hats">Daily DR Report </a>
                 </li>
                 <li class="nav-item">
-                    <a @click.prevent="$dispatch('dropdown-select', { element: 'four' })" class="nav-link" href="#hats" role="tab" id="hats-tab" data-toggle="tab" aria-controls="hats">Batch DR Report </a>
+                    <a  class="nav-link" href="#hats" role="tab" id="hats-tab" data-toggle="tab" aria-controls="hats">Batch DR Report </a>
                 </li>
             </ul>
         </form>
@@ -35,21 +35,21 @@
         <div class="col-lg-12 col-md-12">
             <div class="card card-small mb-3"><!-- Add New Post Form -->
                 <div>
-                <div x-data="{ selected: '' }" @dropdown-select.window="selected = $event.detail.element">
-                        <div x-show="selected === ''">
+                <div >
+                        <div >
                         @include('livewire.j-livewire.delivery.delivery-fts-home')
                             </div> 
-                            <div x-show="selected === 'one'">
+                            <div>
                             @include('livewire.j-livewire.delivery.delivery-create-fts')
                             </div>
                          </div>
-                        <div x-show="selected === 'two'">
+                        <div >
                         @include('livewire.j-livewire.delivery.delivery-fts-dr-report')
                         </div>
-                        <div x-show="selected === 'three'">
+                        <div >
                         @include('livewire.j-livewire.delivery.delivery-fts-daily-report')
                         </div>
-                        <div x-show="selected === 'four'">
+                        <div>
                         @include('livewire.j-livewire.delivery.delivery-fts-batch-report')
                         </div>
           

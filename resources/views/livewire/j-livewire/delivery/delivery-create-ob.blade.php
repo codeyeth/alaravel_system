@@ -13,32 +13,32 @@
                                     <tr>
                                         <th>Ballot ID</th>
                                         <th>Clustered Precint</th>
-                                        <th>City / Municipality / Province</th>
+                                        <th>Province / Municipality / Province</th>
                                         <th>Quanitity</th>
                                         <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                 @foreach ($ballotlists as $index => $ballotlist)
-                                    <tr>
-                                        <td>
-                                            <input type="text" name="ballotlists[{{$index}}][ballot_id]" class="form-control" wire:model="ballotlists.{{$index}}.ballot_id" wire:keyup="searchBallotId" />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="ballotlists[{{$index}}][clustered_precint]" class="form-control" wire:model="ballotlists.{{$index}}.clustered_precint"   />
-                                           
-                                        </td>
-                                        <td>
-                                            <input type="text" name="ballotlists[{{$index}}][city_mun_prov]" class="form-control" wire:model="ballotlists.{{$index}}.city_mun_prov" />
-                                        </td>
-                                        <td>
-                                            <input type="text" name="ballotlists[{{$index}}][quantity]" class="form-control" wire:model="ballotlists.{{$index}}.quantity" />
-                                        </td>
-                                        <td>
-                                            <a href="#" wire:click.prevent="removeBallot({{$index}})">Remove</a>
-                                        </td>
-                                    </tr>
-                                @endforeach
+            <tr>
+                <td>
+                    <input type="text" name="ballotlists[{{$index}}][ballot_id]" class="form-control" wire:model="ballotlists.{{$index}}.ballot_id" 
+                    wire:keyup="searchBallotId($event.target.value, {{ $index }})"/>
+                </td>
+                <td>
+                    <input type="text" name="ballotlists[{{$index}}][clustered_precint]" class="form-control" wire:model="ballotlists.{{$index}}.clustered_precint" readonly/>
+                </td>
+                <td>
+                    <input type="text" name="ballotlists[{{$index}}][city_mun_prov]" class="form-control" wire:model="ballotlists.{{$index}}.city_mun_prov" readonly/>
+                </td>
+                <td>
+                    <input type="text" name="ballotlists[{{$index}}][quantity]" class="form-control" wire:model="ballotlists.{{$index}}.quantity" readonly/>
+                </td>
+                <td>
+                    <a href="#" wire:click.prevent="removeBallot({{$index}})" class="text-danger">Remove</a>
+                </td>
+            </tr>
+            @endforeach
                                 </tbody>
                             </table>
                             <div class="row">

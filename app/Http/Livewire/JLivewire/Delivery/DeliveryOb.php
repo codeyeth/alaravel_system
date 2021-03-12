@@ -4,6 +4,7 @@ namespace App\Http\Livewire\JLivewire\Delivery;
 
 use Livewire\Component;
 use App\Models\Delivery;
+use App\Models\Ballots;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 
@@ -14,14 +15,13 @@ class DeliveryOb extends Component
     
     public $ballotlists = [];
     public $search = '';
+    public $loopCount;
+    public $saveCount;
+    public $searchBallotsResultMessage;
     public $search_dr_ob = '';
-    
-    public $selectedDate = null;
-    protected $dailylists = [];
     public $datefrom ='';
     public $dateto = '';
-    public $sample;
-  
+    public $showSaveBtn = false;
     
     
     
@@ -29,13 +29,16 @@ class DeliveryOb extends Component
     
     public function addBallot()
     {
+        $this->loopCount++;
         $this->ballotlists[] =  ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => ''];
     }
     public function removeBallot($index)
     {
         unset($this->ballotlists[$index]);
         $this->ballotlists = array_values($this->ballotlists);
+        $this->loopCount--;
     }
+
     public function mount()
     {
         
@@ -47,34 +50,48 @@ class DeliveryOb extends Component
         ];
     }
     
-    public function modalUserDetail($userID){
-        $modalUser = Delivery::find($userID);   
-        $this->name = $modalUser->BALLOT_ID;
+
+    public function searchBallotId($ballotId, $indexKey){
+        $searchResult = Ballots::where('ballot_id', $ballotId)
+        ->Where('ballot_id', 'not like', '%F_%')
+        ->first();
         
+        if($searchResult != null){
+            $this->showSaveBtn = true;
+            $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
+            $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
+            $this->ballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
+        }else{
+            $this->showSaveBtn = false;
+            $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
+            $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
+            $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
+        }
     }
     
     
     
-    private function save(){
+    public function save(){
         foreach ($this->ballotlists as $ballotlist){
+            $searchResult = Ballots::where('ballot_id', $ballotlist['ballot_id'])
+            ->Where('ballot_id', 'not like', '%F_%')
+            ->first();
             Delivery::create([
                 'BALLOT_ID' => $ballotlist['ballot_id'],
                 'CLUSTERED_PREC' => $ballotlist['clustered_precint'],
-                'REGION' => $ballotlist['city_mun_prov'],
+                'PROV_NAME' => $searchResult->prov_name,
+                'MUN_NAME' => $searchResult->mun_name,
+                'BGY_NAME' => $searchResult->bgy_name,
                 'CLUSTER_TOTAL' => $ballotlist['quantity']
                 ]);
+                session()->flash('message', 'DR Number Created!');
             }
+            
             $this->ballotlists = [
                 ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '']
             ];
-            
-            session()->flash('message', 'DR Number Created!.');
         }
-        
-        public function retrieve(){
-            
-        }
-        
+       
  
         
         
