@@ -68,8 +68,13 @@
                     <div class="row border-bottom py-2 bg-light">
                         <div class="col-12 col-sm-5">
                             <div id="" class="input-daterange input-group my-auto ml-auto mr-auto ml-sm-auto mr-sm-0" >
-                                <input type="text" class="form-control" id="dateFrom" name="dateFrom" placeholder="Date From" wire:model="dateFrom" onchange="this.dispatchEvent(new InputEvent('input'))" required/>
-                                <input type="text" class="form-control" id="dateTo" name="dateTo" placeholder="Date To" wire:model="dateTo" onchange="this.dispatchEvent(new InputEvent('input'))" required/>
+                                {{-- <input type="text" class="form-control" id="dateFrom" name="dateFrom" placeholder="Date From" wire:model="dateFrom" onchange="this.dispatchEvent(new InputEvent('input'))" required/> --}}
+                                
+                                <input type="datetime-local" name="dfrom" id="dfrom"  wire:model="dateFrom" class="input-sm form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
+                                
+                                {{-- <input type="text" class="form-control" id="dateTo" name="dateTo" placeholder="Date To" wire:model="dateTo" onchange="this.dispatchEvent(new InputEvent('input'))" required/> --}}
+                                <input type="datetime-local" wire:model="dateTo" name="dto" id="dto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
+                                
                                 &ThickSpace;
                                 <button type="button" class="btn btn-primary ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0" wire:click="exportDateBallot">Generate base on Date</button>
                             </div>

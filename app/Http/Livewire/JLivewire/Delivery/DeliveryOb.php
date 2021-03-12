@@ -21,11 +21,6 @@ class DeliveryOb extends Component
     public $datefrom ='';
     public $dateto = '';
     public $sample;
-  
-    
-    
-    
-    
     
     public function addBallot()
     {
@@ -74,11 +69,7 @@ class DeliveryOb extends Component
         public function retrieve(){
             
         }
-        
- 
-        
-        
-        
+               
         public function render()
         {
     
