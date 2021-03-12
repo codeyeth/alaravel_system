@@ -4,10 +4,13 @@
     {{ session('message') }}
 </div>
 @endif
+
+
 <div class="card-header">
     You are now in DR Entry for <b><i>FTS </b></i>
 </div>
-<div class="card-body">
+
+
     <table class="table" id="ballots_table">
         <thead>
             <tr>
@@ -48,7 +51,8 @@
         <div class="col-md-2">
             <button  wire:click.prevent="storefts" class="btn btn-primary"><i class="material-icons">save</i> Save </button>
         </div>
-        <input type="text" id="First">
+        
+ 
         <script>
             window.addEventListener('searchSucceed', event => {
               

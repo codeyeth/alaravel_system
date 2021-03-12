@@ -1,22 +1,23 @@
 
-
- {{ Form::open(['route' => 'retrieve', 'method' => 'GET', 'autocomplete'=>'off'])}}
-
-                <div class="card card-small">
-                  <div class="card-header border-bottom">
+{{ Form::open(['route' => 'retrieve', 'method' => 'GET', 'autocomplete'=>'off'])}}
+<div class="card-header border-bottom">
                     <h6 class="m-0">Generate Daily Report for OB <label style="float:right;"> {{$dailyoblistresult}} </label></h6> 
                   </div>
-                  <div class="card-body pt-0">
-                    <div class="row border-bottom py-2 bg-light">
 
-                    <div class="col-12 col-sm-6">
+<div class="row border-bottom py-2 bg-light">
+
+
+
+<div class="col-12 col-sm-6">
                     <input type="datetime-local" name="datefromdaily" id="dfrom"  wire:model="datefrom" class="input-sm form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
                       </div>
+
+
                       <div class="col-12 col-sm-6">
                     <input type="datetime-local" wire:model="dateto" name="datetodaily" id="dto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
                       </div>
-
-                      <div class="col-12 col-sm-3">
+                      
+<div class="col-12 col-sm-3">
                       <select name="issued_to" id="issued_to" class="form-control">
                       <option selected>Copies</option>
                       <option>COMELEC_INSPECTORATE</option>
@@ -37,13 +38,16 @@
                         {{ Form::submit('Generate PDF &rarr;',['class'=>'btn btn-sm btn-white ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0']) }}
                       {{ Form::close() }}
                       </div>
-                    </div>
+                      </div>
                    
 
 
-                   
-                  </div>
-                  <ul class="list-group list-group-flush">
+
+
+
+
+
+<ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
                     @if (count($dailyoblist) > 0)
                         <table class="table table-hover mb-0">
@@ -77,15 +81,14 @@
                         <p style="text-align: center">No users found.</p>    
                         @endif
                     </li>
+                    </ul>
                     <div class="text-center"> 
               
              
-        {{ $dailyoblist->links() }}
-  
-    </div>
-                </ul>
-                </div>
-              
+              {{ $dailyoblist->links() }}
+        
+          </div>
+                  
 
 
 
@@ -102,4 +105,14 @@
 
 
 
-    
+
+
+
+
+
+
+
+
+
+
+

@@ -1,39 +1,48 @@
+{{ Form::open(['route' => 'pull', 'method' => 'GET', 'autocomplete'=>'off'])}}
+<div class="card-header border-bottom">
+  <h6 class="m-0">Generate Batch Report for FTS  <label style="float:right;"> {{$dailyftslistresult}} </label></h6>
+</div>
+<div class="row border-bottom py-2 bg-light">
+  <div class="col-12 col-sm-4">
+    <input type="datetime-local" name="datefrombatch" id="dfrom" wire:model="datefrom" class="input-sm form-control"placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
+  </div>
+  <div class="col-12 col-sm-4">
+    <input type="datetime-local" name="datetobatch" id="dto"  wire:model="dateto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
+  </div>
+  <div class="col-12 col-sm-4">
+    <select name="issued_to" id="issued_to" class="form-control">
+      <option selected>Copies</option>
+      <option>COMELEC_INSPECTORATE</option>
+      <option>COMELEC_BPG1</option>
+      <option>COMELEC_BPG2</option>
+      <option>COA_COMELEC</option>
+      <option>COMELEC_DELIVERY</option>
+      <option>NPO_DELIVERY1</option>
+      <option>NPO_DELIVERY2</option>
+      <option>NPO_MONITORING</option>
+    </select>
+  </div>
 
-
-
- {{ Form::open(['route' => 'pull', 'method' => 'GET', 'autocomplete'=>'off'])}}
-                <div class="card card-small">
-                  <div class="card-header border-bottom">
-                    <h6 class="m-0">Generate Batch Report for FTS  <label style="float:right;"> {{$dailyftslistresult}} </label></h6>
-                  </div>
-                  <div class="card-body pt-0">
-                    <div class="row border-bottom py-2 bg-light">
-
-                    <div class="col-12 col-sm-4">
-                    <input type="datetime-local" name="datefrombatch" id="dfrom" wire:model="datefrom" class="input-sm form-control"placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
-                      </div>
-                      <div class="col-12 col-sm-4">
-                    <input type="datetime-local" name="datetobatch" id="dto"  wire:model="dateto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
-                      </div>
-
-                      <div class="col-12 col-sm-4">
-                      <select name="issued_to" id="issued_to" class="form-control">
-                      <option selected>Copies</option>
-                      <option>COMELEC_INSPECTORATE</option>
-                      <option>COMELEC_BPG1</option>
-                      <option>COMELEC_BPG2</option>
-                      <option>COA_COMELEC</option>
-                      <option>COMELEC_DELIVERY</option>
-                      <option>NPO_DELIVERY1</option>
-                      <option>NPO_DELIVERY2</option>
-                      <option>NPO_MONITORING</option>
-                                </select>
-                      </div>
-
-
-                      <div class="col-12 col-sm-4">
+     <div class="col-12 col-sm-4">
                       <input type="text" class="input-sm form-control"  name="issued_by" id="issued_by" laceholder="Issued By">
                       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
                       <div class="col-12 col-sm-4">
                       <select name="delivered_to" id="delivered_to" class="form-control">
@@ -50,11 +59,20 @@
                       {{ Form::close() }}
                       </div>
                     </div>
+
+
+
+
+
+
+
+
+
                    
 
 
                    
-                  </div>
+          
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
                     @if (count($dailyftslist) > 0)
@@ -87,10 +105,9 @@
                         <p style="text-align: center">No users found.</p>    
                         @endif
                     </li>
-                    <div class="text-center"> 
-     
-     </div>
-                </ul>
+                    </ul>
+                  
+                
                 
                 <div class="text-center"> 
                 {{ $dailyftslist->links() }}

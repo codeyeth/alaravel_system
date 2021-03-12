@@ -1,22 +1,17 @@
 
-
-
-@if (session()->has('message'))
-<div class="alert alert-success">
-{{ session('message') }}
-</div>
-@endif
  {{ Form::open(['route' => 'look', 'method' => 'GET', 'autocomplete'=>'off'])}}
-                <div class="card card-small">
+              
                   <div class="card-header border-bottom">
                     <h6 class="m-0">Generate Daily Report for FTS <label style="float:right;"> {{$dailyftslistresult}} </label></h6>
                   </div>
-                  <div class="card-body pt-0">
+
                     <div class="row border-bottom py-2 bg-light">
 
                     <div class="col-12 col-sm-2">
                     <input type="datetime-local" name="datefromdaily" id="dfrom" wire:model="datefrom" class="input-sm form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>">
                       </div>
+
+
                       <div class="col-12 col-sm-2">
                       <input type="datetime-local" name="datetodaily" id="dto" wire:model="dateto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
                       </div>
@@ -47,8 +42,7 @@
                    
 
 
-                   
-                  </div>
+        
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
                     @if (count($dailyftslist) > 0)
@@ -81,11 +75,8 @@
                         <p style="text-align: center">No users found.</p>    
                         @endif
                     </li>
-                    <div class="text-center"> 
-     
-     </div>
-                </ul>
-                </div>
+                    </ul>
+           
                 <div class="text-center"> 
                 {{ $dailyftslist->links() }}
     </div>

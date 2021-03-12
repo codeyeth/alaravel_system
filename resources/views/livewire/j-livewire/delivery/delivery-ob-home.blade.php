@@ -1,26 +1,28 @@
-<div class="stats-small stats-small--1 card card-small">
-    <div class="card-body p-0 d-flex">
-      <div class="d-flex flex-column m-auto">
-        <div class="stats-small__data text-center">
-          <span class="stats-small__label text-uppercase">Total Offical Ballots in Delivery</span>
-          <h6 class="stats-small__value count my-3">2,390</h6>
+
+  <div class="stats-small stats-small--1 card card-small">
+  <div class="card-body p-0 d-flex">
+  <div class="d-flex flex-column m-auto">
+  <div class="stats-small__data text-center">
+          <span class="stats-small__label text-uppercase">{{$ballotListCountTitle}}</span>
+          <h6 class="stats-small__value count my-3">{{$ballotListCount}}</h6>
         </div>
         <div class="stats-small__data">
          <!--if you want to add percentage od increase
               <span class="stats-small__percentage stats-small__percentage--increase">4.7%</span>
           -->
         </div>
-      </div>
-      <canvas height="120" class="blog-overview-stats-small-1"></canvas>
-    </div>
-  </div>
- 
-                    <div class="row border-bottom py-2 mb-0 bg-light">
+        </div>
+        <canvas height="120" class="blog-overview-stats-small-1"></canvas>
+        </div>
+        </div>
+
+
+  <div class="row border-bottom py-2 mb-0 bg-light">
                         <div class="col-12 col-sm-12">
                             <input class="form-control form-control-lg mb-0" type="text" placeholder="Search by Ballot ID or DR No." wire:model="search">
                         </div>
                     </div>
-                   <ul class="list-group list-group-flush">
+  <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
                     @if (count($ballotList) > 0)
                         <table class="table table-hover mb-0">
