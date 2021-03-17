@@ -27,7 +27,7 @@ Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::get('/user_mgt', [App\Http\Controllers\RrUserManagementController::class, 'index']);
 Route::get('/ballot_tracking', [App\Http\Controllers\RrBallotTrackingController::class, 'index']);
-
+Route::get('/composing_system', [App\Http\Controllers\RrComposingSystemController::class, 'index']);
 
 
 Route::resource('add_user', 'RrUserManagementController');

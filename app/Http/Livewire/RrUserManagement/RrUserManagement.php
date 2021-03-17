@@ -19,6 +19,11 @@ class RrUserManagement extends Component
     public $comelecRolesList = [];
     public $selectedDivision = null;
     public $selected = null;
+    public $userRole = "";
+
+    public $isBallot = false;
+    public $isDr = false;
+
     
     protected $rules = [
         'fname' => 'required|max:15|regex:/^[\pL\s\-]+$/u',
@@ -47,6 +52,10 @@ class RrUserManagement extends Component
     
     public function spitMatchedSection($selectedDivision){
         $this->sectionsList = Section::where('division_id', $selectedDivision)->get();
+    }
+
+    public function checkAlsoBallot(){
+        $this->isBallot = true;
     }
     
     public function mount(){

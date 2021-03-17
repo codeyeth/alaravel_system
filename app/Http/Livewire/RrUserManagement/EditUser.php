@@ -77,7 +77,7 @@ class EditUser extends Component
         // dd($this->post->barcoded_receiver);
         
         $this->selectedSection = Section::where('division_id', $this->selectedDivision)->where('section', $this->post->section)->value('id');
-        $this->userRole = $this->post->user_role;
+        $this->userRole = $this->post->is_admin;
         $this->is_user_mgt = $this->post->is_user_mgt;
         $this->is_ballot_tracking = $this->post->is_ballot_tracking;
         $this->is_dr = $this->post->is_dr;
