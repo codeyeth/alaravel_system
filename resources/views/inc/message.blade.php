@@ -5,7 +5,7 @@
     </button>
     <i class="fa fa-info mx-2"></i>
     {{-- <strong>STATIC NOTIFICATION!</strong> --}}
-    <strong style="font-size: 150%">  {!! Str::upper(session('success')) !!} </strong> |  {{ \Carbon\Carbon::parse(session('now'))->toDayDateTimeString() }}
+    <strong style="font-size: 150%">  {!! Str::upper(session('success')) !!} </strong> {{ \Carbon\Carbon::parse(session('now'))->toDayDateTimeString() }}
 </div>
 @endif
 
