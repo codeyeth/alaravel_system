@@ -31,8 +31,9 @@ class CreateOgSoftcopiesTable extends Migration
             
             $table->string('encoded_by_id')->nullable();
             $table->string('encoded_by_name')->nullable();
-
+            
             $table->string('publication_type');
+            $table->string('publication_sub_type');
             $table->string('date_published');
             $table->string('file_id');
             $table->boolean('is_downloadable')->nullable()->default(false);

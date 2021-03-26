@@ -28,6 +28,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/user_mgt', [App\Http\Controllers\RrUserManagementController::class, 'index']);
 Route::get('/ballot_tracking', [App\Http\Controllers\RrBallotTrackingController::class, 'index']);
 Route::get('/composing_system', [App\Http\Controllers\RrComposingSystemController::class, 'index']);
+Route::get('/search_engine_composing', [App\Http\Controllers\RrComposingSearchEngineController::class, 'search_engine']);
 
 
 Route::resource('add_user', 'RrUserManagementController');

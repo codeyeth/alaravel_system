@@ -17,12 +17,12 @@ class User extends Authenticatable
     * @var array
     */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'is_search_mode',
-        'is_verification_type_bad',
-        'is_ballot_in',
+        'user_id', 'fname', 'mname', 'lname', 
+        'name', 'email', 'position', 
+        'division', 'section', 'is_user_mgt', 
+        'is_ballot_tracking', 'is_dr',
+        'is_gazette', 'is_motorpool', 'comelec_role', 'barcoded_receiver', 'created_by_id', 'created_by_name',
+        'last_updated_by_id', 'last_updated_by_name', 'password', 'password_string', 'is_pw_changed', 'is_admin',
     ];
     
     /**
