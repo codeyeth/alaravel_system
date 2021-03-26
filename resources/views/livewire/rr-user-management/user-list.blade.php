@@ -7,8 +7,19 @@
                 </div>
                 <div class="card-body pt-0 pb-3 text-center">
                     <div class="row border-bottom py-2 mb-0 bg-light">
-                        <div class="col-12 col-sm-12">
+                        {{-- <div class="col-12 col-sm-10">
                             <input class="form-control form-control-lg mb-0" type="text" placeholder="Search by ID, Name, User Role, Position, Division, Section" wire:model="search">
+                        </div>
+                        <div class="col-12 col-sm-2">
+                            <button type="button" class="btn btn-success btn-block">Export All Users</button>
+                        </div> --}}
+                        <div class="col-12 col-sm-12">
+                            <div class="input-group mb-3">
+                                <input class="form-control form-control-lg mb-0" type="text" placeholder="Search by ID, Name, User Role, Position, Division, Section" wire:model="search">
+                                <div class="input-group-append">
+                                    <button class="btn btn-success" type="button" wire:click="exportAllUser">Export All Users</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -23,6 +34,7 @@
                                     <th scope="col" class="border-0">Full Name</th>
                                     <th scope="col" class="border-0">Division - Section</th>
                                     <th scope="col" class="border-0">Position</th>
+                                    <th scope="col" class="border-0">Added at</th>
                                     <th scope="col" class="border-0"></th>
                                     <th scope="col" class="border-0"></th>
                                     <th scope="col" class="border-0"></th>
@@ -35,6 +47,7 @@
                                     <td>{{ $item->name }}</td>
                                     <td><small> {{ Str::upper($item->division) }} - {{ Str::upper($item->section) }}</small> </td>
                                     <td>{{ Str::upper($item->position) }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($item->created_at)->toDayDateTimeString() }} </td>
                                     <td><button type="button" class="btn btn-accent" data-toggle="modal" data-target="#modalUserDetail" wire:click.preventDefault="modalUserDetail({{ $item->id }})"> <i class="material-icons">search</i> View</button></td>
                                     <td>
                                         <a href="{{ asset ('/add_user')}}/{{$item->id}}/edit" class="btn btn-accent btn-flat"> <i class="material-icons">mode_edit</i> Edit </a>
@@ -64,7 +77,7 @@
         {{ $userList->links() }}
     </div>
     
-    <div class="modal fade" id="modalUserDetail" tabindex="-1" role="dialog" aria-labelledby="modalUserDetail" aria-hidden="true">
+    <div class="modal fade" id="modalUserDetail" tabindex="-1" role="dialog" aria-labelledby="modalUserDetail" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -87,7 +100,7 @@
                             </div>
                             <p class="m-0 my-1 mb-2 text-muted"></p>
                             <div class="blog-comments__actions">
-                                <small><b>Accessible Modules</b></small>
+                                <small><b>Accessible Modules</b></small> | {{ $is_admin == true ? 'Administrator' : 'User'}}
                                 <div class="mb-1">
                                     <span class="{{ $is_user_mgt == true ? 'text-success' : 'text-danger'}}">
                                         <i class="material-icons">{{ $is_user_mgt == true ? 'check' : 'clear'}}</i>
@@ -118,9 +131,9 @@
                                     </span> <small>Motorpool Request System</small>
                                 </div>                                
                             </div>
-
+                            
                             <hr>
-
+                            
                             <div class="blog-comments__meta text-muted">
                                 <small><b>Comelec Role </b></small>
                                 <a class="text-secondary" href="#">{{ $comelec_role }}</a>
@@ -128,18 +141,18 @@
                                 <small><b>Barcoded Receiver </b></small>
                                 <a class="text-secondary" href="#">{{ $barcoded_receiver }}</a>
                             </div>
-
+                            
                         </div>
-
+                        
                         
                     </div>
-
-                 
+                    
+                    
                     
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    {{-- <button type="button" class="btn btn-primary">Save changes</button> --}}
+                    <button type="button" class="btn btn-primary" wire:click="exportUserLoginHistory({{ $userID }})">Export Login History</button>
                 </div>
             </div>
         </div>

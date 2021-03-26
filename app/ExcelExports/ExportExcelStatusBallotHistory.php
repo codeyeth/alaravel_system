@@ -29,7 +29,7 @@ class ExportExcelStatusBallotHistory implements FromQuery, WithHeadings, WithMap
     public function headings(): array
     {
         return [
-            ['ID', 'BALLOT ID', 'OLD_STATUS', 'TYPE', 'STATUS BY ID', 'STATUS BY NAME', 'STATUS BY AT' ],
+            ['ID', 'BALLOT ID', 'OLD_STATUS', 'TYPE', 'STATUS BY ID', 'STATUS BY NAME', 'STATUS BY AT'],
         ];
     }
     
@@ -42,7 +42,7 @@ class ExportExcelStatusBallotHistory implements FromQuery, WithHeadings, WithMap
         }else{
             $old_status = $status_history->old_status;
         }
-
+        
         return [
             $status_history->id,
             $status_history->ballot_id,

@@ -81,21 +81,18 @@
                         </div>
                     </li>
                     
-                    
-                    {{-- <li class="list-group-item p-0 px-3 pt-3">
+                    <li class="list-group-item p-0 px-3 pt-3">
                         <div class="row">
                             <div class="col-sm-12 col-md-4 mb-3">
                                 <strong class="text-muted d-block mb-2">User Role <span class="requiredTag">&bullet;</span></strong>
                                 <select id="user_role" name="user_role" class="form-control" wire:model="userRole" required>
                                     <option disabled selected value="">Select user role</option>
-                                    <option value="Super Administrator">Super Administrator</option>
-                                    <option value="Adminisrator">Administrator</option>
-                                    <option value="User">User</option>
+                                    <option value="1">Administrator</option>
+                                    <option value="0">User</option>
                                 </select>
-                                
                             </div>
                         </div>
-                    </li> --}}
+                    </li>
                     
                     <li class="list-group-item p-0 px-3 pt-3">
                         

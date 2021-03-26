@@ -75,8 +75,15 @@ class RrUserManagementController extends Controller
         $post->position = Str::upper($request->input('position'));
         $post->division = Division::where('id', $request->input('division') )->value('division');
         $post->section = Section::where('id', $request->input('section') )->value('section');
-        // $post->user_role = $request->input('user_role');
         
+        // if( $request->input('user_role') == "Administrator"){
+        //     $post->is_admin = true;
+        // }else{
+        //     $post->is_admin = false;
+        // }
+        
+        $post->is_admin = $request->input('user_role');
+
         //FIXED PASSWORD
         $post->password = Hash::make('12345678');
         $post->password_string = '12345678';
@@ -110,7 +117,7 @@ class RrUserManagementController extends Controller
         }else{
             $post->is_motorpool = true;
         }
-
+        
         $post->comelec_role = $request->input('comelec_role');
         $post->barcoded_receiver = $request->input('barcoded_receiver');
         
@@ -179,8 +186,15 @@ class RrUserManagementController extends Controller
         $post->position = Str::upper($request->input('position'));
         $post->division = Division::where('id', $request->input('division') )->value('division');
         $post->section = Section::where('id', $request->input('section') )->value('section');
-        // $post->user_role = $request->input('user_role');
         
+        // if( $request->input('user_role') == "Administrator"){
+        //     $post->is_admin = true;
+        // }else{
+        //     $post->is_admin = false;
+        // }
+
+        $post->is_admin = $request->input('user_role');
+
         
         if( $request->input('user_mgt') == null){
             $post->is_user_mgt = false;
@@ -214,7 +228,7 @@ class RrUserManagementController extends Controller
         
         $post->comelec_role = $request->input('comelec_role');
         $post->barcoded_receiver = $request->input('barcoded_receiver');
-
+        
         $post->save();
         
         return back()->with('success', 'User Created Successfully!')

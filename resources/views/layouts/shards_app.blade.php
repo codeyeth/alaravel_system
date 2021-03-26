@@ -21,8 +21,8 @@
     {{-- DATE PICKER FILES --}}
     <script src="{{ asset ('shards_template/scripts/ajax_jquery.min.js') }}"></script>
     
-    <link href="{{ asset('shards_template/bootstrap_datetimepicker/css/bootstrap-datetimepicker.min.css') }}" rel="stylesheet" media="screen">
-    <script type="text/javascript" src="{{ asset('shards_template/bootstrap_datetimepicker/js/bootstrap-datetimepicker.js') }}"></script>
+    <link href="{{ asset('shards_template/bootstrap_datepicker/css/bootstrap-datepicker.min.css') }}" rel="stylesheet" media="screen">
+    <script type="text/javascript" src="{{ asset('shards_template/bootstrap_datepicker/js/bootstrap-datepicker.js') }}"></script>
     
     @livewireStyles
 </head>

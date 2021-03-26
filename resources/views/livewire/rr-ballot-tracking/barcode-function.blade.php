@@ -63,7 +63,7 @@
                 <div class="card-header border-bottom">
                     <h6 class="m-0">Ballot/s Results - <b> {{ $userListCount }} </b></h6>
                 </div>
-                @if ( $searchMode == true )
+                @if ( $searchMode == true && Auth::user()->is_ballot_tracking == true && Auth::user()->is_admin == true )
                 <div class="card-body pt-0 pb-1">
                     <div class="row border-bottom py-2 bg-light">
                         <div class="col-12 col-sm-5">
@@ -79,6 +79,7 @@
                                 <button type="button" class="btn btn-primary ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0" wire:click="exportDateBallot">Generate base on Date</button>
                             </div>
                         </div>
+                        
                         {{-- <div class="col-12 col-sm-3">
                             <select id="statusReport" name="statusReport" class="form-control ml-auto mr-auto ml-sm-auto mr-sm-0 mt-3 mt-sm-0" wire:model="statusSelected">
                                 @if(count($comelecRolesList) > 0)
@@ -237,7 +238,7 @@
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         
-                        @if ($ballotHistoryCount > 0 && Auth::user()->is_search_mode == true )
+                        @if ($ballotHistoryCount > 0 && Auth::user()->is_search_mode == true && Auth::user()->is_ballot_tracking == true && Auth::user()->is_admin == true )
                         <button type="button" class="btn btn-success" wire:click.preventDefault="exportSingleBallotHistory({{ $exportSingleId }})">Export History</button>
                         @endif
                         

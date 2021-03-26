@@ -54,7 +54,7 @@
         <li class="nav-item">
           <a class="nav-link {{ $sidebar == 'Delivery' ? 'active' : ' ' }}" href="{{ asset('/delivery') }}">
             <i class="material-icons">bar_chart</i>
-            <span>Delivery</span>
+            <span>Delivery Receipt</span>
           </a>
         </li>
         @endif
@@ -64,6 +64,15 @@
           <a class="nav-link {{ $sidebar == 'Motorpool Request' ? 'active' : ' ' }}" href="{{ asset('/motorpool_request') }}">
             <i class="material-icons">bar_chart</i>
             <span>Motorpool Request</span>
+          </a>
+        </li>
+        @endif
+
+        @if(Auth::user()->is_gazette)
+        <li class="nav-item">
+          <a class="nav-link {{ $sidebar == 'Composing System' ? 'active' : ' ' }}" href="{{ asset('/composing_system') }}">
+            <i class="material-icons">bar_chart</i>
+            <span>Composing System</span>
           </a>
         </li>
         @endif
