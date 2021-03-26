@@ -61,3 +61,4 @@
                 <div class="text-center"> 
         {{ $ballotList->links() }}
     </div>
+    

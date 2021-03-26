@@ -8,9 +8,13 @@ use App\Models\Delivery;
 use PDF;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
+use File;
+use ZipArchive;
+use Illuminate\Filesystem\Filesystem;
 
 class DeliveryjController extends Controller
 {
+  
     /**
      * Display a listing of the resource.
      *
@@ -225,7 +229,7 @@ class DeliveryjController extends Controller
         ->Where('BALLOT_ID', 'like', '%F_%')
         ->get();
         $total_row = $deliveries->count();
-         $view = \View::make('j-views.delivery.ob_dr_pdf',compact('deliveries','imagepath','total_row')  );
+         $view = \View::make('j-views.delivery.ob_dr_pdf',compact('deliveries','imagepath','total_row'));
          $html_content = $view->render();
         
          PDF::AddPage();
@@ -237,7 +241,27 @@ class DeliveryjController extends Controller
 
      public function savepdfftsdaily()
      {
-         for ($i = 0; $i < 5; $i++) {
+        $zip = new ZipArchive;
+        $fileName = 'myNewFile.zip';
+        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE)
+        {
+            $files = File::files(public_path('myFiles'));
+            foreach ($files as $key => $value) {
+                $relativeNameInZipFile = basename($value);
+                $zip->addFile($value, $relativeNameInZipFile);
+            }
+            $zip->close();
+        }
+        return response()->download(public_path($fileName))->deleteFileAfterSend(true);
+        
+       // $file = new Filesystem;
+        //$file->cleanDirectory(public_path('myFiles'));
+      
+
+
+
+        /*
+        for ($i = 0; $i < 5; $i++) {
         $imagepath = public_path();
         $from = request()->get('datefromdaily');
         $to = request()->get('datetodaily');
@@ -262,24 +286,32 @@ class DeliveryjController extends Controller
             $pdf->SetFont('helvetica', 'I', 8);
             // Page number
             $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
-
         });
-
          PDF::SetTitle("List of users");
          PDF::AddPage();
          PDF::writeHTML($html_content, true, false, true, false, '');
+        // PDF::Output('example_001.pdf', 'F');
+       // PDF::Output('invoices/Delivery Note.pdf', 'F');
          // D is the change of these two functions. Including D parameter will avoid 
          // loading PDF in browser and allows downloading directly
 
-         
-       $windows_user = "/".getenv("username");
-        PDF::Output('C:\Users'.$windows_user.'\Downloads\daily_fts' . $i .'.pdf', 'F');  
+      // PDF::Output('C:\Users\PC\Downloads\daily_fts.pdf', 'F');  
          //PDF::reset();
-        //PDF::Output('dr_ob'. $i .'.pdf' , 'S');  
-        PDF::reset(); 
+       // PDF::Output('dr_ob'. $i .'.pdf' , 'S');  
+       // PDF::reset(); 
+
+     
+      // PDF::Output('/home/username/public_html/app/admin/pdfs/filename' . $i . '.pdf', 'F');
+      ob_start();
+      PDF::Output(public_path('hello_world' . $i . '.pdf'), 'F');
+      ob_end_clean();
+      PDF::reset(); 
+        } */
+
+ 
      }
      
-    }
+    
 
      public function savepdfftsbatch()
      {

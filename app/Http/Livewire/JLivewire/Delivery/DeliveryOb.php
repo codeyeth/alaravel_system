@@ -23,11 +23,7 @@ class DeliveryOb extends Component
     public $dateto = '';
     public $showSaveBtn = false;
     
-    
-    
-    
-    public $sample;
-    
+   
     public function addBallot()
     {
         $this->loopCount++;
@@ -62,11 +58,20 @@ class DeliveryOb extends Component
             $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
             $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
             $this->ballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
+            $addOneField = true;
         }else{
             $this->showSaveBtn = false;
             $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
             $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
             $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
+            $addOneField = false;
+        }
+        
+        if($addOneField == true){
+            $idFocus = $indexKey + 1;
+            // dd($idFocus);
+            $this->dispatchBrowserEvent('searchSucceed', ['idFocus' => $idFocus]);
+            $this->addBallot();
         }
     }
     
@@ -96,19 +101,14 @@ class DeliveryOb extends Component
  
         
         
-        
-        
-        public function retrieve(){
-            
-        }
-               
+     
         public function render()
         {
     
                 if ($this->search == ''){
                     $ballotList = DB::table('deliveries')->Where('BALLOT_ID', 'not like', '%F_%')->paginate(5);
                     $ballotListCount = DB::table('deliveries')->Where('BALLOT_ID', 'not like', '%F_%')->count();
-                    $ballotListCountTitle = 'total Official Ballots in Delivery';
+                    $ballotListCountTitle = 'Total Official Ballots in Delivery';
                 }else{
                 $ballotList = Delivery::where(function ($query) { $query->where('BALLOT_ID', 'not like', '%F_%'); })->where(function ($query) {$query->where('BALLOT_ID', $this->search)->orWhere('DR_NO', $this->search);})->paginate(5);
                 $ballotListCount = Delivery::where(function ($query) {

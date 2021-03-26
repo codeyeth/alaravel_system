@@ -72,7 +72,7 @@ class DeliveryFts extends Component
     public function save(){
         foreach ($this->ballotlists as $ballotlist){
             $searchResult = Ballots::where('ballot_id', $ballotlist['ballot_id'])
-            ->Where('ballot_id', 'like', '%F_%')
+            ->Where('ballot_id', 'not like', '%F_%')
             ->first();
             Delivery::create([
                 'BALLOT_ID' => $ballotlist['ballot_id'],
