@@ -28,6 +28,9 @@ class CreateMotorpoolsTable extends Migration
             $table->integer('is_approved')->nullable()->default(0);
             $table->string('is_approved_at')->nullable();
             $table->string('reason')->nullable();
+            $table->string('status')->nullable();
+            $table->string('division')->nullable();
+            $table->string('section')->nullable();
             $table->timestamps();
         });
     }

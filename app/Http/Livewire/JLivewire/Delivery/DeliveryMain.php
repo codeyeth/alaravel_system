@@ -18,7 +18,7 @@ class DeliveryMain extends Component
     {
         if ($this->search == ''){
             return view('livewire.j-livewire.delivery.delivery-main', [
-                'ballotList' => DB::table('deliveries')->paginate(5),
+                'ballotList' => DB::table('deliveries')->paginate(2),
                 'ballotListCount' => DB::table('deliveries')->count(),
                 'ballotListCountTitle' => 'Total Ballot ID of Delivery With DR No',
                 ]);
@@ -31,11 +31,7 @@ class DeliveryMain extends Component
                     ->orWhere('DR_NO', $this->search)
                     ->count(),
                     'ballotListCountTitle' => 'Search Result Found:',
-                    ]);
-                }
-                
-      
-     
-    }
-    
+                ]);
+            }
+    }   
 }

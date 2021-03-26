@@ -8,6 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class Motorpool extends Model
 {
     use HasFactory;
-    protected $fillable = ['reason','is_approved'];
+    protected $fillable = ['reason','signature_file','is_approved','status','datetime','division','section'];
    
 }

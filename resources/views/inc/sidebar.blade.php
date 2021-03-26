@@ -59,7 +59,7 @@
         </li>
         @endif
         
-        @if(Auth::user()->is_motorpool)
+        @if(Auth::user()->is_motorpool == 1 || Auth::user()->is_motorpool == 2)
         <li class="nav-item">
           <a class="nav-link {{ $sidebar == 'Motorpool Request' ? 'active' : ' ' }}" href="{{ asset('/motorpool_request') }}">
             <i class="material-icons">bar_chart</i>

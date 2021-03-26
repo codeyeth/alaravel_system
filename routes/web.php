@@ -53,7 +53,7 @@ Route::resource('motorpool_request', 'MotorpoolRequestjController');
 
 Route::get('/delivery_ob', 'DeliveryjController@ob');
 Route::get('/delivery_fts', 'DeliveryjController@fts');
-Route::get('reports/pdf', ['as' => 'set', 'uses' => 'MotorpoolRequestjController@pdf']);
+Route::get('/download_motorpool_letter', ['as' => 'brought', 'uses' => 'MotorpoolRequestjController@savemotorpoolreport']);
 
 Route::get('/download_dr_ob_report', ['as' => 'search', 'uses' => 'DeliveryjController@savepdfobdr']);
 Route::get('/download_daily_ob_report', ['as' => 'retrieve', 'uses' => 'DeliveryjController@savepdfobdaily']);

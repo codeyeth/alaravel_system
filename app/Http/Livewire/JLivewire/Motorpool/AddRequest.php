@@ -9,8 +9,7 @@ class AddRequest extends Component
     public $empName = "";
     public $chiefName = "";
     public $destination = "";
-    public $date = "";
-    public $time = "";
+    public $datetime = "";
     public $purpose = "";
 
     public function render()
