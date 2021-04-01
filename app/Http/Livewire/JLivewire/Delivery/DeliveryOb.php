@@ -79,15 +79,15 @@ class DeliveryOb extends Component
     
     public function save(){
         foreach ($this->ballotlists as $ballotlist){
+            /*doesnt need this query anymore
             $searchResult = Ballots::where('ballot_id', $ballotlist['ballot_id'])
             ->Where('ballot_id', 'not like', '%F_%')
-            ->first();
+            ->first(); 
+            */
             Delivery::create([
                 'BALLOT_ID' => $ballotlist['ballot_id'],
                 'CLUSTERED_PREC' => $ballotlist['clustered_precint'],
-                'PROV_NAME' => $searchResult->prov_name,
-                'MUN_NAME' => $searchResult->mun_name,
-                'BGY_NAME' => $searchResult->bgy_name,
+                'CITY_MUN_PROV' => $ballotlist['city_mun_prov'],
                 'CLUSTER_TOTAL' => $ballotlist['quantity']
                 ]);
                 session()->flash('message', 'DR Number Created!');

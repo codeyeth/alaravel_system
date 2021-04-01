@@ -24,29 +24,23 @@
       </th>
       <th width="20%" style="text-align:left; font-size:6px;">
         No. <u>20-06-0026 Palawan</u><br>
-        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
+        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" checked = "checked">
         <label for="vehicle1"> COMELEC - Inspectorate</label><br>
-        <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
+        <input type="checkbox" id="vehicle2" name="vehicle2" value="Car" checked = "checked">
         <label for="vehicle2"> COMELEC - BPG 1</label><br>
-        <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
+        <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat" checked = "checked">
         <label for="vehicle3"> COMELEC - BPG 2</label><br>
         <input type="checkbox" id="vehicle4" name="vehicle4" value="Bike">
-        <label for="vehicle4"> COMELEC - Delivery</label><br>
-        <input type="checkbox" id="vehicle5" name="vehicle5" value="Car">
-        <label for="vehicle5"> COA - COMELEC</label><br>
-        <input type="checkbox" id="vehicle6" name="vehicle6" value="Boat">
-        <label for="vehicle6"> NPO - Delivery 1</label><br>
-        <input type="checkbox" id="vehicle7" name="vehicle7" value="Boat">
-        <label for="vehicle7"> NPO - Delivery 2</label><br>
-        <input type="checkbox" id="vehicle8" name="vehicle8" value="Boat">
-        <label for="vehicle8"> NPO - Monitoring</label><br>
-      </th>
-    </tr>
-    <tr style="page-break-inside:avoid; page-break-after:auto">
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
+        <label for="vehicle4"> COA_COMELEC</label><br>
+        <input type="checkbox" id="vehicle5" name="vehicle5" value="Bike">
+        <label for="vehicle5"> COMELEC_DELIVERY</label><br>
+        <input type="checkbox" id="vehicle6" name="vehicle6" value="Bike">
+        <label for="vehicle6"> NPO_DELIVERY1</label><br>
+        <input type="checkbox" id="vehicle7" name="vehicle7" value="Bike">
+        <label for="vehicle7"> NPO_DELIVERY2</label><br>
+        <input type="checkbox" id="vehicle8" name="vehicle8" value="Bike">
+        <label for="vehicle8"> NPO_MONITORING</label><br>
+        </th>
     </tr>
 </table><br>
 <table style="page-break-inside:auto">

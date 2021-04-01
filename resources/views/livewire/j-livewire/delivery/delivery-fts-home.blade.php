@@ -39,7 +39,7 @@
                             <tr>
                                     <td>{{ $item->BALLOT_ID }}</td>
                                     <td>{{ $item->DR_NO }}</td>
-                                    <td>{{ $item->PROV_NAME }} {{ $item->MUN_NAME}} {{ $item->BGY_NAME }}</td>
+                                    <td>{{ $item->CITY_MUN_PROV }}</td>
                                     <td>{{ $item->CLUSTERED_PREC }}</td>
                                     <td>{{ $item->CLUSTER_TOTAL }}</td>
                                     <td>{{ $item->created_at }}</td>

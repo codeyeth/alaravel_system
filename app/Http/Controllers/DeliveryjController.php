@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Input;
 use File;
 use ZipArchive;
 use Illuminate\Filesystem\Filesystem;
+use App\Models\Section;
 
 class DeliveryjController extends Controller
 {
@@ -238,35 +239,16 @@ class DeliveryjController extends Controller
          // loading PDF in browser and allows downloading directly
          PDF::Output('dr_ob.pdf', 'D');  
      }
+   
 
      public function savepdfftsdaily()
      {
-        $zip = new ZipArchive;
-        $fileName = 'myNewFile.zip';
-        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE)
-        {
-            $files = File::files(public_path('myFiles'));
-            foreach ($files as $key => $value) {
-                $relativeNameInZipFile = basename($value);
-                $zip->addFile($value, $relativeNameInZipFile);
-            }
-            $zip->close();
-        }
-        return response()->download(public_path($fileName))->deleteFileAfterSend(true);
-        
-       // $file = new Filesystem;
-        //$file->cleanDirectory(public_path('myFiles'));
-      
-
-
-
-        /*
         for ($i = 0; $i < 5; $i++) {
-        $imagepath = public_path();
-        $from = request()->get('datefromdaily');
-        $to = request()->get('datetodaily');
-        $issued_to = request()->get('issued_to');
-        $issued_by = request()->get('issued_by');
+            $imagepath = public_path();
+            $from = request()->get('datefromdaily');
+            $to = request()->get('datetodaily');
+            $issued_to = request()->get('issued_to');
+            $issued_by = request()->get('issued_by');
 
        $deliveries = DB::table('deliveries')
       ->where('BALLOT_ID','<>','')
@@ -290,25 +272,22 @@ class DeliveryjController extends Controller
          PDF::SetTitle("List of users");
          PDF::AddPage();
          PDF::writeHTML($html_content, true, false, true, false, '');
-        // PDF::Output('example_001.pdf', 'F');
-       // PDF::Output('invoices/Delivery Note.pdf', 'F');
-         // D is the change of these two functions. Including D parameter will avoid 
-         // loading PDF in browser and allows downloading directly
-
-      // PDF::Output('C:\Users\PC\Downloads\daily_fts.pdf', 'F');  
-         //PDF::reset();
-       // PDF::Output('dr_ob'. $i .'.pdf' , 'S');  
-       // PDF::reset(); 
-
-     
-      // PDF::Output('/home/username/public_html/app/admin/pdfs/filename' . $i . '.pdf', 'F');
-      ob_start();
-      PDF::Output(public_path('hello_world' . $i . '.pdf'), 'F');
-      ob_end_clean();
-      PDF::reset(); 
-        } */
-
- 
+         PDF::Output(public_path('myFiles/FTS Daily DR Report' . $i . '.pdf'), 'F');
+         PDF::reset(); 
+        } 
+        $zip = new ZipArchive;
+        $fileName = 'myNewFile.zip';
+        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE)
+        {
+            $files = File::files(public_path('myFiles'));
+            foreach ($files as $key => $value) {
+                $relativeNameInZipFile = basename($value);
+                $zip->addFile($value, $relativeNameInZipFile);
+            }
+            $zip->close();
+        }
+        File::cleanDirectory(public_path('myFiles'));
+        return response()->download(public_path($fileName))->deleteFileAfterSend(true);
      }
      
     
