@@ -23,6 +23,7 @@ class User extends Authenticatable
         'is_ballot_tracking', 'is_dr',
         'is_gazette', 'is_motorpool', 'comelec_role', 'barcoded_receiver', 'created_by_id', 'created_by_name',
         'last_updated_by_id', 'last_updated_by_name', 'password', 'password_string', 'is_pw_changed', 'is_admin',
+        'is_ballot_in', 'is_search_mode', 'is_verification_type_bad',
     ];
     
     /**

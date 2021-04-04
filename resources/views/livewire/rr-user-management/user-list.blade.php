@@ -3,7 +3,7 @@
         <div class="col-lg-12 mb-4">
             <div class="card card-small mb-1">
                 <div class="card-header border-bottom">
-                    <h6 class="m-0">User Lists {{ count($userList) }}</h6>
+                    <h6 class="m-0">User List/s - {{ count($userList) }}</h6>
                 </div>
                 @if(session('messageDeleteUser'))
                 <div class="alert alert-accent alert-dismissible fade show mb-0" role="alert">
@@ -47,20 +47,20 @@
                                 @foreach ($userList as $item)
                                 <tr>
                                     <td>{{ $item->id }}</td>
-                                    <td>{{ $item->name }}</td>
+                                    <td>{{ Str::upper($item->name) }}</td>
                                     <td>
                                         
                                         {{-- <small> {{ Str::upper($item->division) }} - {{ Str::upper($item->section) }}</small>  --}}
                                         
                                         @foreach ($this->divisionListLoop as $division_list_loop)
                                         @if ( $division_list_loop->id ==  $item->division)
-                                        {{ $division_list_loop->division }}
+                                        {{ Str::upper($division_list_loop->division) }}
                                         @endif
                                         @endforeach
                                         -
                                         @foreach ($this->sectionListLoop as $section_list_loop)
                                         @if ( $section_list_loop->id ==  $item->section)
-                                        {{ $section_list_loop->section }}
+                                        {{ Str::upper($section_list_loop->section) }}
                                         @endif
                                         @endforeach
                                         
@@ -109,12 +109,23 @@
                         <div class="col-sm-12 col-md-12">
                             <div class="form-row">
                                 <div class="form-group col-md-7">
+                                    <strong class="text-muted d-block mb-2">Email </strong>
+                                    <input type="text" class="form-control" id="viewEmail" name="viewEmail" autocomplete="off" required autofocus wire:model="viewUserParent.viewEmail" >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-row">
+                                <div class="form-group col-md-7">
                                     <strong class="text-muted d-block mb-2">First name </strong>
-                                    <input type="text" class="form-control" id="viewFname" name="viewFname" placeholder="First name" autocomplete="off" required autofocus wire:model="viewUserParent.viewFname" >
+                                    <input type="text" class="form-control" id="viewFname" name="viewFname" autocomplete="off" required autofocus wire:model="viewUserParent.viewFname" >
                                 </div>
                                 <div class="form-group col-md-5">
                                     <strong class="text-muted d-block mb-2">Middle name</strong>
-                                    <input type="text" class="form-control" id="viewMname" name="viewMname" placeholder="Middle name" autocomplete="off" wire:model="viewUserParent.viewMname">
+                                    <input type="text" class="form-control" id="viewMname" name="viewMname" autocomplete="off" wire:model="viewUserParent.viewMname">
                                 </div>
                             </div>
                         </div>
@@ -125,7 +136,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-12">
                                     <strong class="text-muted d-block mb-2">Last name </strong>
-                                    <input type="text" class="form-control" id="viewLname" name="viewLname" placeholder="Last name" autocomplete="off" wire:model="viewUserParent.viewLname">
+                                    <input type="text" class="form-control" id="viewLname" name="viewLname" autocomplete="off" wire:model="viewUserParent.viewLname">
                                 </div>
                             </div>
                         </div>
@@ -136,7 +147,7 @@
                             <div class="form-row">
                                 <div class="form-group col-md-12">
                                     <strong class="text-muted d-block mb-2">Position</strong>
-                                    <input type="text" class="form-control" id="viewPosition" name="viewPosition" placeholder="Position" autocomplete="off" required wire:model="viewUserParent.viewPosition"> 
+                                    <input type="text" class="form-control" id="viewPosition" name="viewPosition" autocomplete="off" required wire:model="viewUserParent.viewPosition"> 
                                 </div>
                             </div>
                         </div>
@@ -148,11 +159,11 @@
                                 <div class="form-group col-md-6">
                                     <strong class="text-muted d-block mb-2">Division </strong>
                                     
-                                    <input type="text" class="form-control" id="viewDivision" name="viewDivision" placeholder="Division" autocomplete="off" required wire:model="viewUserParent.viewDivision"> 
+                                    <input type="text" class="form-control" id="viewDivision" name="viewDivision" autocomplete="off" required wire:model="viewUserParent.viewDivision"> 
                                 </div>
                                 <div class="form-group col-md-6">
                                     <strong class="text-muted d-block mb-2">Section </strong>
-                                    <input type="text" class="form-control" id="viewSection" name="viewSection" placeholder="Section" autocomplete="off" required wire:model="viewUserParent.viewSection"> 
+                                    <input type="text" class="form-control" id="viewSection" name="viewSection" autocomplete="off" required wire:model="viewUserParent.viewSection"> 
                                 </div>
                             </div>
                         </div>
@@ -161,7 +172,7 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-12 mb-3">
                             <strong class="text-muted d-block mb-2">User Role </strong>
-                            <input type="text" class="form-control" id="viewUserRole" name="viewUserRole" placeholder="User Role" autocomplete="off" required wire:model="viewUserParent.viewUserRole"> 
+                            <input type="text" class="form-control" id="viewUserRole" name="viewUserRole" autocomplete="off" required wire:model="viewUserParent.viewUserRole"> 
                         </div>
                     </div>
                     
@@ -212,10 +223,10 @@
                         <div class="col-sm-12 col-md-12 mb-3">
                             <strong class="text-muted d-block mb-2">For Comelec Users <small> | Just leave it Untouched for NPO Users</small></strong>
                             <strong class="text-muted d-block mb-2"><small>Comelec Role</small></strong>
-                            <input type="text" class="form-control" id="viewComelecRole" name="viewComelecRole" placeholder="Comelec Role" autocomplete="off" required wire:model="viewUserParent.viewComelecRole"> 
+                            <input type="text" class="form-control" id="viewComelecRole" name="viewComelecRole" autocomplete="off" required wire:model="viewUserParent.viewComelecRole"> 
                             
                             <strong class="text-muted d-block mb-2"><small>Barcoded Items Receiver</small></strong>
-                            <input type="text" class="form-control" id="viewBarcodedReceiver" name="viewBarcodedReceiver" placeholder="Barcoded Receiver" autocomplete="off" required wire:model="viewUserParent.viewBarcodedReceiver"> 
+                            <input type="text" class="form-control" id="viewBarcodedReceiver" name="viewBarcodedReceiver" autocomplete="off" required wire:model="viewUserParent.viewBarcodedReceiver"> 
                         </div>
                     </div>
                     

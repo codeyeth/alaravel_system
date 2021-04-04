@@ -12,6 +12,7 @@ use App\ExcelExports\ExportExcelAllUser;
 use App\Models\ComelecRoles;
 use App\Models\Division;
 use App\Models\Section;
+use Illuminate\Support\Str;
 
 class UserList extends Component
 {
@@ -189,18 +190,19 @@ class UserList extends Component
         $section = Section::where('id', $viewUser->section)->value('section');
         
         if( $viewUser->is_admin == true){
-            $viewUserRole = 'Administrator';
+            $viewUserRole = 'ADMINISTRATOR';
         }else{
-            $viewUserRole = 'User';
+            $viewUserRole = 'USER';
         }
         
         $this->viewUserParent = [
+            'viewEmail' => $viewUser->email,
             'viewFname' => $viewUser->fname,
             'viewMname' => $viewUser->mname,
             'viewLname' => $viewUser->lname,
             'viewPosition' => $viewUser->position,
-            'viewDivision' => $division,
-            'viewSection' => $section,
+            'viewDivision' => Str::upper($division),
+            'viewSection' => Str::upper($section),
             'viewUserRole' => $viewUserRole,
             'viewIsUserMgt' => $viewUser->is_user_mgt,
             'viewIsBallot' => $viewUser->is_ballot_tracking,

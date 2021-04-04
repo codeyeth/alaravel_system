@@ -5,10 +5,13 @@ namespace App\Http\Livewire\RrBallotTracking;
 use Livewire\Component;
 use App\Models\Ballots;
 use App\Models\BallotHistory;
+use App\Models\BadBallots;
 use App\Models\User;
 use Auth;
 use Livewire\WithPagination;
 use Carbon\Carbon;
+use DB;
+use Illuminate\Support\Facades\Validator;
 
 //Excel Exports
 use Maatwebsite\Excel\Facades\Excel;
@@ -29,7 +32,7 @@ class BarcodeFunction extends Component
     public $verificationBadMode;
     public $comelecRolesList = [];
     
-    //Ballot Details
+    //BALLOT DETAILS
     public $modalBallotHistoryList = [];
     
     public $exportSingleId;
@@ -38,10 +41,27 @@ class BarcodeFunction extends Component
     public $dateFrom;
     public $dateTo;
     
-    public $statusSelected;
+    public $statusSelected = '';
+    public $statusType = '';
+    public $keywordMode = true;
     
+    //VIEW THE FULL BALLOT DETAILS
+    public $viewBallotParent = [];
     
-    //Update Toggle Search Mode
+    //ALTER BALLOT STATUS
+    public $alterBallotStatus = '';
+    public $alterBallotHistoryList = [];
+    
+    //ENCODE BAD BALLOTS FOR QUARANTINE
+    public $badBallotId;
+    public $badBallotsFor = [];
+    public $badBallotLists = [];
+    public $badBallotCount;
+    public $badBallotIdFor;
+    public $updateBadBallot = false;
+    public $updateBadBallotId;
+    
+    //UPDATE TOGGLE SEARCH MODE
     public function searchModeToggle(){
         $this->search = '';
         if( $this->searchMode == true){
@@ -59,7 +79,28 @@ class BarcodeFunction extends Component
         }
     }
     
-    //Update Toggle Search Mode
+    // VIEW FULL BALLOT DETAILS
+    public function getBallotDetails($ballotId){
+        $getBallotDetails = Ballots::find($ballotId);
+        $this->viewBallotParent = [
+            'prov_name' => $getBallotDetails->prov_name,
+            'mun_name' => $getBallotDetails->mun_name,
+            'bgy_name' => $getBallotDetails->bgy_name,
+            'pollplace' => $getBallotDetails->pollplace,
+            'clustered_prec' => $getBallotDetails->clustered_prec,
+            'cluster_total' => $getBallotDetails->cluster_total,
+            'ballot_id' => $getBallotDetails->ballot_id,
+            'current_status' => $getBallotDetails->current_status,
+            'status_updated_by' => $getBallotDetails->status_updated_by,
+            'status_updated_at' => Carbon::parse($getBallotDetails->status_updated_at)->toDayDateTimeString(),
+            
+            
+            'is_re_print' => $getBallotDetails->is_re_print,
+        ];
+        // dd($this->viewBallotParent);
+    }
+    
+    //UPDATE TOGGLE SEARCH MODE
     public function ballotInToggle(){
         $this->search = '';
         if( $this->ballotIn == true){
@@ -89,7 +130,7 @@ class BarcodeFunction extends Component
         }
     }
     
-    //Update Toggle Verification Bad Mode
+    //UPDATE TOGGLE VERIFICATION BAD MODE
     public function verificationBadModeToggle(){
         if( $this->verificationBadMode == true){
             $this->verificationBadMode = false;
@@ -106,170 +147,364 @@ class BarcodeFunction extends Component
         }
     }
     
-    //Update Ballot Status
-    public function updateBallotStatus(){
-        $now = Carbon::now();
-        // dd($now);
-        if($this->search != '' && $this->searchMode == false){
-            
-            if( Auth::user()->comelec_role == 'SHEETER' && $this->ballotIn == true ){
-                $updateBallotStatus = Ballots::where('ballot_id', $this->search)->where('current_status', 'PRINTER')->first();
-            }else{
-                $updateBallotStatus = Ballots::where('ballot_id', $this->search)->where('current_status', Auth::user()->comelec_role)->first();
-            }
-            
-            if($updateBallotStatus != null){
-                if( $this->verificationBadMode == true ){
-                    $newStatus = 'QUARANTINE';
-                    $rePrint = true;
-                    $rePrintById = Auth::user()->id;
-                    $rePrintBy =  Auth::user()->name;
-                    $rePrintAt = $now;
-                    $rePrintId = $this->search;
-                }else{
-                    if( Auth::user()->comelec_role == 'SHEETER' && $this->ballotIn == true ){
-                        $newStatus = Auth::user()->comelec_role;
-                    }elseif($this->ballotIn == true){
-                        $newStatus = $updateBallotStatus->current_status;
-                    }else{
-                        $newStatus = Auth::user()->barcoded_receiver;
-                    }
-                    $rePrint = $updateBallotStatus->is_re_print;
-                    $rePrintById = $updateBallotStatus->is_re_print_by_id;
-                    $rePrintBy = $updateBallotStatus->is_re_print_by;
-                    $rePrintAt = $updateBallotStatus->is_re_print_at;
-                    $rePrintId = $updateBallotStatus->re_print_id;
-                }
+    //ADD FIELDS INTO THE BAD BALLOTS
+    public function addBadBallot()
+    {
+        $this->badBallotCount++;
+        $this->badBallotLists[] =  ['unique_number' => '', 'description' => '',];
+    }
+    
+    //REMOVE FIELDS INTO THE BAD BALLOTS
+    public function removeBadBallot($index)
+    {
+        unset($this->badBallotLists[$index]);
+        $this->badBallotLists = array_values($this->badBallotLists);
+        $this->badBallotCount--;
+    }
+    
+    //SET THE BAD BALLOT ID TO GET THE PARENT BALLOT ID
+    public function setBadBallotId($ballotId){
+        $this->badBallotId = $ballotId;
+        $this->getBadBallot();
+    }
+    
+    //GET ALL THE LISTED BAD BALLOTS
+    public function getBadBallot()
+    {
+        $ballotId = Ballots::find($this->badBallotId);
+        $this->badBallotIdFor = $ballotId->ballot_id;
+        $this->badBallotsFor = BadBallots::where('ballot_id', $ballotId->ballot_id)->get();
+    }
+    
+    //SAVE THE BAD BALLOTS
+    public function saveBadBallots($ballotId){
+        $ballotId = Ballots::find($ballotId);
+        
+        foreach ($this->badBallotLists as $index => $badballotlist){
+            $validatedData = Validator::make(
+                ['unique_number' => $badballotlist['unique_number']],
+                ['unique_number' => 'string|unique:bad_ballots'],
+                ['required' => 'The :attribute field is required'],
+                )->validate();
                 
-                if( $this->ballotIn == true){
-                    $statusType = 'IN';
-                }else{
-                    $statusType = 'OUT';
-                }
-                
-                $addBallotHistory = BallotHistory::create([
-                    'ballot_id' => $this->search,
-                    'action' => 'Update',
-                    'old_status' => $updateBallotStatus->current_status,
-                    'old_status_type' => $updateBallotStatus->new_status_type,
-                    'new_status' => $newStatus,
-                    'new_status_type' => $statusType,
-                    'status_by_id' => Auth::user()->id,
-                    'status_by_name' => Auth::user()->name,
-                    'status_by_at' => $now,
-                    'status_by_at_date' => $now->toDateString(),
+                BadBallots::create([
+                    'ballot_id' => $ballotId->ballot_id,
+                    'unique_number' => $badballotlist['unique_number'],
+                    'description' => $badballotlist['description'],
+                    'created_by_id' => Auth::user()->id,
+                    'created_by_name' => Auth::user()->name,
                     ]);
                     
-                    $updateBallotStatus->update([
-                        'current_status' => $newStatus,
-                        'new_status_type' => $statusType,
-                        'status_updated_by_id' => Auth::user()->id,
-                        'status_updated_by' => Auth::user()->name,
-                        'status_updated_at' => $now,
-                        
-                        'is_re_print' => $rePrint,
-                        'is_re_print_by_id' => $rePrintById ,
-                        'is_re_print_by' => $rePrintBy,
-                        'is_re_print_at' => $rePrintAt,
-                        're_print_id' => $rePrintId,
-                        ]);
-                        
-                        session()->flash('success', $this->search . ' Ballot Status Updated Successfully');
-                        return redirect()->to('/ballot_tracking');
-                    }
                 }
+                session()->flash('messageBadBallots', 'Bad Ballots Saved Successfully!');
+                $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
+                $this->getBadBallot();
             }
             
-            //Clear Search
-            public function clearSearch(){
-                $this->search = '';
+            public function deleteBadBallots($id){
+                $badBallotDelete = BadBallots::find($id);
+                $badBallotDelete->delete();
+                session()->flash('messageBadBallots', 'Bad Ballot Deleted Successfully!');
+                $this->getBadBallot();
             }
             
-            //Get Ballot History
-            public function getBallotHistory($ballotId){
-                $ballotResult = Ballots::find($ballotId);   
-                $this->exportSingleId = $ballotId;
-                $this->modalBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->get();  
-                $this->ballotHistoryCount = count($this->modalBallotHistoryList);
+            public function editBadBallots($id){
+                $badBallotEdit = BadBallots::find($id);
+                $this->updateBadBallotId = $id;
+                $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
+                $this->badBallotLists[0]['unique_number'] = $badBallotEdit->unique_number;
+                $this->badBallotLists[0]['description'] = $badBallotEdit->description;
+                $this->updateBadBallot = true;
             }
             
-            //Export Single Ballot History
-            public function exportSingleBallotHistory($exportSingleId){
-                $ballotSingleExportResult = Ballots::find($exportSingleId);   
-                $ballotIdToExcel = $ballotSingleExportResult->ballot_id;
-                $export = new ExportExcelSingleBallotHistory($ballotIdToExcel);
-                return Excel::download($export, $ballotIdToExcel . '_single_ballot_history.xlsx');
+            public function resetBadBallots(){
+                $this->getBadBallot();
+                $this->updateBadBallot = false;
+                $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
             }
             
-            //Export All Ballot History
-            public function exportAllBallotHistory(){
-                return Excel::download(new ExportExcelAllHistory, 'all_ballot_history.xlsx');
-            }
-            
-            //Export Date Range Ballot History
-            public function exportDateBallot(){
-                // dd($this->dateFrom);
-                if($this->dateFrom != null &&  $this->dateTo != null){
-                    $export = new ExportExcelBallotDate($this->dateFrom, $this->dateTo);
-                    return Excel::download($export, 'date_ballot_history.xlsx');
-                }
-            }
-            
-            //Export Based on Status Selected Ballot History
-            public function exportStatusBallotHistory(){
-                $statusSelected = $this->statusSelected;
-                $export = new ExportExcelStatusBallotHistory($statusSelected);
-                return Excel::download($export, $statusSelected . '_status_ballot_history.xlsx');
-            }
-            
-            //Mount Function
-            public function mount(){
-                $this->searchMode = Auth::user()->is_search_mode;
-                $this->ballotIn = Auth::user()->is_ballot_in;
-                $this->verificationBadMode = Auth::user()->is_verification_type_bad;
-                $this->comelecRolesList = ComelecRoles::all();
-            }
-            
-            public function render()
-            {
-                // reverse
-                if( $this->ballotIn == true){
-                    $statusType = 'OUT';
-                }else{
-                    $statusType = 'IN';
-                }
-                
-                if($this->searchMode == true){
-                    return view('livewire.rr-ballot-tracking.barcode-function', [
-                        'userList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->
-                        orWhere('bgy_name', 'like', '%'.$this->search.'%')->
-                        orWhere('mun_name', 'like', '%'.$this->search.'%')->
-                        orWhere('prov_name', 'like', '%'.$this->search.'%')->
-                        orWhere('pollplace', 'like', '%'.$this->search.'%')->
-                        orWhere('current_status', 'like', '%'.$this->search.'%')->
-                        orWhere('status_updated_at', 'like', '%'.$this->search.'%')->
-                        paginate(20),
-                        'userListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->
-                        orWhere('bgy_name', 'like', '%'.$this->search.'%')->
-                        orWhere('mun_name', 'like', '%'.$this->search.'%')->
-                        orWhere('prov_name', 'like', '%'.$this->search.'%')->
-                        orWhere('pollplace', 'like', '%'.$this->search.'%')->
-                        orWhere('current_status', 'like', '%'.$this->search.'%')->
-                        orWhere('status_updated_at', 'like', '%'.$this->search.'%')->
-                        count(),
-                        ]);
-                    }else{
-                        if( Auth::user()->comelec_role == 'SHEETER' && Auth::user()->is_ballot_in == true ){
-                            return view('livewire.rr-ballot-tracking.barcode-function', [
-                                'userList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', 'PRINTER' )->paginate(20),
-                                'userListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', 'PRINTER' )->count(),
+            public function updateBadBallots($id){
+                $updateBadBallots = BadBallots::find($id);
+                foreach ($this->badBallotLists as $index => $badballotlist){
+                    
+                    $searchForDuplicates = BadBallots::where('unique_number', $badballotlist['unique_number'])->first();
+                    // dd($searchForDuplicates);
+                    if( $searchForDuplicates != null ){
+                        if($searchForDuplicates->id == $id){
+                            $updateBadBallots->update([
+                                'unique_number' => $badballotlist['unique_number'],
+                                'description' => $badballotlist['description'],
                                 ]);
                             }else{
-                                return view('livewire.rr-ballot-tracking.barcode-function', [
-                                    'userList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('new_status_type', $statusType )->paginate(20),
-                                    'userListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('new_status_type', $statusType )->count(),
+                                $validatedData = Validator::make(
+                                    ['unique_number' => $badballotlist['unique_number']],
+                                    ['unique_number' => 'string|unique:bad_ballots'],
+                                    ['required' => 'The :attribute field is required'],
+                                    )->validate();
+                                }
+                            }else{
+                                $updateBadBallots->update([
+                                    'unique_number' => $badballotlist['unique_number'],
+                                    'description' => $badballotlist['description'],
                                     ]);
                                 }
+                                
                             }
+                            session()->flash('messageBadBallots', 'Bad Ballots Updated Successfully!');
+                            $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
+                            $this->getBadBallot();
+                            $this->updateBadBallot = false;
                         }
-                    }
+                        
+                        //ALTER THE BALLOT STATUS
+                        public function alterBallotStatus($id){
+                            $now = Carbon::now();
+                            $splittedValue = explode(" - ", $this->alterBallotStatus);
+                            
+                            $alterBallotStatus = Ballots::where('id', $id)->first();
+                            
+                            $addBallotHistory = BallotHistory::create([
+                                'ballot_id' => $alterBallotStatus->ballot_id,
+                                'action' => 'Alter Status',
+                                'old_status' => $splittedValue[0],
+                                'old_status_type' => "",
+                                'new_status' => "",
+                                'new_status_type' => $splittedValue[1],
+                                'status_by_id' => Auth::user()->id,
+                                'status_by_name' => Auth::user()->name,
+                                'status_by_at' => $now,
+                                'status_by_at_date' => $now->toDateString(),
+                                ]);
+                                
+                                if($splittedValue[1] == "IN"){
+                                    $currentStatus = $splittedValue[0];
+                                }
+                                
+                                if($this->alterBallotStatus == "SHEETER - OUT"){
+                                    $currentStatus = "TEMPORARY STORAGE";
+                                }
+                                
+                                if($this->alterBallotStatus == "TEMPORARY STORAGE - OUT"){
+                                    $currentStatus = "VERIFICATION";
+                                }
+                                
+                                if($this->alterBallotStatus == "VERIFICATION - OUT"){
+                                    $currentStatus = "CONELEC DELUVERY";
+                                }
+                                
+                                if($this->alterBallotStatus == "CONELEC DELUVERY - OUT"){
+                                    $currentStatus = "NPO SMD";
+                                }
+                                
+                                $alterBallotStatus->update([
+                                    'current_status' => $currentStatus,
+                                    'new_status_type' => $splittedValue[1],
+                                    'status_updated_by_id' => Auth::user()->id,
+                                    'status_updated_by' => Auth::user()->name,
+                                    'status_updated_at' => $now,
+                                    ]);
+                                    
+                                    $this->modalBallotHistoryList = BallotHistory::where('ballot_id', $alterBallotStatus->ballot_id)->get();  
+                                    $this->alterBallotStatus = '';
+                                    session()->flash('messageAltered', $alterBallotStatus->ballot_id . ' Altered Successfully');
+                                    
+                                }
+                                
+                                //UPDATE BALLOT STATUS
+                                public function updateBallotStatus(){
+                                    $now = Carbon::now();
+                                    // dd($now);
+                                    if($this->search != '' && $this->searchMode == false){
+                                        
+                                        if( Auth::user()->comelec_role == 'SHEETER' && $this->ballotIn == true ){
+                                            $updateBallotStatus = Ballots::where('ballot_id', $this->search)->where('current_status', 'PRINTER')->first();
+                                        }else{
+                                            $updateBallotStatus = Ballots::where('ballot_id', $this->search)->where('current_status', Auth::user()->comelec_role)->first();
+                                            // 'FOR ' .
+                                        }
+                                        
+                                        if($updateBallotStatus != null){
+                                            if( $this->verificationBadMode == true ){
+                                                $newStatus = 'QUARANTINE';
+                                                $rePrint = true;
+                                                $rePrintById = Auth::user()->id;
+                                                $rePrintBy =  Auth::user()->name;
+                                                $rePrintAt = $now;
+                                                $rePrintId = $this->search;
+                                            }else{
+                                                if( Auth::user()->comelec_role == 'SHEETER' && $this->ballotIn == true ){
+                                                    $newStatus = Auth::user()->comelec_role;
+                                                }elseif($this->ballotIn == true){
+                                                    $newStatus = $updateBallotStatus->current_status;
+                                                }else{
+                                                    $newStatus = Auth::user()->barcoded_receiver;
+                                                }
+                                                $rePrint = $updateBallotStatus->is_re_print;
+                                                $rePrintById = $updateBallotStatus->is_re_print_by_id;
+                                                $rePrintBy = $updateBallotStatus->is_re_print_by;
+                                                $rePrintAt = $updateBallotStatus->is_re_print_at;
+                                                $rePrintId = $updateBallotStatus->re_print_id;
+                                            }
+                                            
+                                            if( $this->ballotIn == true){
+                                                $statusType = 'IN';
+                                            }else{
+                                                $statusType = 'OUT';
+                                                // $newStatus = "FOR " . $newStatus;
+                                            }
+                                            
+                                            if( $updateBallotStatus->current_status == "PRINTER"){
+                                                $oldStatus = "SHEETER";
+                                            }else{
+                                                $oldStatus = $updateBallotStatus->current_status;
+                                            }
+                                            
+                                            $addBallotHistory = BallotHistory::create([
+                                                'ballot_id' => $this->search,
+                                                'action' => 'Update',
+                                                'old_status' => $oldStatus,
+                                                // 'old_status_type' => $updateBallotStatus->new_status_type,
+                                                'old_status_type' => "",
+                                                // 'new_status' => $newStatus,
+                                                'new_status' => "",
+                                                'new_status_type' => $statusType,
+                                                'status_by_id' => Auth::user()->id,
+                                                'status_by_name' => Auth::user()->name,
+                                                'status_by_at' => $now,
+                                                'status_by_at_date' => $now->toDateString(),
+                                                ]);
+                                                
+                                                $updateBallotStatus->update([
+                                                    'current_status' => $newStatus,
+                                                    'new_status_type' => $statusType,
+                                                    'status_updated_by_id' => Auth::user()->id,
+                                                    'status_updated_by' => Auth::user()->name,
+                                                    'status_updated_at' => $now,
+                                                    
+                                                    'is_re_print' => $rePrint,
+                                                    'is_re_print_by_id' => $rePrintById ,
+                                                    'is_re_print_by' => $rePrintBy,
+                                                    'is_re_print_at' => $rePrintAt,
+                                                    're_print_id' => $rePrintId,
+                                                    ]);
+                                                    
+                                                    session()->flash('success', $this->search . ' Ballot ' . $statusType . ' Successful');
+                                                    return redirect()->to('/ballot_tracking');
+                                                }
+                                            }
+                                        }
+                                        
+                                        //CLEAR SEARCH
+                                        public function clearSearch(){
+                                            $this->search = '';
+                                        }
+                                        
+                                        public function updatedKeywordMode(){
+                                            $this->search = '';
+                                        }
+                                        
+                                        //GET BALLOT HISTORY
+                                        public function getBallotHistory($ballotId){
+                                            $ballotResult = Ballots::find($ballotId);   
+                                            $this->exportSingleId = $ballotId;
+                                            $this->modalBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->get();  
+                                            $this->alterBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->groupBy('old_status', 'new_status_type')->get();  
+                                            $this->ballotHistoryCount = count($this->modalBallotHistoryList);
+                                        }
+                                        
+                                        //EXPORT SINGLE BALLOT HISTORY
+                                        public function exportSingleBallotHistory($exportSingleId){
+                                            $ballotSingleExportResult = Ballots::find($exportSingleId);   
+                                            $ballotIdToExcel = $ballotSingleExportResult->ballot_id;
+                                            $export = new ExportExcelSingleBallotHistory($ballotIdToExcel);
+                                            return Excel::download($export, $ballotIdToExcel . '_single_ballot_history.xlsx');
+                                        }
+                                        
+                                        //EXPORT ALL BALLOT HISTORY
+                                        public function exportAllBallotHistory(){
+                                            return Excel::download(new ExportExcelAllHistory, 'all_ballot_history.xlsx');
+                                        }
+                                        
+                                        //EXPORT DATE RANGE BALLOT HISTORY
+                                        public function exportDateBallot(){
+                                            if($this->dateFrom != null &&  $this->dateTo != null){
+                                                $export = new ExportExcelBallotDate($this->dateFrom, $this->dateTo);
+                                                return Excel::download($export, 'date_ballot_history.xlsx');
+                                            }
+                                        }
+                                        
+                                        //EXPORT BASED ON STATUS SELECTED BALLOT HISTORY
+                                        public function exportStatusBallotHistory(){
+                                            $statusSelected = $this->statusSelected;
+                                            $statusType = $this->statusType;
+                                            $export = new ExportExcelStatusBallotHistory($statusSelected, $statusType);
+                                            return Excel::download($export, $statusSelected . '_status_ballot_history.xlsx');
+                                        }
+                                        
+                                        //MOUNT FUNCTION
+                                        public function mount(){
+                                            $this->searchMode = Auth::user()->is_search_mode;
+                                            $this->ballotIn = Auth::user()->is_ballot_in;
+                                            $this->verificationBadMode = Auth::user()->is_verification_type_bad;
+                                            $this->comelecRolesList = ComelecRoles::all();
+                                            
+                                            //BAD BALLOTS
+                                            $this->badBallotCount++;
+                                            $this->badBallotLists =  [ ['unique_number' => '', 'description' => '',] ];
+                                        }
+                                        
+                                        public function render()
+                                        {
+                                            if( $this->ballotIn == true){
+                                                $statusType = 'OUT';
+                                            }else{
+                                                $statusType = 'IN';
+                                            }
+                                            
+                                            // IF SEARCH MODE IS TRUE SPIT THE INPUT TYPE=TEXT FOR SEARCHING
+                                            if($this->searchMode == true){
+                                                // IF KEYWORD MODE IS TRUE SPIT THE INPUT TYPE=TEXT FOR SEARCHING KEYWORDS
+                                                if( $this->keywordMode == true ){
+                                                    return view('livewire.rr-ballot-tracking.barcode-function', [
+                                                        'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->
+                                                        orWhere('bgy_name', 'like', '%'.$this->search.'%')->
+                                                        orWhere('mun_name', 'like', '%'.$this->search.'%')->
+                                                        orWhere('prov_name', 'like', '%'.$this->search.'%')->
+                                                        orWhere('pollplace', 'like', '%'.$this->search.'%')->
+                                                        orWhere('current_status', 'like', '%'.$this->search.'%')->
+                                                        orWhere('status_updated_at', 'like', '%'.$this->search.'%')->
+                                                        orWhere('status_updated_by', 'like', '%'.$this->search.'%')->
+                                                        paginate(20),
+                                                        'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->
+                                                        orWhere('bgy_name', 'like', '%'.$this->search.'%')->
+                                                        orWhere('mun_name', 'like', '%'.$this->search.'%')->
+                                                        orWhere('prov_name', 'like', '%'.$this->search.'%')->
+                                                        orWhere('pollplace', 'like', '%'.$this->search.'%')->
+                                                        orWhere('current_status', 'like', '%'.$this->search.'%')->
+                                                        orWhere('status_updated_at', 'like', '%'.$this->search.'%')->
+                                                        orWhere('status_updated_by', 'like', '%'.$this->search.'%')->
+                                                        count(),
+                                                        ]);
+                                                    }else{
+                                                        return view('livewire.rr-ballot-tracking.barcode-function', [
+                                                            'ballotList' =>  DB::table('ballots')->whereRaw('status_updated_at like ?', array('%'.$this->search.'%'))->paginate(20),
+                                                            'ballotListCount' =>  DB::table('ballots')->whereRaw('status_updated_at like ?', array('%'.$this->search.'%'))->count(),
+                                                            ]);
+                                                        }
+                                                    }else{
+                                                        // IF SEARCH MODE IS FALSE SPIT THE INPUT-TYPE TEXT FOR UDPATING THE BALLOT STATUS FOR BARCODING IN/OUT
+                                                        if( Auth::user()->comelec_role == 'SHEETER' && Auth::user()->is_ballot_in == true ){
+                                                            return view('livewire.rr-ballot-tracking.barcode-function', [
+                                                                'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', 'PRINTER' )->paginate(20),
+                                                                'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', 'PRINTER' )->count(),
+                                                                ]);
+                                                            }else{
+                                                                return view('livewire.rr-ballot-tracking.barcode-function', [
+                                                                    'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('new_status_type', $statusType )->paginate(20),
+                                                                    'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('new_status_type', $statusType )->count(),
+                                                                    // 'FOR ' .
+                                                                    ]);
+                                                                }
+                                                            }
+                                                        }
+                                                    }

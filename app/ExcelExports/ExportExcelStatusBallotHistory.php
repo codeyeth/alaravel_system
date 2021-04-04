@@ -14,15 +14,24 @@ use Carbon\Carbon;
 class ExportExcelStatusBallotHistory implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
 {
     public $statusSelected;
+    public $statusType;
     
-    public function __construct($statusSelected)
+    public function __construct($statusSelected, $statusType)
     {
         $this->statusSelected = $statusSelected;
+        $this->statusType = $statusType;
     }
     
     public function query()
     {
-        $status_history = BallotHistory::query()->where('new_status', $this->statusSelected);
+        if( $this->statusType == "OUT" ){
+            $status_history = BallotHistory::query()->where('old_status', $this->statusSelected)->where('new_status_type', $this->statusType);
+        }elseif( $this->statusType == "ALL" ){
+            $status_history = BallotHistory::query()->where('old_status', $this->statusSelected);
+        }else{
+            $status_history = BallotHistory::query()->where('old_status', $this->statusSelected)->where('new_status_type', $this->statusType);
+        }
+        
         return $status_history;
     }
     
