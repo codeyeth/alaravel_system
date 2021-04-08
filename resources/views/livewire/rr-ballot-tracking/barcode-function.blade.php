@@ -148,6 +148,7 @@
                                     @if ( Auth::user()->comelec_role == "QUARANTINE")
                                     <th scope="col" class="border-0" style="text-align: left"></th>
                                     @endif
+                                    
                                     <th scope="col" class="border-0" style="text-align: left">History</th>
                                     <th scope="col" class="border-0" style="text-align: left">Details</th>
                                 </tr>
@@ -189,9 +190,11 @@
                                         <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalBadBallots" wire:click.preventDefault="setBadBallotId({{ $item->id }})"> <i class="material-icons">search</i> Encode Bad Ballots</button>
                                     </td>
                                     @endif
+                                    
                                     <td>
                                         <button type="button" class="btn btn-accent" data-toggle="modal" data-target="#modalBallotHistory" wire:click.preventDefault="getBallotHistory({{ $item->id }})"> <i class="material-icons">search</i> View</button>
                                     </td>
+                                    
                                     <td>
                                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalBallotDetails" wire:click.preventDefault="getBallotDetails({{ $item->id }})"> <i class="material-icons">search</i> View</button>
                                     </td>
@@ -260,7 +263,14 @@
                                         @else
                                         {{ $history_item->old_status }}
                                         @endif
+                                        @if ( $history_item->for == '')
                                         - <span class="text-info"> {{ $history_item->new_status_type }} </span>
+                                        @endif
+                                        
+                                        @if ( $history_item->for != '')
+                                        - <span class="text-danger"> {{ $history_item->new_status_type }} </span>
+                                        - <span class="text-danger"> {{ $history_item->for }} </span>
+                                        @endif
                                     </b>
                                 </td>
                                 <td align="right">
@@ -282,6 +292,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    
+                    
+                    @if ( Auth::user()->is_admin == true )
                     
                     <hr>
                     
@@ -307,6 +320,7 @@
                             </button>
                         </div>
                     </div>
+                    @endif
                     
                     @else
                     <br>

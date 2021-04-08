@@ -168,7 +168,14 @@
                                     <fieldset>
                                         <div class="custom-control custom-checkbox mb-1">
                                             <input type="checkbox" class="custom-control-input" id="isDr" name="isDr" wire:model="isDr" wire:click="checkAlsoBallot">
-                                            <label class="custom-control-label" for="isDr">SMD Deliver Receipt</label>
+                                            <label class="custom-control-label" for="isDr">SMD Delivery Receipt</label>
+                                        </div>
+                                    </fieldset>
+
+                                    <fieldset>
+                                        <div class="custom-control custom-checkbox mb-1">
+                                            <input type="checkbox" class="custom-control-input" id="isSmdSystem" name="isSmdSystem" wire:model="isSmdSystem">
+                                            <label class="custom-control-label" for="isSmdSystem">SMD Internal System</label>
                                         </div>
                                     </fieldset>
                                     

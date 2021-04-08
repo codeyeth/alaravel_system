@@ -31,6 +31,7 @@ class UserList extends Component
     public $is_user_mgt;
     public $is_ballot_tracking;
     public $is_dr;
+    public $is_smd_system;
     public $is_gazette;
     public $is_motorpool;
     public $try;
@@ -51,6 +52,7 @@ class UserList extends Component
     public $EditisUserMgt = false;
     public $EditisBallot = false;
     public $EditisDr = false;
+    public $EditisSmdSystem = false;
     public $EditisGazette = false;
     public $EditisMotorpool = false;
     
@@ -117,6 +119,7 @@ class UserList extends Component
         $this->EditisUserMgt = false;
         $this->EditisBallot = false;
         $this->EditisDr = false;
+        $this->EditisSmdSystem = false;
         $this->EditisGazette = false;
         $this->EditisMotorpool = false;
         
@@ -148,6 +151,7 @@ class UserList extends Component
         $this->is_user_mgt = $modalUser->is_user_mgt;
         $this->is_ballot_tracking = $modalUser->is_ballot_tracking;
         $this->is_dr = $modalUser->is_dr;
+        $this->is_smd_system = $modalUser->is_smd_system;
         $this->is_gazette = $modalUser->is_gazette;
         $this->is_motorpool = $modalUser->is_motorpool;
         $this->comelec_role = $modalUser->comelec_role;
@@ -170,6 +174,7 @@ class UserList extends Component
         $this->EditisUserMgt = $modalEdit->is_user_mgt;
         $this->EditisBallot = $modalEdit->is_ballot_tracking;
         $this->EditisDr = $modalEdit->is_dr;
+        $this->EditisSmdSystem = $modalEdit->is_smd_system;
         $this->EditisGazette = $modalEdit->is_gazette;
         $this->EditisMotorpool = $modalEdit->is_motorpool;
         
@@ -207,6 +212,7 @@ class UserList extends Component
             'viewIsUserMgt' => $viewUser->is_user_mgt,
             'viewIsBallot' => $viewUser->is_ballot_tracking,
             'viewIsDr' => $viewUser->is_dr,
+            'viewIsSmdSystem' => $viewUser->is_smd_system,
             'viewIsGazette' => $viewUser->is_gazette,
             'viewIsMotorpool' => $viewUser->is_motorpool,
             'viewComelecRole' => $viewUser->comelec_role,
@@ -245,6 +251,7 @@ class UserList extends Component
                 'is_user_mgt' => $this->EditisUserMgt,
                 'is_ballot_tracking' => $this->EditisBallot,
                 'is_dr' => $this->EditisDr,
+                'is_smd_system' => $this->EditisSmdSystem,
                 'is_gazette' => $this->EditisGazette,
                 'is_motorpool' => $this->EditisMotorpool,
                 

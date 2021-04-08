@@ -27,6 +27,7 @@ class RrUserManagement extends Component
     public $isUserMgt = false;
     public $isBallot = false;
     public $isDr = false;
+    public $isSmdSystem = false;
     public $isGazette = false;
     public $isMotorpool = false;
     
@@ -87,6 +88,7 @@ class RrUserManagement extends Component
         $this->isUserMgt = '';
         $this->isBallot = '';
         $this->isDr = '';
+        $this->isSmdSystem = '';
         $this->isGazette = '';
         $this->isMotorpool = '';
         $this->comelecRole = '';
@@ -134,6 +136,7 @@ class RrUserManagement extends Component
             'is_user_mgt' =>  $this->isUserMgt,
             'is_ballot_tracking' =>  $this->isBallot,
             'is_dr' =>  $this->isDr,
+            'is_smd_system' =>  $this->isSmdSystem,
             'is_gazette' =>  $this->isGazette,
             'is_motorpool' =>  $this->isMotorpool,
             

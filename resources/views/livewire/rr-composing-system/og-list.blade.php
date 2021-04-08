@@ -14,7 +14,7 @@
                     <strong style="font-size: 150%">  {!! Str::upper(session('messageDeleteOgSoftcopy')) !!} </strong> {{ \Carbon\Carbon::parse(session('now'))->toDayDateTimeString() }}
                 </div>
                 @endif
-
+                
                 <div class="card-body pt-0 pb-3 text-center">
                     <div class="row border-bottom py-2 mb-0 bg-light">
                         <div class="col-12 col-sm-12">
@@ -184,7 +184,7 @@
                                         <div class="form-group col-md-6">
                                             <strong class="text-muted d-block mb-2">Publication Type</strong>
                                             
-                                            <select name="edit_publicationType" id="edit_publicationType" class="form-control" required wire:model="edit_publicationType" wire:change="spitMatchedSubPublicType($event.target.value)">
+                                            <select name="edit_publicationType" id="edit_publicationType" class="form-control" wire:model="edit_publicationType" wire:change="spitMatchedSubPublicType($event.target.value)">
                                                 <option disabled selected value="">Select here</option>
                                                 @if (count($pubSelectTypeList) > 0)
                                                 @foreach ($pubSelectTypeList as $pub_select_type_list)
@@ -198,8 +198,8 @@
                                         
                                         @if (count($pubSelectSubTypeList) > 0)
                                         <div class="form-group col-md-6">
-                                            <strong class="text-muted d-block mb-2">Publication Sub Type <span class="requiredTag">&bullet;</span></strong>
-                                            <select name="edit_publicationSubType" id="edit_publicationSubType" class="form-control" required wire:model="edit_publicationSubType">
+                                            <strong class="text-muted d-block mb-2">Publication Sub Type </strong>
+                                            <select name="edit_publicationSubType" id="edit_publicationSubType" class="form-control" wire:model="edit_publicationSubType" {{ count($pubSelectSubTypeList) > 0 ? 'required' : ''}}>
                                                 <option disabled selected value="">Select here</option>
                                                 @foreach ($pubSelectSubTypeList as $pub_select_sub_type_list)
                                                 @if ( $pub_select_sub_type_list->publication_parent_id == $edit_publicationType  )

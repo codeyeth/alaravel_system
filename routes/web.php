@@ -24,28 +24,24 @@ Route::get('/', function () {
 
 Auth::routes();
 
+//DASHBOARD
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//USER MANAGEMENT
 Route::get('/user_mgt', [App\Http\Controllers\RrUserManagementController::class, 'index']);
-Route::get('/ballot_tracking', [App\Http\Controllers\RrBallotTrackingController::class, 'index']);
-Route::get('/composing_system', [App\Http\Controllers\RrComposingSystemController::class, 'index']);
-Route::get('/search_engine_composing', [App\Http\Controllers\RrComposingSearchEngineController::class, 'search_engine']);
-
-
 Route::resource('add_user', 'RrUserManagementController');
 Route::resource('change_pass', 'RrChangePasswordController');
 
+//BALLOT TRACKING
+Route::get('/ballot_tracking', [App\Http\Controllers\RrBallotTrackingController::class, 'index']);
 
+//COMPOSING SYSTEM
+Route::get('/composing_system', [App\Http\Controllers\RrComposingSystemController::class, 'index']);
+Route::get('/search_engine_composing', [App\Http\Controllers\RrComposingSearchEngineController::class, 'search_engine']);
 
-
-
-
-
-
-
-
-
-
-
+//SMD SYSTEM
+Route::get('/smd_system', [App\Http\Controllers\RrSmdSystemController::class, 'index']);
+Route::get('/logbook_system', [App\Http\Controllers\RrSmdLogbookSystemController::class, 'logbook_system']);
 
 
 //J Routes

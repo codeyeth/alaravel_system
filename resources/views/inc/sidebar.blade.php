@@ -49,7 +49,7 @@
           </a>
         </li>
         @endif
-
+        
         @if(Auth::user()->is_dr)
         <li class="nav-item">
           <a class="nav-link {{ $sidebar == 'Delivery' ? 'active' : ' ' }}" href="{{ asset('/delivery') }}">
@@ -67,12 +67,21 @@
           </a>
         </li>
         @endif
-
+        
         @if(Auth::user()->is_gazette)
         <li class="nav-item">
           <a class="nav-link {{ $sidebar == 'Composing System' ? 'active' : ' ' }}" href="{{ asset('/composing_system') }}">
             <i class="material-icons">bar_chart</i>
             <span>Composing System</span>
+          </a>
+        </li>
+        @endif
+        
+        @if(Auth::user()->is_smd_system)
+        <li class="nav-item">
+          <a class="nav-link {{ $sidebar == 'SMD System' ? 'active' : ' ' }}" href="{{ asset('/smd_system') }}">
+            <i class="material-icons">bar_chart</i>
+            <span>SMD System</span>
           </a>
         </li>
         @endif

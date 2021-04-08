@@ -117,7 +117,7 @@
                                 <fieldset>
                                     <div class="custom-control custom-checkbox mb-1">
                                         <input type="checkbox" class="custom-control-input" id="is_dr" name="is_dr" value="1" @if($is_dr) checked @endif>
-                                        <label class="custom-control-label" for="is_dr">SMD Deliver Receipt</label>
+                                        <label class="custom-control-label" for="is_dr">SMD Delivery Receipt</label>
                                     </div>
                                 </fieldset>
                                 

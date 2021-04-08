@@ -2,6 +2,6 @@
 
 @section('content')
 
-@livewire('rr-home-dashboard.home-dashboard')
+@livewire('rr-smd-system.data-entry-module')
 
 @endsection

@@ -163,6 +163,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         //ADDED BY RR
         Maatwebsite\Excel\ExcelServiceProvider::class,
+        Milon\Barcode\BarcodeServiceProvider::class,
         //ADDED BY j
         Elibyy\TCPDF\ServiceProvider::class,
         /*
@@ -231,6 +232,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         //ADDED BY RR
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
+        'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
         //ADDED BY j
         'PDF' => Elibyy\TCPDF\Facades\TCPDF::class
     ],

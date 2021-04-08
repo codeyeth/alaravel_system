@@ -289,10 +289,10 @@ class BarcodeFunction extends Component
                                 }
                                 
                                 if($this->alterBallotStatus == "VERIFICATION - OUT"){
-                                    $currentStatus = "CONELEC DELUVERY";
+                                    $currentStatus = "COMELEC DELIVERY";
                                 }
                                 
-                                if($this->alterBallotStatus == "CONELEC DELUVERY - OUT"){
+                                if($this->alterBallotStatus == "COMELEC DELIVERY - OUT"){
                                     $currentStatus = "NPO SMD";
                                 }
                                 
@@ -326,6 +326,7 @@ class BarcodeFunction extends Component
                                         if($updateBallotStatus != null){
                                             if( $this->verificationBadMode == true ){
                                                 $newStatus = 'QUARANTINE';
+                                                $for = 'BAD BALLOTS';
                                                 $rePrint = true;
                                                 $rePrintById = Auth::user()->id;
                                                 $rePrintBy =  Auth::user()->name;
@@ -334,10 +335,13 @@ class BarcodeFunction extends Component
                                             }else{
                                                 if( Auth::user()->comelec_role == 'SHEETER' && $this->ballotIn == true ){
                                                     $newStatus = Auth::user()->comelec_role;
+                                                    $for = '';
                                                 }elseif($this->ballotIn == true){
                                                     $newStatus = $updateBallotStatus->current_status;
+                                                    $for = '';
                                                 }else{
                                                     $newStatus = Auth::user()->barcoded_receiver;
+                                                    $for = '';
                                                 }
                                                 $rePrint = $updateBallotStatus->is_re_print;
                                                 $rePrintById = $updateBallotStatus->is_re_print_by_id;
@@ -368,6 +372,7 @@ class BarcodeFunction extends Component
                                                 // 'new_status' => $newStatus,
                                                 'new_status' => "",
                                                 'new_status_type' => $statusType,
+                                                'for' => $for,
                                                 'status_by_id' => Auth::user()->id,
                                                 'status_by_name' => Auth::user()->name,
                                                 'status_by_at' => $now,

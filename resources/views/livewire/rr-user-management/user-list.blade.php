@@ -199,7 +199,14 @@
                             <fieldset>
                                 <div class="custom-control custom-checkbox mb-1">
                                     <input type="checkbox" class="custom-control-input" id="viewIsDr" name="viewIsDr" value="1" wire:model="viewUserParent.viewIsDr">
-                                    <label class="custom-control-label" for="viewIsDr">SMD Deliver Receipt</label>
+                                    <label class="custom-control-label" for="viewIsDr">SMD Delivery Receipt</label>
+                                </div>
+                            </fieldset>
+
+                            <fieldset>
+                                <div class="custom-control custom-checkbox mb-1">
+                                    <input type="checkbox" class="custom-control-input" id="viewIsSmdSystem" name="viewIsSmdSystem" value="1" wire:model="viewUserParent.viewIsSmdSystem">
+                                    <label class="custom-control-label" for="viewIsSmdSystem">SMD Internal System</label>
                                 </div>
                             </fieldset>
                             
@@ -376,7 +383,14 @@
                                 <fieldset>
                                     <div class="custom-control custom-checkbox mb-1">
                                         <input type="checkbox" class="custom-control-input" id="EditisDr" name="EditisDr" value="1" wire:model="EditisDr" wire:click="checkAlsoBallot">
-                                        <label class="custom-control-label" for="EditisDr">SMD Deliver Receipt</label>
+                                        <label class="custom-control-label" for="EditisDr">SMD Delivery Receipt</label>
+                                    </div>
+                                </fieldset>
+
+                                <fieldset>
+                                    <div class="custom-control custom-checkbox mb-1">
+                                        <input type="checkbox" class="custom-control-input" id="EditisSmdSystem" name="EditisSmdSystem" value="1" wire:model="EditisSmdSystem">
+                                        <label class="custom-control-label" for="EditisSmdSystem">SMD Internal System</label>
                                     </div>
                                 </fieldset>
                                 

@@ -74,8 +74,10 @@ class AddItem extends Component
     public function refreshTrick(){
         $this->publication_type = '';
         $this->publicationSub = [];
+        $this->pubAddMode = true;
         $this->pubList = PublicationType::all();
         $this->pubSubList = PublicationTypeChildren::all();
+        $this->emit('newSoftcopyAdded');
     }
     
     public function deleteParentPubType($pubId){
@@ -85,6 +87,7 @@ class AddItem extends Component
         
         session()->flash('messagePublication', 'Deleted Successfully!');
         $this->refreshTrick();
+        $this->emit('newSoftcopyAdded');
     }
     
     public function deleteChildrenPubType($pubId){
@@ -92,6 +95,7 @@ class AddItem extends Component
         $postDelete->delete();
         session()->flash('messagePublication', 'Deleted Successfully!');
         $this->refreshTrick();
+        $this->emit('newSoftcopyAdded');
     }
     
     public function editPubType($pubId, $indexKey){
@@ -108,8 +112,7 @@ class AddItem extends Component
             $this->publicationSub[$indexKey]['publication_type_sub_id'] = $childrenlist->id;
             $this->publicationSub[$indexKey]['publication_type_sub'] = $childrenlist->publication_type_child;
         }
-        // dd($this->arrayCountUpdate);
-        
+        $this->emit('newSoftcopyAdded');
     }
     
     public function spitMatchedSubPublicType($pubId){

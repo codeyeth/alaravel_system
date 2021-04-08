@@ -27,6 +27,12 @@
 
 <body>
     <div class="container-fluid pt-5">
+        <style scoped>
+            .requiredTag{
+                color: red;
+            }
+        </style>
+        
         <div class="pt-3"></div>
         @yield('content')
     </div>
