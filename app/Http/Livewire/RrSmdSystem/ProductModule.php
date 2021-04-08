@@ -8,23 +8,8 @@ use App\Models\ProductSubParent;
 use Illuminate\Support\Str;
 use DB;
 
-class DataEntryModule extends Component
+class ProductModule extends Component
 {
-    public $salesInvoiceNumber;
-    public $agencyName;
-    public $agencyAddress;
-    public $region;
-    public $contactPerson;
-    public $contactNo;
-    public $emailAddress;
-    public $transactionType = '';
-    public $workOrderkNo;
-    public $stockNo;
-    public $siCode;
-    
-    //ENCODING FROM STOCK FORM
-    public $itemList = [];
-    
     public $quantity;
     public $unit;
     public $descriptionOne;
@@ -145,30 +130,14 @@ class DataEntryModule extends Component
                     $this->refreshTrick();
                 }
                 
-                public function addItemList(){
-                    $this->itemList[] = [
-                        [ 'quantity' => '', 'unit' => '', 'descriptionOne' => '', 
-                        'descriptionTwo' => '', 'price' => '', ]
-                    ];
-                }
-                
-                public function removeItem($index){
-                    unset($this->itemList[$index]);
-                    $this->itemList = array_values($this->itemList);
-                }
-                
                 public function mount(){
-                    $Number = 1;
-                    $this->salesInvoiceNumber = str_pad($Number,6,'0',STR_PAD_LEFT);
-                    
-                    //PRODUCT LIST
                     $this->productList = ProductParent::all();
                     $this->productSubList = ProductSubParent::all();
                 }
                 
                 public function render()
                 {
-                    return view('livewire.rr-smd-system.data-entry-module');
+                    return view('livewire.rr-smd-system.product-module');
                 }
             }
             

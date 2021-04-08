@@ -56,6 +56,12 @@
                         .requiredTag{
                             color: red;
                         }
+                        @media (min-width: 768px) {
+                            .modal-xl {
+                                width: 90%;
+                                max-width:1200px;
+                            }
+                        }
                     </style>
                     
                     @yield('content')
@@ -70,7 +76,7 @@
     @livewireScripts
     
     @include('livewire.rr-livewire-script.rr-user-management-script')
-
+    
     @include('livewire.rr-livewire-script.rr-composing-system-script')
     
     {{-- CDN --}}

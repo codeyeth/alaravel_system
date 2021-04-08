@@ -2,6 +2,6 @@
 
 @section('content')
 
-@livewire('rr-smd-system.data-entry-module')
+@livewire('rr-smd-system.action-bar')
 
 @endsection

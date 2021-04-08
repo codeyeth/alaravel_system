@@ -92,13 +92,10 @@
             <p style="text-align: center">No Logbook Records found.</p>    
             @endif
             
-            
-            <br>
-            
         </div>
     </div>
     
-    <br>
+    <hr>
     
     <div style="text-align: right"> 
         {{ $logbookList->links() }}
