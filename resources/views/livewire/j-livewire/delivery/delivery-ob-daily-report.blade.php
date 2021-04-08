@@ -72,8 +72,6 @@
                                     <td>{{ $item->created_at }}</td>
                                 </tr>
                                 @endforeach
-                  
-                  
                             </tbody>
                         </table>
                         @else
@@ -81,13 +79,11 @@
                         <p style="text-align: center">No users found.</p>    
                         @endif
                     </li>
+                    <li class="list-group-item px-3">
+                    {{ $dailyoblist->links() }}
+                    </li>
                     </ul>
-                    <div class="text-center"> 
-              
-             
-              {{ $dailyoblist->links() }}
-        
-          </div>
+                  
                   
 
 

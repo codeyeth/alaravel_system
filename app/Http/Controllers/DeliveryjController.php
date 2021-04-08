@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use Request;
 use App\Models\User;
 use App\Models\Delivery;
 use PDF;
@@ -53,7 +53,15 @@ class DeliveryjController extends Controller
     public function fts()
     {   $breadcrumb = "FTS";
         $sidebar = "Delivery";
+
         return view('j-views.delivery.delivery_fts')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+    }
+
+    public function config()
+    {   $breadcrumb = "CONFIGURATION";
+        $sidebar = "Delivery";
+
+        return view('j-views.delivery.delivery_configuration')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
     }
 
 
@@ -89,6 +97,9 @@ class DeliveryjController extends Controller
     {
         //
     }
+
+   
+  
 
     /**
      * Update the specified resource in storage.
@@ -243,22 +254,30 @@ class DeliveryjController extends Controller
 
      public function savepdfftsdaily()
      {
-        for ($i = 0; $i < 5; $i++) {
-            $imagepath = public_path();
-            $from = request()->get('datefromdaily');
-            $to = request()->get('datetodaily');
-            $issued_to = request()->get('issued_to');
-            $issued_by = request()->get('issued_by');
+        $copies = Request::all();
+        $imagepath = public_path();
+        $from = request()->get('datefromdaily');
+        $to = request()->get('datetodaily');
+        $issued_to = request()->get('issued_to');
+        $issued_by = request()->get('issued_by');
+
+        $copy = DB::table('delivery_configs')
+        ->whereIn('id',$copies['copies'])
+        ->get();
+
+        for ($i = 0; $i < $copy->count(); $i++) {
+           
 
        $deliveries = DB::table('deliveries')
       ->where('BALLOT_ID','<>','')
       ->Where('BALLOT_ID', 'like', '%F_%')
       ->whereRaw('updated_at >= ? AND updated_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
       ->get();
+   
       $total_row = $deliveries->count();
       $total_sum = $deliveries->sum('CLUSTER_TOTAL');
 
-         $view = \View::make('j-views.delivery.fts_daily_pdf',compact('deliveries','imagepath','total_row','total_sum'));
+         $view = \View::make('j-views.delivery.fts_daily_pdf',compact('deliveries','imagepath','total_row','total_sum','copy','issued_by'));
          $html_content = $view->render();
          PDF::setFooterCallback(function($pdf) {
 

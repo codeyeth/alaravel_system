@@ -2,11 +2,12 @@
 
 
  {{ Form::open(['route' => 'view', 'method' => 'GET', 'autocomplete'=>'off'])}}
-                <div class="card card-small">
+            
                   <div class="card-header border-bottom">
                     <h6 class="m-0">Generate DR for FTS <label style="float:right;"> {{$drftslistresult}} </label></h6></h6>
                   </div>
-                  <div class="card-body pt-0">
+
+              
                     <div class="row border-bottom py-2 bg-light">
 
                     <div class="col-12 col-sm-2">
@@ -42,7 +43,7 @@
 
 
                    
-                  </div>
+      
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 pb-3 text-center">
                     @if (count($drftslist) > 0)
@@ -75,16 +76,10 @@
                         <p style="text-align: center">No users found.</p>    
                         @endif
                     </li>
-                    <div class="text-center"> 
-     
-     </div>
-                </ul>
-                </div>
-              
-                <div class="text-center"> 
-        {{ $drftslist->links() }}
-    </div>
-
+                    <li class="list-group-item px-3">
+                    {{ $drftslist->links() }}
+                    </li>
+                  </ul>
 
 
 

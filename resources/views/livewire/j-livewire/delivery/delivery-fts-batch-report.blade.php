@@ -105,14 +105,10 @@
                         <p style="text-align: center">No users found.</p>    
                         @endif
                     </li>
-                    </ul>
-                  
-                
-                
-                <div class="text-center"> 
-                {{ $dailyftslist->links() }}
-    </div>
-              
+                    <li class="list-group-item px-3">
+                    {{ $dailyftslist->links() }}
+                    </li>
+                  </ul>
 
 
 

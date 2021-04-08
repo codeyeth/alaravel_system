@@ -17,7 +17,7 @@ class AddDeleteColumnInDeliveriesTable extends Migration
             $table->string('CITY_MUN_PROV')->nullable(); 
             $table->dropColumn(array('PROV_NAME', 'MUN_NAME', 'BGY_NAME'));
         });
-    }
+    }   
 
     /**
      * Reverse the migrations.

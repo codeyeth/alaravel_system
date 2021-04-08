@@ -5,6 +5,7 @@ namespace App\Http\Livewire\JLivewire\Delivery;
 use Livewire\Component;
 use App\Models\Delivery;
 use App\Models\Ballots;
+use App\Models\DeliveryConfig;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 
@@ -15,6 +16,7 @@ class DeliveryFts extends Component
     protected $paginationTheme = 'bootstrap';
     
     public $ballotlists = [];
+    public $copyList = [];
     public $search = '';
     public $loopCount;
     public $saveCount;
@@ -37,6 +39,7 @@ class DeliveryFts extends Component
     }
     public function mount()
     {
+        $this->copyList = DeliveryConfig::all();
         $this->ballotlists = [
             ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '']
         ];

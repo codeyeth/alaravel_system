@@ -95,10 +95,10 @@
                        <p style="text-align: center">No users found.</p>    
                        @endif
                    </li>
-                   </ul>
-                   <div class="text-center"> 
-                   {{ $dailyoblist->links() }}
-   </div>
-
+                   <li class="list-group-item px-3">
+                    {{ $dailyoblist->links() }}
+                    </li>
+                  </ul>
+                
 
 

@@ -13,6 +13,10 @@
                 <li class="nav-item">
                     <a class="nav-link"  href="{{ asset('/delivery_fts') }}" >FTS</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ asset('/delivery_configuration') }}">Settings</a>
+                </li>
+                
             </ul>
       
         
@@ -67,7 +71,7 @@
 
 
 </div>
-</div>
+
 
 
 

@@ -68,8 +68,8 @@
   <col width="40%">
   <col width="15%">
     <tr style="page-break-inside:avoid; page-break-after:auto">
-      <th width="10%" style="border:1px solid #000000;">BALLOT ID</th>
-      <th width="35%" style="border:1px solid #000000;">CLUSTERED PRECINT</th>
+      <th width="10%" style="border:1px solid #000000;">BALLOT ID  {{ $copy[0]->copies }}</th>
+      <th width="35%" style="border:1px solid #000000;">CLUSTERED PRECINT {{$issued_by}}</th>
       <th width="40%" style="border:1px solid #000000;">PROVINCE / MUNICIPALITY / BARANGAY</th>
       <th width="15%" style="border:1px solid #000000;">QUANTITY</th>
     </tr>
@@ -77,7 +77,7 @@
     <tr style="page-break-inside:avoid; page-break-after:auto">
       <td style="border:1px solid #000000; padding:10px; font-size: x-small;">{{$deliver->BALLOT_ID}}</td>
       <td style="border:1px solid #000000; padding:10px;font-size:13px font-weight: bold; font-size: x-small;  ">{{$deliver->CLUSTERED_PREC}}</td>
-      <td style="border:1px solid #000000; padding:10px;font-size:18px font-weight: bold; font-size: x-small;">{{$deliver->PROV_NAME}} {{$deliver->MUN_NAME}} {{$deliver->BGY_NAME}}</td>
+      <td style="border:1px solid #000000; padding:10px;font-size:18px font-weight: bold; font-size: x-small;">{{$deliver->CITY_MUN_PROV}}</td>
       <td style="border:1px solid #000000; padding:10px; font-size: x-small;">{{$deliver->CLUSTER_TOTAL}}</td>
     </tr>
     @endforeach
