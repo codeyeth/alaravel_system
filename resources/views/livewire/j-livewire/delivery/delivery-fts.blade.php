@@ -15,6 +15,9 @@
                 <li class="nav-item">
                     <a class="nav-link active" >FTS</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ asset('/delivery_configuration') }}">Settings</a>
+                </li>
             </ul>
 
 

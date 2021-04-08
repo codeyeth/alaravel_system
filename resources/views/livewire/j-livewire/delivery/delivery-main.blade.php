@@ -14,6 +14,9 @@
                 <li class="nav-item">
                     <a class="nav-link" href="{{ asset('/delivery_fts') }}">FTS</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ asset('/delivery_configuration') }}">Settings</a>
+                </li>
             </ul>
 
             <div class="row">
@@ -80,15 +83,13 @@
                         @endif
                     </li>
                     <li class="list-group-item px-3">
-                      
+                    {{ $ballotList->links() }}
                     </li>
                 </ul>
             </div>
         </div>
     </div>
-    <div class="text-center"> 
-        {{ $ballotList->links() }}
-    </div>
+  
 
 </div>
 </div>

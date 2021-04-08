@@ -55,10 +55,8 @@
                         @endif
                     </li>
                     <li class="list-group-item px-3">
-                      
+                    {{ $ballotList->links() }}
                     </li>
                 </ul>
-                <div class="text-center"> 
-        {{ $ballotList->links() }}
-    </div>
+      
     
