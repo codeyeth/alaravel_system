@@ -17,6 +17,7 @@ class ClientDatabaseModule extends Component
     //CLIENT DETAILS
     public $agencyName;
     public $agencyAddress;
+    public $region;
     public $contactPerson;
     public $contactNo;
     public $emailAddress;
@@ -41,6 +42,7 @@ class ClientDatabaseModule extends Component
             'agency_code' => "CLIENT-" . $ctrlNumber,
             'agency_name' => Str::upper($this->agencyName),
             'agency_address' => Str::upper($this->agencyAddress),
+            'region' => Str::upper($this->region),
             'contact_person' => Str::upper($this->contactPerson),
             'contact_no' => $this->contactNo,
             'email' => Str::upper($this->emailAddress),
@@ -58,6 +60,7 @@ class ClientDatabaseModule extends Component
             $clientData = ClientDatabase::find($clientId);
             $this->agencyName = $clientData->agency_name;
             $this->agencyAddress = $clientData->agency_address;
+            $this->region = $clientData->region;
             $this->contactPerson = $clientData->contact_person;
             $this->contactNo = $clientData->contact_no;
             $this->emailAddress = $clientData->email;
@@ -68,6 +71,7 @@ class ClientDatabaseModule extends Component
             $updateClientData->update([
                 'agency_name' => Str::upper($this->agencyName),
                 'agency_address' => Str::upper($this->agencyAddress),
+                'region' => Str::upper($this->region),
                 'contact_person' => Str::upper($this->contactPerson),
                 'contact_no' => $this->contactNo,
                 'email' => Str::upper($this->emailAddress),
@@ -91,6 +95,7 @@ class ClientDatabaseModule extends Component
                     'clientList' => ClientDatabase::where('agency_code', 'like', '%'.$this->search.'%')
                     ->orWhere('agency_name', 'like', '%'.$this->search.'%')
                     ->orWhere('agency_address', 'like', '%'.$this->search.'%')
+                    ->orWhere('region', 'like', '%'.$this->search.'%')
                     ->orWhere('contact_person', 'like', '%'.$this->search.'%')
                     ->orWhere('contact_no', 'like', '%'.$this->search.'%')
                     ->orWhere('email', 'like', '%'.$this->search.'%')
@@ -99,6 +104,7 @@ class ClientDatabaseModule extends Component
                     'clientListCount' => ClientDatabase::where('agency_code', 'like', '%'.$this->search.'%')
                     ->orWhere('agency_name', 'like', '%'.$this->search.'%')
                     ->orWhere('agency_address', 'like', '%'.$this->search.'%')
+                    ->orWhere('region', 'like', '%'.$this->search.'%')
                     ->orWhere('contact_person', 'like', '%'.$this->search.'%')
                     ->orWhere('contact_no', 'like', '%'.$this->search.'%')
                     ->orWhere('email', 'like', '%'.$this->search.'%')

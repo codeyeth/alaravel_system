@@ -43,9 +43,13 @@
                             <div class="row">
                                 <div class="col-sm-12 col-md-12">
                                     <div class="form-row">
-                                        <div class="form-group col-md-12">
+                                        <div class="form-group col-md-9">
                                             <strong class="text-muted d-block mb-2">Complete Address <span class="requiredTag">&bullet;</span></strong>
                                             <input type="text" class="form-control" id="agencyAddress" name="agencyAddress" placeholder="Complete Address" autocomplete="off" required autofocus wire:model="agencyAddress" >
+                                        </div>
+                                        <div class="form-group col-md-3">
+                                            <strong class="text-muted d-block mb-2">Region <span class="requiredTag">&bullet;</span></strong>
+                                            <input type="text" class="form-control" id="region" name="region" placeholder="Region" autocomplete="off" required autofocus wire:model="region" >
                                         </div>
                                     </div>
                                 </div>
@@ -90,9 +94,9 @@
                                     </div>
                                 </div>
                             </div>
-                          
+                            
                             <p>Total of <b class="text-info" style="font-size: 130%;"> {{ $clientListCount }} </b> Result/s found.</p>
-
+                            
                             @if (count($clientList) > 0)
                             <table class="table table-hover mb-0">
                                 <thead class="bg-light">
@@ -112,7 +116,7 @@
                                         <td>{{ $client_list->id }}</td>
                                         <td>{{ $client_list->agency_code }}</td>
                                         <td style="text-align: right"> {{ $client_list->agency_name }}</td>
-                                        <td style="text-align: left"> {{ $client_list->agency_address }}</td>
+                                        <td style="text-align: left"> {{ $client_list->agency_address }} - {{ $client_list->region }}</td>
                                         <td style="text-align: left"> {{ $client_list->contact_person }} <br> {{ $client_list->contact_no }} <br> {{ $client_list->email }} </td>
                                         <td width="5%">
                                             <button type="button" class="btn btn-accent btn-block btn-sm" wire:click="editClientData({{ $client_list->id }})">  <i class="material-icons">mode_edit</i> Edit</button>

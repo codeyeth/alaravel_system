@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateClientDatabasesTable extends Migration
+class CreateSalesInvoicesTable extends Migration
 {
     /**
     * Run the migrations.
@@ -13,8 +13,11 @@ class CreateClientDatabasesTable extends Migration
     */
     public function up()
     {
-        Schema::create('client_databases', function (Blueprint $table) {
+        Schema::create('sales_invoices', function (Blueprint $table) {
             $table->id();
+            $table->string('sales_invoice_code');
+            $table->string('code');
+            
             $table->string('agency_code');
             $table->string('agency_name');
             $table->string('agency_address');
@@ -22,6 +25,13 @@ class CreateClientDatabasesTable extends Migration
             $table->string('contact_person');
             $table->string('contact_no');
             $table->string('email');
+            
+            $table->string('transaction_type');
+            $table->string('payment_type');
+            $table->string('work_order_no');
+            $table->string('stock_no');
+            $table->string('issued_by');
+            
             $table->string('created_by_id');
             $table->string('created_by_name');
             $table->timestamps();
@@ -35,6 +45,6 @@ class CreateClientDatabasesTable extends Migration
     */
     public function down()
     {
-        Schema::dropIfExists('client_databases');
+        Schema::dropIfExists('sales_invoices');
     }
 }

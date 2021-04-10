@@ -60,11 +60,13 @@ class ProductModule extends Component
             'product_code' => $productCode,
             'product_name' => Str::upper($this->productName),
             ]);
-            
             foreach ($this->productSubName as $sub_name){
+                $subProductCount = ProductSubParent::count() + 1;
+                $subProductCode = str_pad($subProductCount,4,'0',STR_PAD_LEFT);
+                
                 $saveSubProduct = ProductSubParent::create([
                     'product_code' => $productCode,
-                    'product_sub_code' => 'SUB'.$productCode,
+                    'product_sub_code' => 'SUB'. $subProductCode ,
                     'product_name' => Str::upper($sub_name['product_sub_name']),
                     ]);
                 }
@@ -96,6 +98,9 @@ class ProductModule extends Component
                 );
                 
                 foreach ($this->productSubName as $product_sub_name_for){
+                    $subProductCount = ProductSubParent::count() + 1;
+                    $subProductCode = str_pad($subProductCount,4,'0',STR_PAD_LEFT);
+                    
                     if( $product_sub_name_for['product_sub_id'] != "0000" ){
                         $updatesubProduct = ProductSubParent::find($product_sub_name_for['product_sub_id']);
                         $updatesubProduct->update(
@@ -104,13 +109,13 @@ class ProductModule extends Component
                     }else{
                         ProductSubParent::create([
                             'product_code' => $updateProduct->product_code,
-                            'product_sub_code' => 'SUB'.$updateProduct->product_code,
+                            'product_sub_code' => 'SUB'.$subProductCode,
                             'product_name' => Str::upper($product_sub_name_for['product_sub_name']),
                             ]);
                         }
                     }
                     
-                    session()->flash('messageSaveProduct', 'Publication Type/s Updated Successfully!');
+                    session()->flash('messageSaveProduct', 'Product Updated Successfully!');
                     $this->refreshTrick();
                 }
                 

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateClientDatabasesTable extends Migration
+class CreateProductItemsTable extends Migration
 {
     /**
     * Run the migrations.
@@ -13,15 +13,13 @@ class CreateClientDatabasesTable extends Migration
     */
     public function up()
     {
-        Schema::create('client_databases', function (Blueprint $table) {
+        Schema::create('product_items', function (Blueprint $table) {
             $table->id();
-            $table->string('agency_code');
-            $table->string('agency_name');
-            $table->string('agency_address');
-            $table->string('region');
-            $table->string('contact_person');
-            $table->string('contact_no');
-            $table->string('email');
+            $table->string('product_code');
+            $table->string('product_sub_code');
+            $table->string('form_no');
+            $table->string('description');
+            $table->string('unit');
             $table->string('created_by_id');
             $table->string('created_by_name');
             $table->timestamps();
@@ -35,6 +33,6 @@ class CreateClientDatabasesTable extends Migration
     */
     public function down()
     {
-        Schema::dropIfExists('client_databases');
+        Schema::dropIfExists('product_items');
     }
 }

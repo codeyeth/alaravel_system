@@ -31,7 +31,7 @@
                                 <i class="material-icons">add</i> Add Product
                             </button>
                             <div style="margin-left: 10px;"></div>
-                            <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalAddProduct">
+                            <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalProductItem">
                                 <i class="material-icons">add</i> Add Item/s to Product
                             </button>
                             <div style="margin-left: 10px;"></div>
@@ -51,6 +51,9 @@
         
         {{-- PRODUCT MODULE --}}
         @livewire('rr-smd-system.product-module')
+
+         {{-- PRODUCT ITEM/S MODULE --}}
+         @livewire('rr-smd-system.product-item-module')
         
         {{-- SALES INVOICE MODULE --}}
         @livewire('rr-smd-system.sales-invoice-module')

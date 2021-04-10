@@ -5,17 +5,18 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class ClientDatabase extends Model
+class SalesInvoiceItem extends Model
 {
     use HasFactory;
+    
     protected $fillable = [
-        'agency_code',
-        'agency_name',
-        'agency_address',
-        'region',
-        'contact_person',
-        'contact_no',
-        'email',
+        'sales_invoice_code', 
+        'quantity',
+        'unit',
+        'item_description',
+        'additional_description',
+        'price',
+        'total',
         'created_by_id',
         'created_by_name',
     ];
