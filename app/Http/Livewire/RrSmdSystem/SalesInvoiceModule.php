@@ -16,7 +16,10 @@ use Auth;
 
 class SalesInvoiceModule extends Component
 {
+    public $search = '';
+    
     public $salesInvoiceNumber;
+    public $agencyId;
     public $agencyCode;
     public $agencyName;
     public $agencyAddress;
@@ -63,6 +66,7 @@ class SalesInvoiceModule extends Component
     
     public function getClientDatabase($clientId){
         $clientData = ClientDatabase::find($clientId);
+        $this->agencyId = $clientData->id;
         $this->agencyCode = $clientData->agency_code;
         $this->agencyName = $clientData->agency_name;
         $this->agencyAddress = $clientData->agency_address;
@@ -174,6 +178,7 @@ class SalesInvoiceModule extends Component
             ([
                 'sales_invoice_code' => $this->salesInvoiceNumber,
                 'code' => $this->code,
+                'agency_id' => $this->agencyId,
                 'agency_code' => Str::upper($this->agencyCode),
                 'agency_name' => Str::upper($this->agencyName),
                 'agency_address' => Str::upper($this->agencyAddress),

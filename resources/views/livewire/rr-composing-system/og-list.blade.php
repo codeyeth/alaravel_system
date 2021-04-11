@@ -5,6 +5,7 @@
                 <div class="card-header border-bottom">
                     <h6 class="m-0">Softcopy Lists</h6>
                 </div>
+                
                 @if(session('messageDeleteOgSoftcopy'))
                 <div class="alert alert-accent alert-dismissible fade show mb-0" role="alert">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -32,7 +33,7 @@
                         
                         @if ($keywordMode == true)
                         <div class="col-12 col-sm-12">
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-1">
                                 <input class="form-control form-control-lg mb-0" type="text" placeholder="Search" wire:model="search" value="{{ $keywordMode }}">
                                 <div class="input-group-append">
                                     <button class="btn btn-warning" type="button" wire:click="clearSearch">Clear Search</button>
@@ -41,7 +42,7 @@
                         </div>
                         @else
                         <div class="col-12 col-sm-12">
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-1">
                                 <input class="form-control form-control-lg mb-0" type="date" placeholder="Search" wire:model="search">
                                 <div class="input-group-append">
                                     <button class="btn btn-warning" type="button" wire:click="clearSearch">Clear Search</button>

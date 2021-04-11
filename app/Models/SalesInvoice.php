@@ -12,6 +12,7 @@ class SalesInvoice extends Model
     protected $fillable = [
         'sales_invoice_code', 
         'code',
+        'agency_id',
         'agency_code',
         'agency_name',
         'agency_address',
@@ -24,7 +25,12 @@ class SalesInvoice extends Model
         'work_order_no',
         'stock_no',
         'issued_by',
+        'is_posted',
+        'is_posted_by_id',
+        'is_posted_by_name',
+        'is_posted_at',
         'created_by_id',
         'created_by_name',
+      
     ];
 }

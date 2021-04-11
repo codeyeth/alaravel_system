@@ -62,6 +62,13 @@
                                 max-width:1200px;
                             }
                         }
+                        hr.hr_dashed {
+                            /* border-top: 3px dashed #007bff; */
+                            border-top: 3px dashed #868e96;
+                        }
+                        hr.hr_thick {
+                            border: 1px solid #868e96;
+                        }
                     </style>
                     
                     @yield('content')

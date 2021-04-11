@@ -29,6 +29,7 @@ class ClientDatabaseModule extends Component
     public function refreshTrick(){
         $this->agencyName = '';
         $this->agencyAddress = '';
+        $this->region = '';
         $this->contactPerson = '';
         $this->contactNo = '';
         $this->emailAddress = '';
@@ -39,7 +40,7 @@ class ClientDatabaseModule extends Component
         $clientCount = ClientDatabase::count() + 1;
         $ctrlNumber = str_pad($clientCount,6,'0',STR_PAD_LEFT);
         $saveLogbookParent = ClientDatabase::create([
-            'agency_code' => "CLIENT-" . $ctrlNumber,
+            'agency_code' => "CLIENT" . $ctrlNumber,
             'agency_name' => Str::upper($this->agencyName),
             'agency_address' => Str::upper($this->agencyAddress),
             'region' => Str::upper($this->region),

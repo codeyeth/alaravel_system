@@ -107,7 +107,7 @@
                             </div>
                         </div>
                         
-                        <hr>
+                        <hr class="hr_dashed">
                         
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
@@ -164,7 +164,7 @@
                             </div>
                         </div>
                         
-                        <hr>
+                        <hr class="hr_dashed">
                         
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
@@ -219,8 +219,6 @@
                             </div>
                         </div>
                         
-                        <hr>
-                        
                         @if(session('messageItemsRequired'))
                         <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -230,6 +228,11 @@
                             <strong style="font-size: 150%">  {!! Str::upper(session('messageItemsRequired')) !!} </strong>
                         </div>
                         @endif
+                        
+                        @if (count($itemList) > 0)
+                        <hr>
+                        
+                     
                         
                         <table class="table table-bordered">
                             <thead>
@@ -258,25 +261,28 @@
                                         <input type="text" class="form-control" placeholder="Price" wire:model="itemList.{{$loop->index}}.price" required>
                                     </td>
                                     <td>
-                                        <input type="text" class="form-control" placeholder="Additional Description" wire:model="itemList.{{$loop->index}}.additionalDescription">
+                                        <input type="text" class="form-control" placeholder="Additional Description" wire:model="itemList.{{$loop->index}}.additionalDescription" required>
                                     </td>
                                     <td width="5%">
                                         <button type="button" class="btn btn-danger" wire:click="removeItem({{$loop->index}})"> <i class="material-icons">remove</i></button>
                                     </td>
-                                </td>
-                            </tr>      
-                            @endforeach
-                        </tbody>
-                    </table>
-                    
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-accent">Save Sales Invoice</button>
-                </div>
-            </form>
-            
+                                </tr>      
+                                @endforeach
+                            </tbody>
+                        </table>
+                        @endif
+                        
+                        <hr class="hr_dashed">
+                        
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-accent">Save Sales Invoice</button>
+                    </div>
+                </form>
+                
+            </div>
         </div>
     </div>
-</div>
 </div>

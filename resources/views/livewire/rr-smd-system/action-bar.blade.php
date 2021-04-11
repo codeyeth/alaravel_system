@@ -11,7 +11,7 @@
         </style>
         
         <div class="col-lg-6 col-md-12">
-            <div class="card card-small mb-3">
+            <div class="card card-small mb-2">
                 <div class="card-header border-bottom">
                     <h6 class="m-0">Actions</h6>
                 </div>
