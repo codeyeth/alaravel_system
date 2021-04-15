@@ -20,7 +20,8 @@ class SalesInvoice extends Model
         'contact_person',
         'contact_no',
         'email',
-        'payment_type',
+        'payment_mode',
+        'package_type',
         'transaction_type',
         'work_order_no',
         'stock_no',
@@ -31,6 +32,8 @@ class SalesInvoice extends Model
         'is_posted_at',
         'created_by_id',
         'created_by_name',
-      
+        'pr_no',
+        'dr_no',
+        'or_no',
     ];
 }

@@ -201,7 +201,7 @@ class UserList extends Component
         }
         
         $this->viewUserParent = [
-            'viewEmail' => $viewUser->email,
+            'viewEmail' => Str::upper($viewUser->email),
             'viewFname' => $viewUser->fname,
             'viewMname' => $viewUser->mname,
             'viewLname' => $viewUser->lname,

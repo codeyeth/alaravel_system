@@ -22,9 +22,26 @@ class SalesInvoiceList extends Component
     public $searchSalesInvoice = '';
     public $remarks;
     
+    protected $listeners = ['refreshTable'];
+    
+    
+    //SALES INVOICE DETAILS
+    public $showViewSalesInvoiceModal = false;
+    public $parentSalesInvoiceDetails = [];
+    public $childSalesInvoiceDetails = [];
+    
+    // UPDATE CONTROL NUMBERS
+    public $prNo;
+    public $drNo;
+    public $orNo;
+    
     public function clearSearch(){
         $this->searchSalesInvoice = '';
         $this->keywordMode = true;
+    }
+    
+    public function refreshTable(){
+        $this->resetPage();
     }
     
     public function postToLedger($id){
@@ -60,9 +77,32 @@ class SalesInvoiceList extends Component
         );
         
         session()->flash('messagePostToLedger', 'Posted Successfully!');
-        // $this->refreshTrick();
     }
     
+    public function getSalesInvoice($siID){
+        $this->showViewSalesInvoiceModal = true;
+        $this->parentSalesInvoiceDetails = SalesInvoice::find($siID);
+        $this->childSalesInvoiceDetails = SalesInvoiceItem::where('sales_invoice_code', $this->parentSalesInvoiceDetails->sales_invoice_code)->get();
+    }
+    
+    public function updateControlNumber($id){
+        $siParent = SalesInvoice::find($id);
+        $siParent->update([
+            'pr_no' => $this->prNo,
+            'dr_no' => $this->drNo,
+            'or_no' => $this->orNo,
+            ]
+        );
+
+        $this->parentSalesInvoiceDetails = SalesInvoice::find($id);
+        $this->childSalesInvoiceDetails = SalesInvoiceItem::where('sales_invoice_code', $this->parentSalesInvoiceDetails->sales_invoice_code)->get();
+        
+        $this->prNo = '';
+        $this->drNo = '';
+        $this->orNo = '';
+
+        session()->flash('messageControlNumberUpdate', 'Control Number/s Updated Successfully!');
+    }
     
     public function render()
     {
@@ -73,7 +113,8 @@ class SalesInvoiceList extends Component
                 ->orWhere('agency_name', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orWhere('agency_address', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orWhere('transaction_type', 'like', '%'.$this->searchSalesInvoice.'%')
-                ->orWhere('payment_type', 'like', '%'.$this->searchSalesInvoice.'%')
+                ->orWhere('payment_mode', 'like', '%'.$this->searchSalesInvoice.'%')
+                ->orWhere('package_type', 'like', '%'.$this->searchSalesInvoice.'%')    
                 ->orWhere('created_by_name', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orderBy('created_at', 'DESC')
                 ->paginate(10),
@@ -82,7 +123,8 @@ class SalesInvoiceList extends Component
                 ->orWhere('agency_name', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orWhere('agency_address', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orWhere('transaction_type', 'like', '%'.$this->searchSalesInvoice.'%')
-                ->orWhere('payment_type', 'like', '%'.$this->searchSalesInvoice.'%')
+                ->orWhere('payment_mode', 'like', '%'.$this->searchSalesInvoice.'%')
+                ->orWhere('package_type', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orWhere('created_by_name', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orderBy('created_at', 'DESC')
                 ->count(),

@@ -42,7 +42,11 @@ Route::get('/search_engine_composing', [App\Http\Controllers\RrComposingSearchEn
 //SMD SYSTEM
 Route::get('/smd_system', [App\Http\Controllers\RrSmdSystemController::class, 'index']);
 Route::get('/logbook_system', [App\Http\Controllers\RrSmdLogbookSystemController::class, 'logbook_system']);
+// Route::get('/client_ledger/{id}', [App\Http\Controllers\RrSmdSystemController::class, 'client_ledger']);
 
+Route::get('/client_ledger/{id}', function ($client_id) {
+    return view('rr_smd_system.client_ledger')->with('client_id', $client_id);
+});
 
 //J Routes
 Route::resource('delivery', 'DeliveryjController');

@@ -28,7 +28,7 @@ class SalesInvoiceModule extends Component
     public $contactNo;
     public $emailAddress;
     public $transactionType = '';
-    public $paymentType = '';
+    public $paymentMode = '';
     public $packageType = '';
     public $workOrderNo;
     public $code;
@@ -148,7 +148,7 @@ class SalesInvoiceModule extends Component
         $this->contactNo = '';
         $this->emailAddress = '';
         $this->transactionType = '';
-        $this->paymentType = '';
+        $this->paymentMode = '';
         $this->packageType = '';
         $this->workOrderNo = '';
         $this->code = '';
@@ -169,6 +169,9 @@ class SalesInvoiceModule extends Component
         $this->productParent = '';
         $this->productSubParent = '';
         $this->productItems = '';
+
+        $this->emit('newSalesInvoiceAdded');
+
     }
     
     public function saveSalesInvoice(){
@@ -186,7 +189,8 @@ class SalesInvoiceModule extends Component
                 'contact_person' => Str::upper($this->contactPerson),
                 'contact_no' => Str::upper($this->contactNo),
                 'email' => Str::upper($this->emailAddress),
-                'payment_type' => $this->paymentType,
+                'payment_mode' => $this->paymentMode,
+                'package_type' => $this->packageType,
                 'transaction_type' => $this->transactionType,
                 'work_order_no' => $this->workOrderNo,
                 'stock_no' => $this->stockNo,

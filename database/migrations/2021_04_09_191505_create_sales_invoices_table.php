@@ -28,7 +28,8 @@ class CreateSalesInvoicesTable extends Migration
             $table->string('email');
             
             $table->string('transaction_type');
-            $table->string('payment_type');
+            $table->string('payment_mode');
+            $table->string('package_type');
             $table->string('work_order_no');
             $table->string('stock_no');
             $table->string('issued_by');
