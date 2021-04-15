@@ -82,9 +82,14 @@
     {{-- @include('inc.footer_popup') --}}
     @livewireScripts
     
+    {{-- USER MANAGEMENT --}}
     @include('livewire.rr-livewire-script.rr-user-management-script')
     
+    {{-- COMPOSING SYSTEM --}}
     @include('livewire.rr-livewire-script.rr-composing-system-script')
+    
+    {{-- SMD SYSTEM --}}
+    @include('livewire.rr-livewire-script.rr-smd-system-script')
     
     {{-- CDN --}}
     {{-- <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script> --}}

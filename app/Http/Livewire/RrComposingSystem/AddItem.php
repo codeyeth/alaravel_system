@@ -87,7 +87,6 @@ class AddItem extends Component
         
         session()->flash('messagePublication', 'Deleted Successfully!');
         $this->refreshTrick();
-        $this->emit('newSoftcopyAdded');
     }
     
     public function deleteChildrenPubType($pubId){
@@ -95,7 +94,6 @@ class AddItem extends Component
         $postDelete->delete();
         session()->flash('messagePublication', 'Deleted Successfully!');
         $this->refreshTrick();
-        $this->emit('newSoftcopyAdded');
     }
     
     public function editPubType($pubId, $indexKey){
@@ -144,7 +142,6 @@ class AddItem extends Component
                 // return redirect()->to('/composing_system');
                 
                 $this->refreshTrick();
-                $this->emit('newSoftcopyAdded');
             }
             
             public function updatePublication($pubId){
@@ -171,7 +168,6 @@ class AddItem extends Component
                     
                     session()->flash('messagePublication', 'Publication Type/s Updated Successfully!');
                     $this->refreshTrick();
-                    $this->emit('newSoftcopyAdded');
                 }
                 
                 public function saveSoftcopy(){

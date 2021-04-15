@@ -31,6 +31,13 @@
             .requiredTag{
                 color: red;
             }
+            hr.hr_dashed {
+                /* border-top: 3px dashed #007bff; */
+                border-top: 3px dashed #868e96;
+            }
+            hr.hr_thick {
+                border: 1px solid #868e96;
+            }
         </style>
         
         <div class="pt-3"></div>

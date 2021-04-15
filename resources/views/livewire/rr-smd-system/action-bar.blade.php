@@ -19,12 +19,25 @@
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item p-3">
+                            
+                            <span class="d-flex mb-2">
+                                <i class="material-icons mr-1">login</i>
+                                <strong class="mr-1">Logbook System:</strong> 
+                                <a class="text-accent" href="{{ asset('/logbook_system') }}" target="_blank"><b> View </b></a>
+                            </span>
+                            
                             <span class="d-flex mb-2">
                                 <i class="material-icons mr-1">add</i>
-                                <strong class="mr-1">Total Sales Invoice for Today:</strong>
-                                <strong class="text-success"> 1 </strong>
-                                <a class="ml-auto" href="#">View</a>
+                                <strong class="mr-1">Total Sales Invoice Today:</strong>
+                                <strong class="text-success"> {{ $salesInvoiceTodayCount }} </strong>
                             </span>
+                            
+                            <span class="d-flex mb-2">
+                                <i class="material-icons mr-1">add</i>
+                                <strong class="mr-1">Total Posted Transactions Today:</strong>
+                                <strong class="text-success"> {{ $postedTransactionCount }} </strong>
+                            </span>
+                            
                         </li>
                         <li class="list-group-item d-flex px-3">
                             <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalAddProduct">
@@ -51,9 +64,9 @@
         
         {{-- PRODUCT MODULE --}}
         @livewire('rr-smd-system.product-module')
-
-         {{-- PRODUCT ITEM/S MODULE --}}
-         @livewire('rr-smd-system.product-item-module')
+        
+        {{-- PRODUCT ITEM/S MODULE --}}
+        @livewire('rr-smd-system.product-item-module')
         
         {{-- SALES INVOICE MODULE --}}
         @livewire('rr-smd-system.sales-invoice-module')

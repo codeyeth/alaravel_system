@@ -2,23 +2,26 @@
 
 
 
-    <div class='card card-small mb-3'>
-  
-        
-        
- 
+<div class='card card-small mb-3'>
+    
+    
+    
+    
     <div class="card-header border-bottom">
-             <ul class="nav nav-tabs justify-content-end" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('/delivery_ob') }}" >OB</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" >FTS</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ asset('/delivery_configuration') }}">Settings</a>
-                </li>
-            </ul>
+        <ul class="nav nav-tabs justify-content-end" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" href="{{ asset('/delivery_ob') }}" >OB</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" >FTS</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{ asset('/delivery_configuration') }}">Settings</a>
+            </li>
+        </ul>
+        
+        
+
 
 
 
@@ -63,58 +66,52 @@
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </div>
-</div>
 
 
+</ul>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    
-        </div>
-        
-                 
-            </ul>
-            
 </div>
 

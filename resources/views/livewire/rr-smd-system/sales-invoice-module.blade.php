@@ -31,7 +31,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
                                         <strong class="text-muted d-block mb-2">AGENCY NAME <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="agencyName" name="agencyName" placeholder="Agency Name" autocomplete="off" required autofocus wire:model="agencyName" wire:keyup="searchClientDatabase">
+                                        <input type="text" class="form-control" id="SIagencyName" name="SIagencyName" placeholder="Agency Name" autocomplete="off" required autofocus wire:model="agencyName" wire:keyup="searchClientDatabase">
                                     </div>
                                 </div>
                             </div>
@@ -78,11 +78,11 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-10">
                                         <strong class="text-muted d-block mb-2">COMPLETE ADDRESS <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="agencyAddress" name="agencyAddress" placeholder="Complete Address" autocomplete="off" required autofocus wire:model="agencyAddress" >
+                                        <input type="text" class="form-control" id="SIagencyAddress" name="SIagencyAddress" placeholder="Complete Address" autocomplete="off" required autofocus wire:model="agencyAddress" >
                                     </div>
                                     <div class="form-group col-md-2">
                                         <strong class="text-muted d-block mb-2">REGION <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="region" name="region" placeholder="Region" autocomplete="off" required autofocus wire:model="region" >
+                                        <input type="text" class="form-control" id="SIregion" name="SIregion" placeholder="Region" autocomplete="off" required autofocus wire:model="region" >
                                     </div>
                                 </div>
                             </div>
@@ -93,15 +93,15 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">CONTACT PERSON <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="contactPerson" name="contactPerson" placeholder="Contact Person" autocomplete="off" required autofocus wire:model="contactPerson" >
+                                        <input type="text" class="form-control" id="SIcontactPerson" name="SIcontactPerson" placeholder="Contact Person" autocomplete="off" required autofocus wire:model="contactPerson" >
                                     </div>
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">CONTACT NO <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="Contact No" autocomplete="off" required autofocus wire:model="contactNo" >
+                                        <input type="text" class="form-control" id="SIcontactNo" name="SIcontactNo" placeholder="Contact No" autocomplete="off" required autofocus wire:model="contactNo" >
                                     </div>
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">EMAIL ADDRESS <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="emailAddress" name="emailAddress" placeholder="Email Address" autocomplete="off" required autofocus wire:model="emailAddress" >
+                                        <input type="text" class="form-control" id="SIemailAddress" name="SIemailAddress" placeholder="Email Address" autocomplete="off" required autofocus wire:model="emailAddress" >
                                     </div>
                                 </div>
                             </div>
@@ -121,8 +121,8 @@
                                         </select>
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">PAYMENT TYPE <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="paymentType" id="paymentType" class="form-control" wire:model="paymentType">
+                                        <strong class="text-muted d-block mb-2">MODE OF PAYMENT <span class="requiredTag">&bullet;</span></strong>
+                                        <select name="paymentMode" id="paymentMode" class="form-control" wire:model="paymentMode">
                                             <option disabled selected value="">Select Here</option>
                                             <option value="CASH">CASH</option>
                                             <option value="CHECK">CHECK</option>
@@ -232,8 +232,6 @@
                         @if (count($itemList) > 0)
                         <hr>
                         
-                     
-                        
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
@@ -255,10 +253,10 @@
                                         <input type="text" class="form-control" placeholder="Unit" wire:model="itemList.{{$loop->index}}.unit" required>
                                     </td>
                                     <td width="10%">
-                                        <input type="text" class="form-control" placeholder="Qty" wire:model="itemList.{{$loop->index}}.quantity" required>
+                                        <input type="number" class="form-control" placeholder="Qty" wire:model="itemList.{{$loop->index}}.quantity" required>
                                     </td>
                                     <td width="10%">
-                                        <input type="text" class="form-control" placeholder="Price" wire:model="itemList.{{$loop->index}}.price" required>
+                                        <input type="number" class="form-control" placeholder="Price" wire:model="itemList.{{$loop->index}}.price" required>
                                     </td>
                                     <td>
                                         <input type="text" class="form-control" placeholder="Additional Description" wire:model="itemList.{{$loop->index}}.additionalDescription" required>

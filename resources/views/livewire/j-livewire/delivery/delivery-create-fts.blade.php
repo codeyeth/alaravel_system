@@ -5,12 +5,23 @@
 </div>
 @endif
 
-
 <div class="card-header">
     You are now in DR Entry for <b><i>FTS </b></i>
 </div>
 
+@if(session('messageFts'))
+<div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">×</span>
+    </button>
+    <i class="fa fa-info mx-2"></i>
+    <strong style="font-size: 150%">  {!! Str::upper(session('messageFts')) !!} </strong>
+</div>
+@endif
 
+<form wire:submit.prevent="storefts" autocomplete="off">
+    @csrf
+    
     <table class="table" id="ballots_table">
         <thead>
             <tr>
@@ -26,7 +37,7 @@
             <tr>
                 <td>
                     <input type="text" id="focusBallot{{$index}}" name="ballotlists[{{$index}}][ballot_id]" class="form-control" wire:model="ballotlists.{{$index}}.ballot_id" 
-                    wire:keyup="searchBallotId($event.target.value, {{ $index }})" />
+                    wire:change="searchBallotId($event.target.value, {{ $index }})" required/>
                 </td>
                 <td>
                     <input type="text" name="ballotlists[{{$index}}][clustered_precint]" class="form-control" wire:model="ballotlists.{{$index}}.clustered_precint" readonly/>
@@ -44,21 +55,24 @@
             @endforeach
         </tbody>
     </table>
+    
     <div class="row">
+        
         <div class="col-md-10">
             <button class="btn btn-sm btn-secondary" wire:click.prevent="addBallot">+ Add Another Row</button>
         </div>  
+         @if($showSaveBtn == true)
         <div class="col-md-2">
-            <button  wire:click.prevent="storefts" class="btn btn-primary"><i class="material-icons">save</i> Save </button>
+            <button type="submit" class="btn btn-primary"><i class="material-icons">save</i> Save </button>
         </div>
+         @endif
         
- 
         <script>
             window.addEventListener('searchSucceed', event => {
-                // $("focusBallot1").focus();
-                // alert("focusBallot" + event.detail.idFocus);
+                $("focusBallot1").focus();
+                var readonlyId = event.detail.idFocus - 1;
+                $("#focusBallot" + readonlyId).attr('readonly', 'readonly');
                 document.getElementById("focusBallot" + event.detail.idFocus).focus();
-
             })
             window.onload = function() {
                 document.getElementById("focusBallot0").focus();
@@ -66,3 +80,5 @@
         </script>
         
     </div>
+    
+</form>
