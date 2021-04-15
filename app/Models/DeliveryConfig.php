@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class DeliveryConfig extends Model
 {
     use HasFactory;
-    protected $fillable = ['copies','title_list'];
+    protected $fillable = ['copies','title_list','personnel','authorization','title','description','delivered_to'];
 }

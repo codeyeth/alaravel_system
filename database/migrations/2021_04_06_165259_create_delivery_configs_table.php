@@ -20,6 +20,8 @@ class CreateDeliveryConfigsTable extends Migration
             $table->string('authorization')->nullable();
             $table->string('title')->nullable();
             $table->string('title_list')->nullable();
+            $table->string('description')->nullable();
+            $table->string('delivered_to')->nullable();
             $table->timestamps();
         });
     }

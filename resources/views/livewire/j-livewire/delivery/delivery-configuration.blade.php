@@ -24,25 +24,10 @@
                 <div class="card-header border-bottom">
                     <h6 class="m-0">Delivery Reports Configuration <label style="float:right;">Add and Remove data to be used in Reports </label></h6> 
                   </div>
-                  @if(session('messageSaveNewCopy'))
-                        <div class="alert alert-accent alert-dismissible fade show mb-0" role="alert">
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">×</span>
-                            </button>
-                            <i class="fa fa-info mx-2"></i>
-                            <strong style="font-size: 150%">  {!! Str::upper(session('messageSaveNewCopy')) !!} </strong> {{ \Carbon\Carbon::parse(session('now'))->toDayDateTimeString() }}
-                        </div>
-                        @endif
+         
+           
 
-                        @if(session('messageDeleteCopy'))
-                <div class="alert alert-accent alert-dismissible fade show mb-0" role="alert">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
-                    <i class="fa fa-info mx-2"></i>
-                    <strong style="font-size: 150%">  {!! Str::upper(session('messageDeleteCopy')) !!} </strong> {{ \Carbon\Carbon::parse(session('now'))->toDayDateTimeString() }}
-                </div>
-                @endif
+
            
 
 
@@ -52,12 +37,24 @@
                 <!---start of issued by-->
                 <div class="card card-small mb-4">
                   <div class="card-header border-bottom">
-                    <h6 class="m-0">List for Authorized Personnel</h6>
+                    <h6 class="m-0">List for Authorized Personnel <label style="float:right;">{{$nameList->count()}}</label></h6>
                   </div>
+                  @if(session('messageSavePerson'))
+                <div class="alert alert-success">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  {!! Str::upper(session('messageSavePerson')) !!} 
+                 </div>
+                        @endif
+                  @if(session('messageDeletePerson'))
+                  <div class="alert alert-danger">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  {!! Str::upper(session('messageDeletePerson')) !!}
+                 </div>
+                @endif
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item p-0 px-3 pt-3">
-                    @if (count($copyList) > 0)
-                    <div class="mynav" style="height: 400px;   overflow-y : scroll;">
+                    @if (count($nameList) > 0)
+                    <div class="mynav" style="height: 275px;   overflow-y : scroll;">
                         <table class="table table-hover mb-0">
                         <thead class="bg-light">
                                 <tr>
@@ -73,7 +70,7 @@
                                     <td>{{ $item->personnel}}</td>
                                     <td>{{ $item->title}}</td>
                                     <td>{{ $item->authorization}}</td>
-                                    <td><button type="submit" class="btn btn-danger" wire:click="removecopy({{ $item->id }})"> <i class="material-icons">delete</i> Delete</button></td>
+                                    <td><button class="btn btn-danger" wire:click="remove({{ $item->id }}, '1')"> <i class="material-icons">delete</i> Delete</button></td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -81,18 +78,45 @@
                         </div>
                         @else
                         <br>
-                        <p style="text-align: center">Not found.</p>    
+                        <p style="text-align: center">No Data.</p>    
                         @endif
                     </li>
                     <li class="list-group-item p-3">
                       <div class="row">
                         <div class="col-sm-12 col-md-12">
-                        <form wire:submit.prevent="savecopy" autocomplete="off">
-                            <input class="form-control col-sm-3 col-md-3 form-control-lg mb-0" type="text" placeholder="Type here to add for new Copies for" wire:model="copy">
-
-                            <br><button type="submit" class="btn btn-success col-md-12"><i class="material-icons">add</i>ADD</button>
+                        <div class="form-row">
+                              <div class="form-group col-md-4">
+                                <input type="text" class="form-control" placeholder="Type Name of Personnel Here" wire:model="person_name">
+                              </div>
+                              <div class="form-group col-md-4">
+                              <select id="person_title" name="person_title" class="form-control" wire:model="person_title" required>
+                              <option selected disabled value="">Choose title / position</option>
+                              <option value="N/A">N/A</option>
+                                @if(count($titleList) > 0)
+                                  @foreach($titleList as $post)
+                              <option value="{{$post->title_list}}">{{$post->title_list}}</option>
+                                @endforeach
+                              @else
+                                <option selected disabled value="">No Title available</option>
+                              @endif
+                              </select>
+                              </div>
+                                            
+                              <div class="form-group col-md-4">
+                              <select id="person_auth" name="person_auth" class="form-control" wire:model="person_auth" required>
+                              <option selected disabled value="">This Person is Authorized for:</option>
+                              <option value="Received by">Received by</option>
+                              <option value="Approved by">Approved by</option>
+                              <option value="Issued by">Issued by</option>
+                              <option value="Inspected by">Inspected by</option>
+                              </select> 
+                              </div>
+                            </div>
+                            
+                           <button wire:click="save(1)" class="btn btn-success col-md-12"><i class="material-icons">add</i>ADD</button>
                        
-                        </form>
+
+
                         </div>
                       </div>
                     </li>
@@ -100,7 +124,185 @@
                 </div>
                  <!---end of issued by-->
 
+
+
+
+
+
+
+
+
+<div class="form-row">
+<div class="col-lg-6 mb-4">
+
+
+   <div class="card card-small mb-4">
+                  <div class="card-header border-bottom">
+                    <h6 class="m-0">List for Reports Delivered to: <label style="float:right;">{{$nameList->count()}}</label></h6>
+                  </div>
+                  @if(session('messageSaveDelivered'))
+                <div class="alert alert-success">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  {!! Str::upper(session('messageSaveDelivered')) !!} 
+                 </div>
+                       
+                        @endif
+
+                  @if(session('messageDeleteDelivered'))
+                  <div class="alert alert-danger">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  {!! Str::upper(session('messageDeleteDelivered')) !!}
+                 </div>
+                @endif
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item p-0 px-3 pt-3">
+                    @if (count($deliveredList) > 0)
+                    <div class="mynav" style="height: 375px;   overflow-y : scroll;">
+                        <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                                <tr>
+                                    <th scope="col" class="border-0">Delivered to:</th>
+                                    <th scope="col" class="border-0"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($deliveredList as $item)
+                                <tr>
+                                    <td>{{ $item->delivered_to}}</td>
+                                    <td><button class="btn btn-danger" wire:click="remove({{ $item->id }}, '2')"> <i class="material-icons">delete</i> Delete</button></td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        </div>
+                        @else
+                        <br>
+                        <p style="text-align: center">No Data.</p>    
+                        @endif
+                    </li>
+                    <li class="list-group-item p-3">
+                      <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                        <div class="form-row">
+                              <div class="form-group col-md-12">
+                                <input type="text" class="form-control" placeholder="Type Data here for Delivered to:" wire:model="delivered_to">
+                              </div>
+                            
+                                            
+                            
+                            </div>
+                            
+                           <button wire:click="save(2)" class="btn btn-success col-md-12"><i class="material-icons">add</i>ADD</button>
+                       
+
+
+
+                 
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                 
+
         
+
+
+
+</div>
+<div class="col-lg-6 mb-4">
+
+
+   <div class="card card-small mb-4">
+                  <div class="card-header border-bottom">
+                    <h6 class="m-0">List for Reports Description <label style="float:right;">{{$nameList->count()}}</label></h6>
+                  </div>
+                  @if(session('messageSaveDescription'))
+                <div class="alert alert-success">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  {!! Str::upper(session('messageSaveDescription')) !!} 
+                 </div>
+                       
+                        @endif
+
+                  @if(session('messageDeleteDescription'))
+                  <div class="alert alert-danger">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  {!! Str::upper(session('messageDeleteDescription')) !!}
+                 </div>
+                @endif
+                  <ul class="list-group list-group-flush">
+                    <li class="list-group-item p-0 px-3 pt-3">
+                    @if (count($nameList) > 0)
+                    <div class="mynav" style="height: 375px;   overflow-y : scroll;">
+                        <table class="table table-hover mb-0">
+                        <thead class="bg-light">
+                                <tr>
+                                    <th scope="col" class="border-0">Description</th>
+                                    <th scope="col" class="border-0"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            @foreach ($descriptionList as $item)
+                                <tr>
+                                    <td>{{$item->description}}</td>
+                                    <td><button class="btn btn-danger" wire:click="remove({{ $item->id }}, '3')"> <i class="material-icons">delete</i> Delete</button></td>
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        </div>
+                        @else
+                        <br>
+                        <p style="text-align: center">No Data.</p>    
+                        @endif
+                    </li>
+                    <li class="list-group-item p-3">
+                      <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                     
+                        <div class="form-row">
+                              <div class="form-group col-md-12">
+                                <input type="text" class="form-control" placeholder="Type Another Description Here" wire:model="description">
+                              </div>
+                            
+                                            
+                             
+                            </div>
+                            
+                           <button wire:click="save(3)" class="btn btn-success col-md-12"><i class="material-icons">add</i>ADD</button>
+                       
+
+
+
+                    
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                 
+
+        
+
+
+
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -122,18 +324,36 @@
                 <!-- Sliders & Progress Bars -->
                 <div class="card card-small mb-4">
                   <div class="card-header border-bottom">
-                    <h6 class="m-0">List of Positions / Title</h6>
+                    <h6 class="m-0">List of Positions / Title  <label style="float:right;">{{$titleList->count()}} </label></h6>
                   </div>
+                  @if(session('messageSaveTitle'))
+                <div class="alert alert-success">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  {!! Str::upper(session('messageSaveTitle')) !!} 
+                 </div>
+                       
+                        @endif
+
+                  @if(session('messageDeleteTitle'))
+                  <div class="alert alert-danger">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  {!! Str::upper(session('messageDeleteTitle')) !!}
+                 </div>
+                @endif
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item px-3">
                     @if (count($titleList) > 0)
                     <div class="mynav" style="height: 250px;   overflow-y : scroll;">
                         <table class="table table-hover mb-0">
                             <tbody>
+                            <tr>
+                                    <th scope="col" class="border-0">Position / Title</th>
+                                    <th scope="col" class="border-0"></th>
+                                </tr>
                             @foreach ($titleList as $item)
                                 <tr>
                                     <td>{{ $item->title_list}}</td>
-                                    <td><button type="submit" class="btn btn-danger" wire:click="removetitlelist({{ $item->id }})"> <i class="material-icons">delete</i> Delete</button></td>
+                                    <td><button class="btn btn-danger" wire:click="remove({{ $item->id }}, '4')"> <i class="material-icons">delete</i> Delete</button></td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -143,38 +363,70 @@
                         <br>
                         <p style="text-align: center">No Data.</p>    
                         @endif
-
+                        </li>
                   
-                 
-                      <li class="list-group-item p-3">
+
+
+                        <li class="list-group-item p-3">
                       <div class="row">
                         <div class="col-sm-12 col-md-12">
-                        <form wire:submit.prevent="savetitle" autocomplete="off">
-                            <input class="form-control form-control-lg mb-0" type="text" placeholder="Type here to add for new Position / Title" wire:model="title">
-                            <br><button type="submit" class="btn btn-success col-md-12"><i class="material-icons">add</i>ADD</button>
-                        </form>
+                     
+                  
+                        <div class="form-row">
+                    
+                                            
+                              <div class="form-group col-md-12">
+                              <input class="form-control form-control-lg mb-0" type="text" placeholder="Type here to add for new Position / Title" wire:model="title">
+                              </div>
+                            </div>
+                          
+                        
+                            <button wire:click="save(4)"  class="btn btn-success col-md-12"><i class="material-icons">add</i>ADD</button>                       
+                      
+
+
+              
                         </div>
                       </div>
                     </li>
-                    </li>
+
+
                   </ul>
                 </div>
                 <!-- / Sliders & Progress Bars -->
                 <!-- Input & Button Groups -->
                 <div class="card card-small mb-4">
                   <div class="card-header border-bottom">
-                    <h6 class="m-0">List of Copies For</h6>
+                    <h6 class="m-0">List of Copies For <label style="float:right;">{{$copyList->count()}} </label></h6>
                   </div>
+                  @if(session('messageSaveCopies'))
+                <div class="alert alert-success">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  {!! Str::upper(session('messageSaveCopies')) !!} 
+                 </div>
+                       
+                        @endif
+
+                  @if(session('messageDeleteCopies'))
+                  <div class="alert alert-danger">
+                  <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                  {!! Str::upper(session('messageDeleteCopies')) !!}
+                 </div>
+                @endif
                   <ul class="list-group list-group-flush">
                     <li class="list-group-item px-3">
                     @if (count($copyList) > 0)
                     <div class="mynav" style="height: 350px;   overflow-y : scroll;">
                         <table class="table table-hover mb-0">
                             <tbody>
+                            <tr>
+                                    <th scope="col" class="border-0">Copies</th>
+                                    <th scope="col" class="border-0"></th>
+                                </tr>
                             @foreach ($copyList as $item)
                                 <tr>
                                     <td>{{ $item->copies}}</td>
-                                    <td><button type="submit" class="btn btn-danger" wire:click="removecopy({{ $item->id }})"> <i class="material-icons">delete</i> Delete</button></td>
+                                    <td><button class="btn btn-danger" wire:click="remove({{ $item->id }}, '5')"> <i class="material-icons">delete</i> Delete</button></td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -182,19 +434,47 @@
                         </div>
                         @else
                         <br>
-                        <p style="text-align: center">Not found.</p>    
+                        <p style="text-align: center">No Data.</p>    
                         @endif
+                         </li>
+                        
+           
+
+
                     <li class="list-group-item p-3">
                       <div class="row">
                         <div class="col-sm-12 col-md-12">
-                        <form wire:submit.prevent="savecopy" autocomplete="off">
-                            <input class="form-control form-control-lg mb-0" type="text" placeholder="Type here to add for new Copies for" wire:model="copy">
-                            <br><button type="submit" class="btn btn-success col-md-12"><i class="material-icons">add</i>ADD</button>
-                        </form>
+                     
+                        <div class="form-row">
+                    
+                                            
+                              <div class="form-group col-md-12">
+                              <input class="form-control form-control-lg mb-0" type="text" placeholder="Type here to add for new Copies for" wire:model="copies">
+
+                              </div>
+                            </div>
+                            
+                            <button wire:click="save(5)" class="btn btn-success col-md-12"><i class="material-icons">add</i>ADD</button>
+
                         </div>
                       </div>
                     </li>
-                    </li>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    
+                   
                   </ul>
                   
                 </div>
@@ -202,6 +482,10 @@
               </div>
             </div>
           </div>
+
+
+
+
 
 
 
