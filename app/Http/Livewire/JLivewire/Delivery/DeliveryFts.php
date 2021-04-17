@@ -96,6 +96,8 @@ class DeliveryFts extends Component
     }
     
     public function save(){
+      
+
         foreach ($this->ballotlists as $index => $ballotlist){
             $ifExisting = Delivery::where('BALLOT_ID', $this->ballotlists[$index]['ballot_id'])->count();
             if( $this->ballotlists[$index]['clustered_precint'] != '' && $ifExisting == 0){
@@ -107,10 +109,20 @@ class DeliveryFts extends Component
                 $this->canShowData = false;
             }
         }
-        
+
+        $drno = DB::table('deliveries')
+        ->groupBy('DR_NO')
+        ->get();
+        if ($drno->isEmpty()) {
+            $c = 1;
+        }else{
+            $c = $drno->count() + 1;
+        }
+        $total_row = str_pad($c, 7, '0', STR_PAD_LEFT);
         if($this->canShowData == true){
             foreach ($this->ballotlists as $index => $ballotlist){
                 Delivery::create([
+                    'DR_NO' => $total_row,
                     'BALLOT_ID' => $ballotlist['ballot_id'],
                     'CLUSTERED_PREC' => $ballotlist['clustered_precint'],
                     'CITY_MUN_PROV' => $ballotlist['city_mun_prov'],
@@ -149,18 +161,18 @@ class DeliveryFts extends Component
                 $drftslistresult = 'Search Result Found: '.DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->where('DR_NO', $this->search_dr_fts)->count();
             }
             if ($this->datefrom == '' || $this->dateto == '' ){
-                $dailyftslist = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->paginate(10);
-                $dailyftslistresult = '';
+                $datedftslist = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','')->paginate(10);
+                $datedftslistresult = '';
             }else{
-                $dailyftslist = DB::table('deliveries')->where('BALLOT_ID','<>','')
+                $datedftslist = DB::table('deliveries')->where('BALLOT_ID','<>','')
                 ->Where('BALLOT_ID', 'like', '%F_%')
                 ->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->datefrom.' 00:00:00', $this->dateto.' 23:59:59'))->paginate(10);
-                $dailyftslistresult = 'Search Result Found: '.DB::table('deliveries')  ->where('BALLOT_ID','!=','')
+                $datedftslistresult = 'Search Result Found: '.DB::table('deliveries')  ->where('BALLOT_ID','!=','')
                 ->Where('BALLOT_ID', 'like', '%F_%')
                 ->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->datefrom.' 00:00:00', $this->dateto.' 23:59:59'))->count();
                 
             }
-            return view('livewire.j-livewire.delivery.delivery-fts',compact('config_query','ballotList','ballotListCount','ballotListCountTitle','drftslist','drftslistresult','dailyftslist','dailyftslistresult'));
+            return view('livewire.j-livewire.delivery.delivery-fts',compact('config_query','ballotList','ballotListCount','ballotListCountTitle','drftslist','drftslistresult','datedftslist','datedftslistresult'));
             
         }
         function storefts(){

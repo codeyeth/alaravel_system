@@ -1,13 +1,13 @@
 <div class="card-header border-bottom">
-    <h6 class="m-0">Generate Daily Report for FTS <label style="float:right;"> {{$dailyftslistresult}} </label></h6>
+    <h6 class="m-0">Generate Dated Report for FTS <label style="float:right;"> {{$datedftslistresult}} </label></h6>
   </div>
   <div class="row border-bottom py-2 bg-light">
 
   <div class="col-12 col-sm-3">
-  <input type="datetime-local" name="datefromdaily" id="dfrom" wire:model="datefrom" class="input-sm form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>">
+  <input type="datetime-local" name="datefromdated" id="dfrom" wire:model="datefrom" class="input-sm form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>">
     </div>
     <div class="col-12 col-sm-3">
-    <input type="datetime-local" name="datetodaily" id="dto" wire:model="dateto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
+    <input type="datetime-local" name="datetodated" id="dto" wire:model="dateto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
     </div>
     <div class="col-12 col-sm-2">
     &nbsp;
@@ -38,11 +38,11 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <strong class="text-muted d-block mb-2">Reports datetime from:</strong>
-                                            <input type="datetime-local" name="datefromdaily" id="dfrom" wire:model="datefrom" class="input-sm form-control" placeholder="Date From" >
+                                            <input type="datetime-local" name="datefromdated" id="dfrom" wire:model="datefrom" class="input-sm form-control" placeholder="Date From" >
                                             </div>
                                         <div class="form-group col-md-6">
                                             <strong class="text-muted d-block mb-2">Reports datetime to:</strong>
-                                            <input type="datetime-local" name="datetodaily" id="dto" wire:model="dateto"  class="input-sm form-control" placeholder="Date To" >
+                                            <input type="datetime-local" name="datetodated" id="dto" wire:model="dateto"  class="input-sm form-control" placeholder="Date To" >
                                         </div>
                                     </div>
                                 </div>
@@ -177,7 +177,7 @@
         </div>
   <ul class="list-group list-group-flush">
     <li class="list-group-item p-0 pb-3 text-center">
-      @if (count($dailyftslist) > 0)
+      @if (count($datedftslist) > 0)
         <table class="table table-hover mb-0">
           <thead class="bg-light">
             <tr>
@@ -190,7 +190,7 @@
             </tr>
           </thead>
           <tbody>
-            @foreach ($dailyftslist as $item)
+            @foreach ($datedftslist as $item)
               <tr>
                 <td>{{ $item->BALLOT_ID }}</td>
                 <td>{{ $item->DR_NO }}</td>
@@ -207,6 +207,6 @@
         @endif
     </li>
     <li class="list-group-item px-3">
-                    {{ $dailyftslist->links() }}
+                    {{ $datedftslist->links() }}
                     </li>
                   </ul>
