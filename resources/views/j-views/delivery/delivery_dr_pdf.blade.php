@@ -30,7 +30,7 @@
         @endforeach
         </th>
     </tr>
-    <col width="100%">
+   
     <tr>
     <th width="100%" style="font-size:8px; text-align:right;">
       <b>{{$value->copies}} Copy</b>

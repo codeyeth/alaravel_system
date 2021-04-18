@@ -92,7 +92,15 @@
                                     <td>{{ \Carbon\Carbon::parse($sales_invoice_list->created_at)->toDayDateTimeString() }}</td>
                                     
                                     {{-- <th><button class="btn btn-info btn-block"> <i class="material-icons">search</i> View</button></th> --}}
-                                    <th><button class="btn btn-accent btn-block btn-sm"> <i class="material-icons">text_snippet</i> PDF</button></th>
+                                    <!--J CODES START -->
+                                    {{Form::open(['route' => 'catch', 'method' => 'GET', 'target' => '__blank' , 'autocomplete'=>'off'])}} 
+                                    <input type="hidden" value="{{ $sales_invoice_list->sales_invoice_code }}" name="si_id">
+                                    <th>
+                                    {{ Form::button('<i class="material-icons">text_snippet</i> PDF',['type' => 'submit','class'=>'btn btn-accent btn-block btn-sm']) }}
+                                    </th>
+                                    {{ Form::close() }}
+                                    <!--J CODES END -->
+                                    
                                     <th>
                                         @if ($sales_invoice_list->is_posted == false)
                                         <button class="btn btn-accent btn-block btn-sm" wire:click="postToLedger({{ $sales_invoice_list->id }})"> <i class="material-icons">text_snippet</i> Post to CL</button>
