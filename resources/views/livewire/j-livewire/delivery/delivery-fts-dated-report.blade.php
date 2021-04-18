@@ -1,16 +1,19 @@
 <div class="card-header border-bottom">
-    <h6 class="m-0">Generate DR Report for FTS <label style="float:right;"> {{$drftslistresult}} </label></h6>
+    <h6 class="m-0">Generate Dated Report for FTS <label style="float:right;"> {{$datedftslistresult}} </label></h6>
   </div>
   <div class="row border-bottom py-2 bg-light">
 
   <div class="col-12 col-sm-3">
-  <input type="text" name="search" id="search" class="input-sm form-control" placeholder="DR No." wire:model="search_dr_fts">
+  <input type="datetime-local" name="datefromdated" id="dfrom" wire:model="datefrom" class="input-sm form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>">
     </div>
-    <div class="col-12 col-sm-5">
-&nbsp;
+    <div class="col-12 col-sm-3">
+    <input type="datetime-local" name="datetodated" id="dto" wire:model="dateto" class="input-sm form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
+    </div>
+    <div class="col-12 col-sm-2">
+    &nbsp;
     </div>
     <div class="col-12 col-sm-4"><label style="float:right;">
-    <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalreportsdr">
+    <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalreports">
                               Generate Reports  &rarr;
                             </button>
         </label>
@@ -19,7 +22,7 @@
   </div>
 
 <!--modal for generate reports-->
-  <div class="modal fade" id="modalreportsdr" tabindex="-1" role="dialog" aria-labelledby="modalreportsdr" aria-hidden="true" wire:ignore.self>
+  <div class="modal fade" id="modalreports" tabindex="-1" role="dialog" aria-labelledby="modalreports" aria-hidden="true" wire:ignore.self>
             <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -28,19 +31,19 @@
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
-                   {{Form::open(['route' => 'view', 'method' => 'GET', 'autocomplete'=>'off'])}} 
+                   {{Form::open(['route' => 'look', 'method' => 'GET', 'autocomplete'=>'off'])}} 
                         <div class="modal-body">
                         <div class="row">
                                 <div class="col-sm-12 col-md-12">
-                                    <div class="form-row">  
+                                    <div class="form-row">
                                         <div class="form-group col-md-6">
-                                            <strong class="text-muted d-block mb-2">DR NO:</strong>
-                                            <input type="text" name="search" id="search" class="input-sm form-control" placeholder="DR No." wire:model="search_dr_fts">
+                                            <strong class="text-muted d-block mb-2">Reports datetime from:</strong>
+                                            <input type="datetime-local" name="datefromdated" id="dfrom" wire:model="datefrom" class="input-sm form-control" placeholder="Date From" >
                                             </div>
-                                            <div class="form-group col-md-6">
-                                            <strong class="text-muted d-block mb-2">Date Generated:</strong>
-                                            <input type="date" name="dated" id="dated"  class="input-sm form-control" value="<?php echo date('Y-m-d'); ?>" >
-                                            </div>
+                                        <div class="form-group col-md-6">
+                                            <strong class="text-muted d-block mb-2">Reports datetime to:</strong>
+                                            <input type="datetime-local" name="datetodated" id="dto" wire:model="dateto"  class="input-sm form-control" placeholder="Date To" >
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -174,7 +177,7 @@
         </div>
   <ul class="list-group list-group-flush">
     <li class="list-group-item p-0 pb-3 text-center">
-      @if (count($drftslist) > 0)
+      @if (count($datedftslist) > 0)
         <table class="table table-hover mb-0">
           <thead class="bg-light">
             <tr>
@@ -187,7 +190,7 @@
             </tr>
           </thead>
           <tbody>
-            @foreach ($drftslist as $item)
+            @foreach ($datedftslist as $item)
               <tr>
                 <td>{{ $item->BALLOT_ID }}</td>
                 <td>{{ $item->DR_NO }}</td>
@@ -200,7 +203,7 @@
            </tbody>
           </table>
         @else<br>
-        <p style="text-align: center">No data found.</p>    
+        <p style="text-align: center">No users found.</p>    
         @endif
     </li>
     <li class="list-group-item px-3">

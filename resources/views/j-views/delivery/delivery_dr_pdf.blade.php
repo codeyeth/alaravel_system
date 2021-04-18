@@ -23,31 +23,20 @@
         <b>DELIVERY RECEIPT</b>
       </th>
       <th width="20%" style="text-align:left; font-size:6px;">
-        No. <u>20-06-0026 Palawan</u><br>
-        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike">
-        <label for="vehicle1"> COMELEC - Inspectorate</label><br>
-        <input type="checkbox" id="vehicle2" name="vehicle2" value="Car">
-        <label for="vehicle2"> COMELEC - BPG 1</label><br>
-        <input type="checkbox" id="vehicle3" name="vehicle3" value="Boat">
-        <label for="vehicle3"> COMELEC - BPG 2</label><br>
-        <input type="checkbox" id="vehicle4" name="vehicle1" value="Bike">
-        <label for="vehicle1"> COMELEC - Delivery</label><br>
-        <input type="checkbox" id="vehicle5" name="vehicle2" value="Car">
-        <label for="vehicle2"> COA - COMELEC</label><br>
-        <input type="checkbox" id="vehicle6" name="vehicle3" value="Boat">
-        <label for="vehicle3"> NPO - Delivery 1</label><br>
-        <input type="checkbox" id="vehicle7" name="vehicle3" value="Boat">
-        <label for="vehicle3"> NPO - Delivery 2</label><br>
-        <input type="checkbox" id="vehicle8" name="vehicle3" value="Boat">
-        <label for="vehicle3"> NPO - Monitoring</label><br>
+        No. <u>(Sample)20-06-0026 Palawan</u><br>
+        @foreach($copy as $copies)
+        <input type="checkbox" id="copies{{$copies->id}}" name="copies{{$copies->id}}" value="copies{{$copies->id}}" checked = "checked">
+        <label for="copies{{$copies->id}}">{{$copies->copies}}</label><br>
+        @endforeach
+        </th>
+    </tr>
+   
+    <tr>
+    <th width="100%" style="font-size:8px; text-align:right;">
+      <b>{{$value->copies}} Copy</b>
       </th>
     </tr>
-    <tr>
-      <td></td>
-      <td></td>
-      <td></td>
-      <td></td>
-    </tr>
+
 </table><br>
 <table>
   <col width="20%">
@@ -55,11 +44,14 @@
     <tr>
       <th width="20%" style="font-size:8px; text-align:left;">
         DELIVERED TO:<br>
-        DESCRIPTION
+        DESCRIPTION<br><br>
+        DATE:
       </th>
       <th width="80%" style="text-align:left; font-size:9px">
-        <u>Republic of the Philippines</u><br>
-        <u>Official Ballot DR Report for 1 (one) DR Number</u>
+        <u>{{$delivered_to}}</u><br>
+        <u>{{$description}}</u><br><br>
+        <u>{{ \Carbon\Carbon::parse($dated)->format('F,d Y') }} </u>
+      
       </th> 
     </tr>
     <tr>
@@ -83,7 +75,7 @@
     <tr>
       <td style="border:1px solid #000000; padding:10px; font-size: x-small;">{{$deliver->BALLOT_ID}}</td>
       <td style="border:1px solid #000000; padding:10px;font-size:13px font-weight: bold; font-size: x-small;  ">{{$deliver->CLUSTERED_PREC}}</td>
-      <td style="border:1px solid #000000; padding:10px;font-size:18px font-weight: bold; font-size: x-small;">{{$deliver->PROV_NAME}} {{$deliver->MUN_NAME}} {{$deliver->BGY_NAME}}</td>
+      <td style="border:1px solid #000000; padding:10px;font-size:18px font-weight: bold; font-size: x-small;">{{$deliver->CITY_MUN_PROV}}</td>
       <td style="border:1px solid #000000; padding:10px; font-size: x-small;">{{$deliver->CLUSTER_TOTAL}}</td>
     </tr>
     @endforeach
@@ -225,6 +217,10 @@
       <td style="border:1px solid #000000; padding:10px; font-size: x-small;"></td>
     </tr>
        
+<tr style="page-break-inside:avoid; page-break-after:auto">
+      <td colspan="3" style="border:1px solid #000000; padding:10px; font-size: x-small; text-align:left"><b>Total:</b></td>
+      <td colspan="3" style="border:1px solid #000000; padding:10px; font-size: x-small;"><b> {{$total_sum}} </b></td>
+    </tr>
 </table>
 
 <table>
@@ -232,10 +228,6 @@
 <col width="34%">
 <col width="33%">
 
-<tr>
-<th width="100%" style="border:1px solid #000000; font-size:10px; text-align:left;"><b>Total:</b>
-</th>
-</tr>
 
 
 <tr>

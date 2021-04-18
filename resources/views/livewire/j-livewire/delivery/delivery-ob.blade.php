@@ -37,10 +37,7 @@
     <a class="nav-link" id="contact-tab" data-toggle="tab" href="#dr" role="tab" aria-controls="dr" aria-selected="false" wire:ignore.self>DR Number Report</a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" id="ballot-tab" data-toggle="tab" href="#daily" role="tab" aria-controls="daily" aria-selected="false" wire:ignore.self>Daily DR Report</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="batch-tab" data-toggle="tab" href="#batch" role="tab" aria-controls="batch" aria-selected="false" wire:ignore.self>Batch DR Report</a>
+    <a class="nav-link" id="ballot-tab" data-toggle="tab" href="#dated" role="tab" aria-controls="dated" aria-selected="false" wire:ignore.self>Dated DR Report</a>
   </li>
 </ul>
 
@@ -49,11 +46,8 @@
 
 
 <div class="tab-content" id="myTabContent">
-<div class="tab-pane fade show" id="batch" role="tabpanel" aria-labelledby="batch-tab" wire:ignore.self>
-@include('livewire.j-livewire.delivery.delivery-ob-batch-report')
-</div>
-<div class="tab-pane fade show" id="daily" role="tabpanel" aria-labelledby="daily-tab" wire:ignore.self>
-@include('livewire.j-livewire.delivery.delivery-ob-daily-report')
+<div class="tab-pane fade show" id="dated" role="tabpanel" aria-labelledby="dated-tab" wire:ignore.self>
+@include('livewire.j-livewire.delivery.delivery-ob-dated-report')
 </div>
 <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab" wire:ignore.self>
 @include('livewire.j-livewire.delivery.delivery-ob-home')

@@ -61,15 +61,15 @@
         <div class="col-md-10">
             <button class="btn btn-sm btn-secondary" wire:click.prevent="addBallot">+ Add Another Row</button>
         </div>  
-        {{-- @if($showSaveBtn == true) --}}
+         @if($showSaveBtn == true)
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary"><i class="material-icons">save</i> Save </button>
         </div>
-        {{-- @endif --}}
+         @endif
         
         <script>
             window.addEventListener('searchSucceed', event => {
-                // $("focusBallot1").focus();
+                $("focusBallot1").focus();
                 var readonlyId = event.detail.idFocus - 1;
                 $("#focusBallot" + readonlyId).attr('readonly', 'readonly');
                 document.getElementById("focusBallot" + event.detail.idFocus).focus();

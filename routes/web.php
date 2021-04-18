@@ -64,15 +64,14 @@ Route::resource('motorpool_request', 'MotorpoolRequestjController');
 Route::get('/delivery_ob', 'DeliveryjController@ob');
 Route::get('/delivery_fts', 'DeliveryjController@fts');
 Route::get('/delivery_configuration', 'DeliveryjController@config');
+
 Route::get('/download_motorpool_letter', ['as' => 'brought', 'uses' => 'MotorpoolRequestjController@savemotorpoolreport']);
 
 Route::get('/download_dr_ob_report', ['as' => 'search', 'uses' => 'DeliveryjController@savepdfobdr']);
-Route::get('/download_daily_ob_report', ['as' => 'retrieve', 'uses' => 'DeliveryjController@savepdfobdaily']);
-Route::get('/download_batch_ob_report', ['as' => 'extract', 'uses' => 'DeliveryjController@savepdfobbatch']);
+Route::get('/download_dated_ob_report', ['as' => 'retrieve', 'uses' => 'DeliveryjController@savepdfobdated']);
 
 Route::get('/download_dr_fts_report', ['as' => 'view', 'uses' => 'DeliveryjController@savepdfftsdr']);
-Route::get('/download_daily_fts_report', ['as' => 'look', 'uses' => 'DeliveryjController@savepdfftsdaily']);
-Route::get('/download_batch_fts_report', ['as' => 'pull', 'uses' => 'DeliveryjController@savepdfftsbatch']);
+Route::get('/download_dated_fts_report', ['as' => 'look', 'uses' => 'DeliveryjController@savepdfftsdated']);
 
-
+Route::get('/view_sales_invoice', ['as' => 'catch', 'uses' => 'SmdjController@si']);
 

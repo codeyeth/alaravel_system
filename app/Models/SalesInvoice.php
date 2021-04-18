@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SalesInvoiceItem;
 
 class SalesInvoice extends Model
 {
@@ -37,4 +38,8 @@ class SalesInvoice extends Model
         'or_no',
         'date',
     ];
+    //para di ko na kailangan magjoin query hehehe 
+    public function sales_invoice_items(){
+        return $this->hasMany(SalesInvoiceItem::class,'sales_invoice_code');
+    }
 }
