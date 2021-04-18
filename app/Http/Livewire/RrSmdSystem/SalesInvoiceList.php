@@ -87,20 +87,37 @@ class SalesInvoiceList extends Component
     
     public function updateControlNumber($id){
         $siParent = SalesInvoice::find($id);
+        
+        $prNo = $this->prNo;
+        $drNo = $this->drNo;
+        $orNo = $this->orNo;
+        
+        if($prNo == ''){
+            $prNo = $siParent->pr_no;
+        }
+        
+        if($drNo == ''){
+            $drNo = $siParent->dr_no;
+        }
+        
+        if($orNo == ''){
+            $orNo = $siParent->or_no;
+        }
+        
         $siParent->update([
-            'pr_no' => $this->prNo,
-            'dr_no' => $this->drNo,
-            'or_no' => $this->orNo,
+            'pr_no' => $prNo,
+            'dr_no' => $drNo,
+            'or_no' => $orNo,
             ]
         );
-
+        
         $this->parentSalesInvoiceDetails = SalesInvoice::find($id);
         $this->childSalesInvoiceDetails = SalesInvoiceItem::where('sales_invoice_code', $this->parentSalesInvoiceDetails->sales_invoice_code)->get();
         
         $this->prNo = '';
         $this->drNo = '';
         $this->orNo = '';
-
+        
         session()->flash('messageControlNumberUpdate', 'Control Number/s Updated Successfully!');
     }
     

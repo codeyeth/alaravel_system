@@ -35,5 +35,6 @@ class SalesInvoice extends Model
         'pr_no',
         'dr_no',
         'or_no',
+        'date',
     ];
 }

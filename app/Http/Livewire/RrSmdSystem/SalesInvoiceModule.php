@@ -13,6 +13,7 @@ use App\Models\SalesInvoiceItem;
 use Illuminate\Support\Str;
 use DB;
 use Auth;
+use Carbon\Carbon;
 
 class SalesInvoiceModule extends Component
 {
@@ -169,12 +170,14 @@ class SalesInvoiceModule extends Component
         $this->productParent = '';
         $this->productSubParent = '';
         $this->productItems = '';
-
+        
         $this->emit('newSalesInvoiceAdded');
-
+        
     }
     
     public function saveSalesInvoice(){
+        $now = Carbon::now();
+        
         if(count($this->itemList) > 0){
             $saveSalesInvoice = 
             SalesInvoice::create
@@ -197,6 +200,7 @@ class SalesInvoiceModule extends Component
                 'issued_by' => Str::upper($this->issuedBy),
                 'created_by_id' => Auth::user()->id,
                 'created_by_name' => Str::upper(Auth::user()->name),
+                'date' => $now->toDateString(),
                 ]
             );
             
@@ -233,6 +237,9 @@ class SalesInvoiceModule extends Component
         
         //GET PRODUCT PARENT
         $this->productParentFor =  ProductParent::all();
+        // $this->issuedBy = Auth::user()->name;
+        
+        // dd($now->toDateString());
     }
     
     public function render()

@@ -2,7 +2,9 @@
     <h2 style="text-align: center" class="mb-1">
         <strong> SUBSIDIARY LEDGER </strong>
     </h2>
-    <h5 style="text-align: center">CLIENT</h5>
+    <h5 style="text-align: center">CLIENT
+        {{-- <a href="{{ asset('client_ledger_pdf') }}/{{ $clientDetails->id }}" target="_blank"><i class="material-icons">text_snippet</i></a> --}}
+    </h5>
     
     <br>
     
@@ -61,10 +63,10 @@
                 <td style="text-align: center">{{ $client_ledger_item->or_no }}</td>
                 
                 <td style="text-align: center"> 
-                  
+                    
                     
                     {{ $salesInvoiceItems->where('sales_invoice_code', $client_ledger_item->sales_invoice_code)->sum('total') }}
-
+                    
                     
                 </td>
                 

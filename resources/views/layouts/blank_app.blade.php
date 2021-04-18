@@ -40,7 +40,7 @@
             }
         </style>
         
-        <div class="pt-3"></div>
+        {{-- <div class="pt-3"></div> --}}
         @yield('content')
     </div>
     

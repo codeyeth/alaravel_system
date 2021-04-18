@@ -56,6 +56,10 @@
                                 <i class="material-icons">add</i> Encode Sales Invoice
                             </button>
                             <div style="margin-left: 10px;"></div>
+                            <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalAccomplished">
+                                <i class="material-icons">add</i> Accomplished S.I
+                            </button>
+                            <div style="margin-left: 10px;"></div>
                         </li>
                     </ul>
                 </div>
@@ -73,6 +77,9 @@
         
         {{-- CLIENT DATABASE --}}
         @livewire('rr-smd-system.client-database-module')
+        
+        {{-- ACCOMPLISED SALES INVOICE --}}
+        @livewire('rr-smd-system.sales-invoice-accomplished')
         
     </div>
 </div>

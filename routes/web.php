@@ -48,6 +48,15 @@ Route::get('/client_ledger/{id}', function ($client_id) {
     return view('rr_smd_system.client_ledger')->with('client_id', $client_id);
 });
 
+Route::get('/accomplished_si/{monthSelected}/{preparedBy}/{prepPosition}/{submittedBy}/{subPosition}', function ($monthSelected, $preparedBy, $prepPosition, $submittedBy, $subPosition) {
+    return view('rr_smd_system.accomplished_si')
+    ->with('monthSelected', $monthSelected)
+    ->with('preparedBy', $preparedBy)
+    ->with('prepPosition', $prepPosition)
+    ->with('submittedBy', $submittedBy)
+    ->with('subPosition', $subPosition);
+});
+
 //J Routes
 Route::resource('delivery', 'DeliveryjController');
 Route::resource('motorpool_request', 'MotorpoolRequestjController');

@@ -164,6 +164,7 @@ return [
         //ADDED BY RR
         Maatwebsite\Excel\ExcelServiceProvider::class,
         Milon\Barcode\BarcodeServiceProvider::class,
+        Barryvdh\Debugbar\ServiceProvider::class,
         //ADDED BY j
         Elibyy\TCPDF\ServiceProvider::class,
         /*
@@ -234,6 +235,7 @@ return [
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         'DNS1D' => Milon\Barcode\Facades\DNS1DFacade::class,
         'DNS2D' => Milon\Barcode\Facades\DNS2DFacade::class,
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
         //ADDED BY j
         'PDF' => Elibyy\TCPDF\Facades\TCPDF::class
     ],
