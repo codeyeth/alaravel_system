@@ -106,6 +106,7 @@ class SalesInvoiceModule extends Component
         $productItems = ProductItems::find($productItemId);
         
         $productParent =  ProductParent::where('product_code', $productItems->product_code)->value('product_name');
+        $productCode =  ProductParent::where('product_code', $productItems->product_code)->value('product_code');
         $productSubParentCount = ProductSubParent::where('product_code', $productItems->product_code)->count();
         if($productSubParentCount > 0){
             $productSubParent = ProductSubParent::where('product_code', $productItems->product_code)->where('product_sub_code', $productItems->product_sub_code)->value('product_name');
@@ -114,6 +115,7 @@ class SalesInvoiceModule extends Component
         
         $this->itemList[] =
         [[
+            'formType' => '', 
             'itemDescription' => '', 
             'unit' => '', 
             'quantity' => '', 
@@ -123,6 +125,7 @@ class SalesInvoiceModule extends Component
         ];
         
         $indexKey = $this->itemListCount - 1;
+        $this->itemList[$indexKey]['formType'] = $productCode;
         $this->itemList[$indexKey]['itemDescription'] = $productParent . ' ' . $productItems->form_no;
         $this->itemList[$indexKey]['unit'] = $productItems->unit;
     }
@@ -207,6 +210,14 @@ class SalesInvoiceModule extends Component
             foreach ($this->itemList as $item_list){
                 $salesInvoiceTotal = $item_list['quantity'] * $item_list['price'];
                 
+                if($item_list['formType'] == '0001'){
+                    $formType = 'NAF';
+                }elseif($item_list['formType'] == '0002'){
+                    $formType = 'AF';
+                }else{
+                    $formType = 'SF';
+                }
+                
                 $saveSalesInvoiceItem = 
                 SalesInvoiceItem::create
                 ([
@@ -219,6 +230,7 @@ class SalesInvoiceModule extends Component
                     'total' => $salesInvoiceTotal,
                     'created_by_id' => Auth::user()->id,
                     'created_by_name' => Str::upper(Auth::user()->name),
+                    'form_type' => $formType,
                     ]
                 );
             }
