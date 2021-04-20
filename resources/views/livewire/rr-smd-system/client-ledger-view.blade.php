@@ -38,7 +38,7 @@
                 {{-- SALES INVOICE DETAILS --}}
                 @foreach ($salesInvoice as $sales_invoice_item)
                 @if ( $client_ledger_item->sales_invoice_code == $sales_invoice_item->sales_invoice_code)
-                <td style="text-align: center">{{ $sales_invoice_item->created_at }}</td>
+                <td style="text-align: center">{{ \Carbon\Carbon::parse($sales_invoice_item->created_at)->toDayDateTimeString() }}</td>
                 <td style="text-align: center">{{ $sales_invoice_item->sales_invoice_code }}</td>
                 @endif
                 @endforeach

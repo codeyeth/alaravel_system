@@ -78,7 +78,10 @@
                                     
                                     @foreach ($clientDatabase as $client_database)
                                     @if ( $client_ledger_list->agency_id ==  $client_database->id )
-                                    <td><a href="{{ asset ('/client_ledger') }}/{{ $client_database->id }} " target="_blank" title="View Client Ledger" wire.click=""><i class="material-icons">search</i> <b>{{ $client_database->agency_name }}</b></a> </td>
+                                    <td><a href="{{ asset ('/client_ledger') }}/{{ $client_database->id }} " target="_blank" title="View Client Ledger">
+                                        {{-- <i class="material-icons">search</i> --}}
+                                        <b>{{ $client_database->agency_name }}</b></a>
+                                    </td>
                                     @break
                                     @endif
                                     @endforeach

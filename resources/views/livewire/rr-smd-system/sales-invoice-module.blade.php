@@ -24,8 +24,6 @@
                     
                     <div class="modal-body">
                         
-                        <p style="text-align: right;" class="mb-1">SALES INVOICE NO. : <b style="font-size: 200%;" class="text-accent mb-0"> {{ $salesInvoiceNumber }} </b> </p>
-                        
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
@@ -114,7 +112,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">TRANSACTION TYPE <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="transactionType" id="transactionType" class="form-control" wire:model="transactionType">
+                                        <select name="transactionType" id="transactionType" class="form-control" wire:model="transactionType" required>
                                             <option disabled selected value="">Select Here</option>
                                             <option value="WALK-IN">WALK-IN</option>
                                             <option value="EMAIL">EMAIL</option>
@@ -122,7 +120,7 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">MODE OF PAYMENT <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="paymentMode" id="paymentMode" class="form-control" wire:model="paymentMode">
+                                        <select name="paymentMode" id="paymentMode" class="form-control" wire:model="paymentMode" required>
                                             <option disabled selected value="">Select Here</option>
                                             <option value="CASH">CASH</option>
                                             <option value="CHECK">CHECK</option>
@@ -131,7 +129,7 @@
                                     </div>
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">PACKAGE TYPE <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="packageType" id="packageType" class="form-control" wire:model="packageType">
+                                        <select name="packageType" id="packageType" class="form-control" wire:model="packageType" required>
                                             <option disabled selected value="">Select Here</option>
                                             <option value="CARRY">CARRY</option>
                                             <option value="COURIER">COURIER</option>
@@ -144,21 +142,33 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">CODE <span class="requiredTag">&bullet;</span></strong>
                                         <input type="text" class="form-control" id="code" name="code" placeholder="Code" autocomplete="off" required autofocus wire:model="code" >
                                     </div>
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">WORK ORDER NO <span class="requiredTag">&bullet;</span></strong>
                                         <input type="text" class="form-control" id="workOrderNo" name="workOrderNo" placeholder="Work Order No" autocomplete="off" required autofocus wire:model="workOrderNo" >
                                     </div>
-                                    <div class="form-group col-md-3">
+                                    <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">STOCK NO <span class="requiredTag">&bullet;</span></strong>
                                         <input type="text" class="form-control" id="stockNo" name="stockNo" placeholder="Stock No" autocomplete="off" required autofocus wire:model="stockNo" >
                                     </div>
-                                    <div class="form-group col-md-3">
+                                </div>
+                            </div>
+                        </div>
+                        
+                        
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-row">
+                                    <div class="form-group col-md-6">
                                         <strong class="text-muted d-block mb-2">ISSUED BY <span class="requiredTag">&bullet;</span></strong>
                                         <input type="text" class="form-control" id="issuedBy" name="issuedBy" placeholder="Issued By" autocomplete="off" required autofocus wire:model="issuedBy" >
+                                    </div>
+                                    <div class="form-group col-md-6">
+                                        <strong class="text-muted d-block mb-2">RECEIVED BY <span class="requiredTag">&bullet;</span></strong>
+                                        <input type="text" class="form-control" id="receivedBy" name="receivedBy" placeholder="Received By" autocomplete="off" required autofocus wire:model="receivedBy" >
                                     </div>
                                 </div>
                             </div>
@@ -166,6 +176,40 @@
                         
                         <hr class="hr_dashed">
                         
+                        
+                        <div class="row">
+                            <div class="col-sm-12 col-md-12">
+                                <div class="form-row">
+                                    <div class="form-group col-md-4">
+                                        <strong class="text-muted d-block mb-2">GOODS TYPE <span class="requiredTag">&bullet;</span></strong>
+                                        <select name="goodsType" id="goodsType" class="form-control" wire:model="goodsType" wire:change="resetGoodsType" required>
+                                            <option disabled selected value="">Select Here</option>
+                                            <option value="Generic">Generic</option>
+                                            <option value="Specialized">Specialized</option>
+                                        </select>
+                                    </div>
+                                    
+                                    @if ($goodsType == 'Specialized')
+                                    <div class="form-group col-md-4">
+                                        <strong class="text-muted d-block mb-2">FORMS TYPE <span class="requiredTag">&bullet;</span></strong>
+                                        <select name="formType" id="formType" class="form-control" wire:model="formType" required>
+                                            <option disabled selected value="">Select Here</option>
+                                            <option value="AF">Accountable Form</option>
+                                            <option value="NAF">Non-Accountable Form</option>
+                                            <option value="SF">Standard Form</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group col-md-4">
+                                        <strong class="text-muted d-block mb-2"><br></strong>
+                                        <button type="button" class="btn btn-accent" wire:click="addItemListManual"><i class="material-icons">add</i>Add Item</button>
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                        
+                        @if ($goodsType == 'Generic')
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
@@ -218,6 +262,8 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
+                        
                         
                         @if(session('messageItemsRequired'))
                         <div class="alert alert-danger alert-dismissible fade show mb-0" role="alert">
@@ -275,7 +321,7 @@
                         
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="refreshTrick">Close</button>
                         <button type="submit" class="btn btn-accent">Save Sales Invoice</button>
                     </div>
                 </form>

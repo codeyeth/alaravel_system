@@ -48,6 +48,10 @@ Route::get('/client_ledger/{id}', function ($client_id) {
     return view('rr_smd_system.client_ledger')->with('client_id', $client_id);
 });
 
+Route::get('/view_courier/{id}', function ($courierId) {
+    return view('rr_smd_system.courier')->with('courierId', $courierId);
+});
+
 Route::get('/accomplished_si/{monthSelected}/{preparedBy}/{prepPosition}/{submittedBy}/{subPosition}', function ($monthSelected, $preparedBy, $prepPosition, $submittedBy, $subPosition) {
     return view('rr_smd_system.accomplished_si')
     ->with('monthSelected', $monthSelected)

@@ -11,6 +11,7 @@ class ClientLedger extends Model
     protected $fillable = [
         'agency_id',
         'agency_code',
+        'agency_name',
         
         'pr_no',
         'stock_no',

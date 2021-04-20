@@ -40,12 +40,11 @@ class ClientLedgerList extends Component
     
     public function render()
     {
-        // return view('livewire.rr-smd-system.client-ledger-list');
-        
         if($this->keywordMode == true){
             return view('livewire.rr-smd-system.client-ledger-list', [
                 'clientLedgerList' => ClientLedger::where('agency_id', 'like', '%'.$this->searchClientLedger.'%')
                 ->orWhere('agency_code', 'like', '%'.$this->searchClientLedger.'%')
+                ->orWhere('agency_name', 'like', '%'.$this->searchClientLedger.'%')
                 ->orWhere('pr_no', 'like', '%'.$this->searchClientLedger.'%')
                 ->orWhere('stock_no', 'like', '%'.$this->searchClientLedger.'%')
                 ->orWhere('sales_invoice_code', 'like', '%'.$this->searchClientLedger.'%')
@@ -56,6 +55,7 @@ class ClientLedgerList extends Component
                 ->paginate(10),
                 'clientLedgerListCount' => ClientLedger::where('agency_id', 'like', '%'.$this->searchClientLedger.'%')
                 ->orWhere('agency_code', 'like', '%'.$this->searchClientLedger.'%')
+                ->orWhere('agency_name', 'like', '%'.$this->searchClientLedger.'%')
                 ->orWhere('pr_no', 'like', '%'.$this->searchClientLedger.'%')
                 ->orWhere('stock_no', 'like', '%'.$this->searchClientLedger.'%')
                 ->orWhere('sales_invoice_code', 'like', '%'.$this->searchClientLedger.'%')

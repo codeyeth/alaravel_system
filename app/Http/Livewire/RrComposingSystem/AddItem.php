@@ -127,150 +127,156 @@ class AddItem extends Component
             'publication_type' => $this->publication_type,
             'created_by_id' => Auth::user()->id,
             'created_by_name' => Auth::user()->name,
-            ]);
-            
-            foreach ($this->publicationSub as $publicationSub){
+            ]
+        );
+        
+        foreach ($this->publicationSub as $publicationSub){
+            PublicationTypeChildren::create([
+                'publication_parent_id' => $addpublicationType->id,
+                'publication_type_child' => $publicationSub['publication_type_sub'],
+                'created_by_id' => Auth::user()->id,
+                'created_by_name' => Auth::user()->name,
+                ]
+            );
+        }
+        
+        session()->flash('messagePublication', 'Publication Type/s Added Successfully!');
+        // return redirect()->to('/composing_system');
+        
+        $this->refreshTrick();
+    }
+    
+    public function updatePublication($pubId){
+        $updatePubType = PublicationType::find($pubId);
+        $updatePubType->update(
+            ['publication_type' => $this->publication_type]
+        );
+        
+        foreach ($this->publicationSub as $publicationSub){
+            if( $publicationSub['publication_type_sub_id'] != "0000" ){
+                $updatePubTypeSub = PublicationTypeChildren::find($publicationSub['publication_type_sub_id']);
+                $updatePubTypeSub->update(
+                    ['publication_type_child' => $publicationSub['publication_type_sub']]
+                );
+            }else{
                 PublicationTypeChildren::create([
-                    'publication_parent_id' => $addpublicationType->id,
+                    'publication_parent_id' => $updatePubType->id,
                     'publication_type_child' => $publicationSub['publication_type_sub'],
                     'created_by_id' => Auth::user()->id,
                     'created_by_name' => Auth::user()->name,
-                    ]);
-                }
-                
-                session()->flash('messagePublication', 'Publication Type/s Added Successfully!');
-                // return redirect()->to('/composing_system');
-                
-                $this->refreshTrick();
-            }
-            
-            public function updatePublication($pubId){
-                $updatePubType = PublicationType::find($pubId);
-                $updatePubType->update(
-                    ['publication_type' => $this->publication_type]
+                    ]
                 );
-                
-                foreach ($this->publicationSub as $publicationSub){
-                    if( $publicationSub['publication_type_sub_id'] != "0000" ){
-                        $updatePubTypeSub = PublicationTypeChildren::find($publicationSub['publication_type_sub_id']);
-                        $updatePubTypeSub->update(
-                            ['publication_type_child' => $publicationSub['publication_type_sub']]
-                        );
-                    }else{
-                        PublicationTypeChildren::create([
-                            'publication_parent_id' => $updatePubType->id,
-                            'publication_type_child' => $publicationSub['publication_type_sub'],
-                            'created_by_id' => Auth::user()->id,
-                            'created_by_name' => Auth::user()->name,
-                            ]);
-                        }
-                    }
-                    
-                    session()->flash('messagePublication', 'Publication Type/s Updated Successfully!');
-                    $this->refreshTrick();
-                }
-                
-                public function saveSoftcopy(){
-                    $now = Carbon::now();
-                    
-                    $validated = $this->validate([
-                        'fileUpload' => 'mimes:pdf|max:51200', // 50MB Max 1024 * 50 = 51200
-                        ]);
-                        
-                        $addOgSoftcopy = OgSoftCopy::create([
-                            'article_title' => $this->articleTitle,
-                            
-                            // 'petitioner_id' => Str::uuid(),
-                            // 'petitioner_name' => $this->petitionerName,
-                            // 'petitioner_address' => $this->petitionerAddress,
-                            // 'amount_paid' => $this->amountPaid,
-                            // 'date_paid' => $this->datePaid,
-                            // 'is_payment_complete' => $this->isPaymentComplete,
-                            
-                            'encoded_by_id' => Auth::user()->id,
-                            'encoded_by_name' => Auth::user()->name,
-                            
-                            'publication_type' => $this->publicationType,
-                            'publication_sub_type' => $this->publicationSubType,
-                            
-                            'date_published' => $this->datePublished,
-                            'is_downloadable' => $this->isDownloadable,
-                            'is_searchable' => $this->isSearchable,
-                            'file_id' => Str::uuid(),
-                            ]);
-                            
-                            $addOgFiles = OgFile::create([
-                                'belongs_to' => $addOgSoftcopy->file_id,
-                                'original_filename' => $this->fileUpload->getClientOriginalName(),
-                                'converted_filename' => Str::snake($addOgSoftcopy->article_title) . '_' . $addOgSoftcopy->file_id  . '.pdf',
-                                'filetype' => $this->fileUpload->getClientOriginalExtension(),
-                                'filesize' => $this->fileUpload->getSize(),
-                                ]);
-                                
-                                $this->fileUpload->storeAs('public/og_files', $addOgFiles->converted_filename);
-                                
-                                session()->flash('messageSaveSoftcopy', 'Publication Softcopy saved Successfully');
-                                // return redirect()->to('/composing_system');
-                                
-                                $this->dispatchBrowserEvent('clear-file');
-                                
-                                $this->articleTitle = '';
-                                $this->publicationType = '';
-                                $this->publicationSubType = '';
-                                $this->datePublished = '';
-                                $this->isDownloadable = '';
-                                $this->isSearchable = '';
-                                $this->fileUpload = '';
-                                
-                                $this->emit('newSoftcopyAdded');
-                            }
-                            
-                            public function updatedFileUpload(){
-                                $validated = $this->validate([
-                                    'fileUpload' => 'mimes:pdf|max:51200', // 50MB Max 1024 * 50 = 51200
-                                    ]);
-                                }
-                                
-                                public function updateSearchEngine($toBeStatus){
-                                    $now = Carbon::now();
-                                    
-                                    $updateSearchEngine = SEComposing::find(1);
-                                    $updateSearchEngine->update(
-                                        [
-                                            'is_on' => $toBeStatus,
-                                            'status_by_id' => Auth::user()->id,
-                                            'status_by_name' => Auth::user()->name,
-                                            'status_at' => $now,
-                                            ]
-                                        );
-                                        
-                                        $this->isOn = $toBeStatus;
-                                        
-                                        if($updateSearchEngine->is_on == true){
-                                            session()->flash('messageUpdateSearchEngine', 'Search Engine Started Successfully!');
-                                        }else{
-                                            session()->flash('messageUpdateSearchEngine', 'Search Engine Shutdown Successful!');
-                                        }
-                                        
-                                        $this->emit('newSoftcopyAdded');
-                                    }
-                                    
-                                    public function mount(){
-                                        $visibleCount = OgSoftCopy::where('is_searchable', true)->count();
-                                        $downloadableCount = OgSoftCopy::where('is_downloadable', true)->count();
-                                        $allCount = OgSoftCopy::all()->count();
-                                        $this->visiblePublications = $visibleCount;
-                                        $this->downloadablePublications = $downloadableCount;
-                                        $this->allPublications = $allCount;
-                                        $searchEngineStatus = SEComposing::find(1)->value('is_on');
-                                        $this->isOn = $searchEngineStatus;
-                                        
-                                        $this->pubList = PublicationType::all();
-                                        $this->pubSubList = PublicationTypeChildren::all();                                        
-                                    }
-                                    
-                                    public function render()
-                                    {
-                                        return view('livewire.rr-composing-system.add-item');
-                                    }
-                                }
+            }
+        }
+        
+        session()->flash('messagePublication', 'Publication Type/s Updated Successfully!');
+        $this->refreshTrick();
+    }
+    
+    public function saveSoftcopy(){
+        $now = Carbon::now();
+        
+        $validated = $this->validate([
+            'fileUpload' => 'mimes:pdf|max:51200', // 50MB Max 1024 * 50 = 51200
+            ]
+        );
+        
+        $addOgSoftcopy = OgSoftCopy::create([
+            'article_title' => $this->articleTitle,
+            
+            // 'petitioner_id' => Str::uuid(),
+            // 'petitioner_name' => $this->petitionerName,
+            // 'petitioner_address' => $this->petitionerAddress,
+            // 'amount_paid' => $this->amountPaid,
+            // 'date_paid' => $this->datePaid,
+            // 'is_payment_complete' => $this->isPaymentComplete,
+            
+            'encoded_by_id' => Auth::user()->id,
+            'encoded_by_name' => Auth::user()->name,
+            
+            'publication_type' => $this->publicationType,
+            'publication_sub_type' => $this->publicationSubType,
+            
+            'date_published' => $this->datePublished,
+            'is_downloadable' => $this->isDownloadable,
+            'is_searchable' => $this->isSearchable,
+            'file_id' => Str::uuid(),
+            ]
+        );
+        
+        $addOgFiles = OgFile::create([
+            'belongs_to' => $addOgSoftcopy->file_id,
+            'original_filename' => $this->fileUpload->getClientOriginalName(),
+            'converted_filename' => Str::snake($addOgSoftcopy->article_title) . '_' . $addOgSoftcopy->file_id  . '.pdf',
+            'filetype' => $this->fileUpload->getClientOriginalExtension(),
+            'filesize' => $this->fileUpload->getSize(),
+            ]
+        );
+        
+        $this->fileUpload->storeAs('public/og_files', $addOgFiles->converted_filename);
+        
+        session()->flash('messageSaveSoftcopy', 'Publication Softcopy saved Successfully');
+        // return redirect()->to('/composing_system');
+        
+        $this->dispatchBrowserEvent('clear-file');
+        
+        $this->articleTitle = '';
+        $this->publicationType = '';
+        $this->publicationSubType = '';
+        $this->datePublished = '';
+        $this->isDownloadable = '';
+        $this->isSearchable = '';
+        $this->fileUpload = '';
+        
+        $this->emit('newSoftcopyAdded');
+    }
+    
+    public function updatedFileUpload(){
+        $validated = $this->validate([
+            'fileUpload' => 'mimes:pdf|max:51200', // 50MB Max 1024 * 50 = 51200
+            ]
+        );
+    }
+    
+    public function updateSearchEngine($toBeStatus){
+        $now = Carbon::now();
+        
+        $updateSearchEngine = SEComposing::find(1);
+        $updateSearchEngine->update([
+            'is_on' => $toBeStatus,
+            'status_by_id' => Auth::user()->id,
+            'status_by_name' => Auth::user()->name,
+            'status_at' => $now,
+            ]
+        );
+        
+        $this->isOn = $toBeStatus;
+        
+        if($updateSearchEngine->is_on == true){
+            session()->flash('messageUpdateSearchEngine', 'Search Engine Started Successfully!');
+        }else{
+            session()->flash('messageUpdateSearchEngine', 'Search Engine Shutdown Successful!');
+        }
+        
+        $this->emit('newSoftcopyAdded');
+    }
+    
+    public function mount(){
+        $visibleCount = OgSoftCopy::where('is_searchable', true)->count();
+        $downloadableCount = OgSoftCopy::where('is_downloadable', true)->count();
+        $allCount = OgSoftCopy::all()->count();
+        $this->visiblePublications = $visibleCount;
+        $this->downloadablePublications = $downloadableCount;
+        $this->allPublications = $allCount;
+        $searchEngineStatus = SEComposing::find(1)->value('is_on');
+        $this->isOn = $searchEngineStatus;
+        
+        $this->pubList = PublicationType::all();
+        $this->pubSubList = PublicationTypeChildren::all();                                        
+    }
+    
+    public function render()
+    {
+        return view('livewire.rr-composing-system.add-item');
+    }
+}

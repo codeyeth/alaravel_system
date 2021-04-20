@@ -23,6 +23,7 @@ class CreateSalesInvoiceItemsTable extends Migration
             $table->string('additional_description');
             $table->string('price');
             $table->string('total');
+            $table->string('form_type');
             
             $table->string('created_by_id');
             $table->string('created_by_name');

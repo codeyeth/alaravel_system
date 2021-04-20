@@ -19,7 +19,7 @@ class SalesInvoiceModule extends Component
 {
     public $search = '';
     
-    public $salesInvoiceNumber;
+    // public $salesInvoiceNumber;
     public $agencyId;
     public $agencyCode;
     public $agencyName;
@@ -34,12 +34,15 @@ class SalesInvoiceModule extends Component
     public $workOrderNo;
     public $code;
     public $issuedBy;
+    public $receivedBy;
     public $stockNo;
     
     // public $siCode;
     
     //ENCODING FROM STOCK FORM
     public $itemList = [];
+    public $goodsType = '';
+    public $formType = '';
     
     //GET CLIENT DATABASE
     public $clientDatabase = [];
@@ -130,6 +133,21 @@ class SalesInvoiceModule extends Component
         $this->itemList[$indexKey]['unit'] = $productItems->unit;
     }
     
+    public function addItemListManual(){
+        $this->itemListCount++;
+        
+        $this->itemList[] =
+        [[
+            'formType' => '', 
+            'itemDescription' => '', 
+            'unit' => '', 
+            'quantity' => '', 
+            'price' => '', 
+            'additionalDescription' => '', 
+            ]
+        ];
+    }
+    
     public function removeItem($index){
         unset($this->itemList[$index]);
         $this->itemList = array_values($this->itemList);
@@ -141,8 +159,8 @@ class SalesInvoiceModule extends Component
     }
     
     public function refreshTrick(){
-        $salesInvoiceCount = SalesInvoice::count() + 1;
-        $this->salesInvoiceNumber = str_pad($salesInvoiceCount,6,'0',STR_PAD_LEFT);
+        // $salesInvoiceCount = SalesInvoice::count() + 1;
+        // $this->salesInvoiceNumber = str_pad($salesInvoiceCount,6,'0',STR_PAD_LEFT);
         
         $this->agencyCode = '';
         $this->agencyName = '';
@@ -157,10 +175,13 @@ class SalesInvoiceModule extends Component
         $this->workOrderNo = '';
         $this->code = '';
         $this->issuedBy = '';
+        $this->receivedBy = '';
         $this->stockNo = '';
         
         //ENCODING FROM STOCK FORM
         $this->itemList = [];
+        $this->itemListCount = '';
+        $this->goodsType = '';
         
         //GET CLIENT DATABASE
         $this->clientDatabase = [];
@@ -175,28 +196,45 @@ class SalesInvoiceModule extends Component
         $this->productItems = '';
         
         $this->emit('newSalesInvoiceAdded');
+    }
+    
+    public function resetGoodsType(){
+        //ENCODING FROM STOCK FORM
+        $this->itemList = [];
+        $this->itemListCount = '';
+        $this->formType = '';
         
+        //PRODUCT DETAILS
+        $this->productSubParentFor = [];
+        $this->productItemsFor = [];
+        $this->productParent = '';
+        $this->productSubParent = '';
+        $this->productItems = '';
     }
     
     public function saveSalesInvoice(){
         $now = Carbon::now();
         
+        $salesInvoiceCount = SalesInvoice::count() + 1;
+        $salesInvoiceNumber = str_pad($salesInvoiceCount,6,'0',STR_PAD_LEFT);
+        
         if(count($this->itemList) > 0){
             $saveSalesInvoice = 
             SalesInvoice::create
             ([
-                'sales_invoice_code' => $this->salesInvoiceNumber,
-                'code' => $this->code,
+                'sales_invoice_code' => $salesInvoiceNumber,
+                'code' => Str::upper($this->code),
                 'agency_id' => $this->agencyId,
                 'agency_code' => Str::upper($this->agencyCode),
                 'agency_name' => Str::upper($this->agencyName),
                 'agency_address' => Str::upper($this->agencyAddress),
                 'region' => Str::upper($this->region),
                 'contact_person' => Str::upper($this->contactPerson),
-                'contact_no' => Str::upper($this->contactNo),
+                'contact_no' => $this->contactNo,
                 'email' => Str::upper($this->emailAddress),
                 'payment_mode' => $this->paymentMode,
                 'package_type' => $this->packageType,
+                'goods_type' => Str::upper($this->goodsType),
                 'transaction_type' => $this->transactionType,
                 'work_order_no' => $this->workOrderNo,
                 'stock_no' => $this->stockNo,
@@ -204,18 +242,25 @@ class SalesInvoiceModule extends Component
                 'created_by_id' => Auth::user()->id,
                 'created_by_name' => Str::upper(Auth::user()->name),
                 'date' => $now->toDateString(),
+                'received_by' => Str::upper($this->receivedBy),
                 ]
             );
             
             foreach ($this->itemList as $item_list){
                 $salesInvoiceTotal = $item_list['quantity'] * $item_list['price'];
                 
-                if($item_list['formType'] == '0001'){
-                    $formType = 'NAF';
-                }elseif($item_list['formType'] == '0002'){
-                    $formType = 'AF';
-                }else{
-                    $formType = 'SF';
+                if($this->goodsType == 'Generic'){
+                    if($item_list['formType'] == '0001'){
+                        $formType = 'NAF';
+                    }elseif($item_list['formType'] == '0002'){
+                        $formType = 'AF';
+                    }else{
+                        $formType = 'SF';
+                    }
+                }
+                
+                if($this->goodsType == 'Specialized'){
+                    $formType = $this->formType;
                 }
                 
                 $saveSalesInvoiceItem = 
@@ -244,11 +289,11 @@ class SalesInvoiceModule extends Component
     }
     
     public function mount(){
-        $salesInvoiceCount = SalesInvoice::count() + 1;
-        $this->salesInvoiceNumber = str_pad($salesInvoiceCount,6,'0',STR_PAD_LEFT);
+        // $salesInvoiceCount = SalesInvoice::count() + 1;
+        // $this->salesInvoiceNumber = str_pad($salesInvoiceCount,6,'0',STR_PAD_LEFT);
         
         //GET PRODUCT PARENT
-        $this->productParentFor =  ProductParent::all();
+        $this->productParentFor = ProductParent::all();
         // $this->issuedBy = Auth::user()->name;
         
         // dd($now->toDateString());

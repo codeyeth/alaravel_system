@@ -18,6 +18,7 @@ class CreateClientLedgersTable extends Migration
             //CLIENT DETAILS
             $table->string('agency_id');
             $table->string('agency_code');
+            $table->string('agency_name');
             
             //SALES INVOICE DETAILS
             $table->string('pr_no')->nullable();
