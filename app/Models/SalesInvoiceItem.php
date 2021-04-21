@@ -20,6 +20,7 @@ class SalesInvoiceItem extends Model
         'total',
         'created_by_id',
         'created_by_name',
+        'form_type',
     ];
     public function sales_invoices(){
         return $this->belongsTo(SalesInvoice::class,'sales_invoice_code','sales_invoice_code');

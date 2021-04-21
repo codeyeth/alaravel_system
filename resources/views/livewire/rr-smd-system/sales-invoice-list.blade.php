@@ -16,6 +16,16 @@
                 </div>
                 @endif
                 
+                @if(session('messagePostToDr'))
+                <div class="alert alert-accent alert-dismissible fade show mb-2" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <i class="fa fa-info mx-2"></i>
+                    <strong style="font-size: 150%">  {!! Str::upper(session('messagePostToDr')) !!} </strong> {{ \Carbon\Carbon::parse(session('now'))->toDayDateTimeString() }}
+                </div>
+                @endif
+                
                 <div class="card-body pt-0 pb-3 text-center">
                     <div class="row border-bottom py-2 mb-0 bg-light">
                         <div class="col-12 col-sm-12">
@@ -60,17 +70,16 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col" class="border-0">#</th>
-                                    <th scope="col" class="border-0">S.I CODE</th>
-                                    {{-- <th scope="col" class="border-0">STOCK #</th> --}}
+                                    <th scope="col" class="border-0">SI NO</th>
                                     <th scope="col" class="border-0">AGENCY NAME</th>
-                                    {{-- <th scope="col" class="border-0">AGENCY ADDRESS</th> --}}
                                     <th scope="col" class="border-0">T. TYPE</th>
                                     <th scope="col" class="border-0">MOP</th>
+                                    <th scope="col" class="border-0">GOODS TYPE</th>
                                     <th scope="col" class="border-0">CREATED BY</th>
                                     <th scope="col" class="border-0">CREATED AT</th>
-                                    {{-- <th scope="col" class="border-0"></th> --}}
                                     <th scope="col" class="border-0"></th>
-                                    <th scope="col" class="border-0"></th>
+                                    <th scope="col" class="border-0">C.L POSTING</th>
+                                    <th scope="col" class="border-0">D.R POSTING</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -79,35 +88,56 @@
                                     <td>{{ $sales_invoice_list->id }}</td>
                                     <td>
                                         <a href="#" title="View Sales Invoice" data-toggle="modal" data-target="#modalViewSalesInvoice" wire:click="getSalesInvoice({{ $sales_invoice_list->id }})">
-                                            <i class="material-icons">search</i> 
+                                            {{-- <i class="material-icons">search</i>  --}}
                                             <b>{{ $sales_invoice_list->sales_invoice_code }}</b>
                                         </a>
                                     </td>
-                                    {{-- <td><b>{{ $sales_invoice_list->stock_no }}</b></td> --}}
                                     <td>{{ $sales_invoice_list->agency_name }}</td>
-                                    {{-- <td>{{ $sales_invoice_list->agency_address }} - {{ $sales_invoice_list->region }}</td> --}}
                                     <td>{{ $sales_invoice_list->transaction_type }}</td>
                                     <td>{{ $sales_invoice_list->payment_mode }}</td>
+                                    <td>{{ $sales_invoice_list->goods_type }}</td>
                                     <td>{{ $sales_invoice_list->created_by_name }}</td>
                                     <td>{{ \Carbon\Carbon::parse($sales_invoice_list->created_at)->toDayDateTimeString() }}</td>
                                     
-                                    {{-- <th><button class="btn btn-info btn-block"> <i class="material-icons">search</i> View</button></th> --}}
                                     <!--J CODES START -->
                                     {{Form::open(['route' => 'catch', 'method' => 'GET', 'target' => '__blank' , 'autocomplete'=>'off'])}} 
                                     <input type="hidden" value="{{ $sales_invoice_list->sales_invoice_code }}" name="si_id">
                                     <th>
-                                    {{ Form::button('<i class="material-icons">text_snippet</i> PDF',['type' => 'submit','class'=>'btn btn-accent btn-block btn-sm']) }}
+                                        {{ Form::button('<i class="material-icons">text_snippet</i> PDF',['type' => 'submit','class'=>'btn btn-accent btn-block btn-sm']) }}
                                     </th>
                                     {{ Form::close() }}
                                     <!--J CODES END -->
                                     
+                                    {{-- CLIENT LEDGER POSTING --}}
                                     <th>
+                                        @if ( $sales_invoice_list->or_no != null )
                                         @if ($sales_invoice_list->is_posted == false)
-                                        <button class="btn btn-accent btn-block btn-sm" wire:click="postToLedger({{ $sales_invoice_list->id }})"> <i class="material-icons">text_snippet</i> Post to CL</button>
+                                        <button class="btn btn-accent btn-block btn-sm" data-toggle="modal" data-target="#modalConfirmCl" wire:click="confirmPostCl({{ $sales_invoice_list->id }})"> <i class="material-icons">text_snippet</i> Post to C.L</button>
                                         @else
-                                        <b class="text-success">POSTED</b>
+                                        <p class="text-success mb-0">POSTED</p>
+                                        @endif
+                                        @else
+                                        <p class="text-danger mb-0">Pending OR NO.</p>
                                         @endif
                                     </th>
+                                    
+                                    {{-- DELIVERY RECEIPT POSTING --}}
+                                    <th>
+                                        @if ( $sales_invoice_list->or_no != null )
+                                        @if ( $sales_invoice_list->is_posted_to_dr == false )
+                                        <button class="btn btn-accent btn-block btn-sm" data-toggle="modal" data-target="#modalConfirmDr" wire:click="confirmPostDr({{ $sales_invoice_list->id }})"> <i class="material-icons">text_snippet</i> Post to D.R</button>
+                                        @else
+                                        <p class="text-success mb-0">POSTED
+                                            @if ( $sales_invoice_list->is_delivered == true )
+                                            / DELIVERED
+                                            @endif
+                                        </p>
+                                        @endif
+                                        @else
+                                        <p class="text-danger mb-0">Pending OR NO.</p>
+                                        @endif
+                                    </th>
+                                    
                                 </tr>      
                                 @endforeach
                             </tbody>
@@ -126,6 +156,86 @@
         {{ $salesInvoiceList->links() }}
     </div>
     
+    {{--POST SI TO CL CONFIRMATION DIALOG --}}
+    <div class="modal fade" id="modalConfirmCl" tabindex="-1" role="dialog" aria-labelledby="modalConfirmCl" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Confirm Sales Invoice Posting to Client Ledger</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @if ($postedSuccessful == false)
+                    <h4 style="text-align: center" class="text-default mb-2"><b class="text-accent"> S.I No. {{ $siCode }} </b> will be Posted to the Client Ledger.</h4>
+                    <h5 style="text-align: center" class="text-default mb-3">This action is <b class="text-danger"> irreversible </b>do you want to Proceed?</h5>
+                    
+                    
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12">
+                            <div class="form-row">
+                                <div class="form-group col-md-12">
+                                    <input type="text" class="form-control" id="remarks" name="remarks" wire:model="remarks" placeholder="Remarks">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: center">
+                        <button class="btn btn-accent" type="button" wire:click="postToLedger({{ $postId }})"><i class="material-icons">check</i> Proceed</button>
+                        <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="material-icons">cancel</i> Cancel</button>
+                    </div>
+                    @endif
+                    
+                    @if ($postedSuccessful == true)
+                    <h4 style="text-align: center" class="text-accent mb-2"><b> S.I {{ $siCode }} Posted Successfully.</b></h4>
+                    @endif
+                    
+                </div>
+                <div class="modal-footer">
+                    @if ($postedSuccessful == true)
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="refreshTable">Close</button>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {{--POST SI TO DR CONFIRMATION DIALOG --}}
+    <div class="modal fade" id="modalConfirmDr" tabindex="-1" role="dialog" aria-labelledby="modalConfirmDr" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Confirm Sales Invoice Posting to Delivery Receipt</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @if ($postedSuccessful == false)
+                    <h4 style="text-align: center" class="text-default mb-2"><b class="text-accent"> S.I {{ $siCode }} </b> will be Posted to the Delivery Receipt Table. </h4>
+                    <h5 style="text-align: center" class="text-default mb-3">This action is <b class="text-danger"> irreversible </b>do you want to Proceed?</h5>
+                    
+                    <div style="text-align: center">
+                        <button class="btn btn-accent" type="button" wire:click="postToDeliveryReceipt({{ $postId }})"><i class="material-icons">check</i> Proceed</button>
+                        <button class="btn btn-danger" type="button" data-dismiss="modal"><i class="material-icons">cancel</i> Cancel</button>
+                    </div>
+                    @endif
+                    
+                    @if ($postedSuccessful == true)
+                    <h4 style="text-align: center" class="text-accent mb-2"><b> S.I {{ $siCode }} Posted Successfully.</b></h4>
+                    @endif
+                    
+                </div>
+                <div class="modal-footer">
+                    @if ($postedSuccessful == true)
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="refreshTable">Close</button>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
     
     {{-- MODAL VIEW SALES INVOICE --}}
     <div class="modal fade" id="modalViewSalesInvoice" tabindex="-1" role="dialog" aria-labelledby="modalViewSalesInvoice" aria-hidden="true" wire:ignore.self>
@@ -140,7 +250,7 @@
                 <div class="modal-body">
                     @if( $showViewSalesInvoiceModal == true )
                     
-                    <h6  style="text-align: right;" class="mb-0"><b>NO. :</b> {{ $parentSalesInvoiceDetails->sales_invoice_code }}</h6>
+                    <h6  style="text-align: right;" class="mb-0"><b>SI NO. :</b> {{ $parentSalesInvoiceDetails->sales_invoice_code }}</h6>
                     <h6  style="text-align: right;" class="mb-4"><b>DATE. :</b> {{ \Carbon\Carbon::parse($parentSalesInvoiceDetails->created_at)->toFormattedDateString() }}</h6>
                     <h6  style="text-align: right;" class="mb-1"><b>CODE:</b>{{ $parentSalesInvoiceDetails->code }}</h6>
                     
@@ -216,6 +326,7 @@
                                 <div class="col-sm-12 col-md-8">
                                     <h6 class="mb-1"><b>PAYMENT MODE/PACKAGE TYPE:</b> {{ $parentSalesInvoiceDetails->payment_mode }}/{{ $parentSalesInvoiceDetails->package_type }}</h6>
                                     <h6 class="mb-1"><b>ISSUED BY:</b> {{ $parentSalesInvoiceDetails->issued_by }}</h6>
+                                    <h6 class="mb-1"><b>RECEIVED BY:</b> {{ $parentSalesInvoiceDetails->received_by }}</h6>
                                 </div>
                             </div>
                         </div>
@@ -233,7 +344,7 @@
                     </div>
                     <br>
                     @endif
-
+                    
                     <h6 class="mb-2 text-warning"><b>UPDATE CONTROL NUMBERS</b></h6>
                     
                     <form wire:submit.prevent="updateControlNumber({{ $parentSalesInvoiceDetails->id }})" autocomplete="off">
@@ -243,15 +354,15 @@
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">PR# <span class="requiredTag">&bullet;</span></strong>
+                                        <strong class="text-muted d-block mb-2">PR#/PO# </strong>
                                         <input type="text" class="form-control" id="prNo" name="prNo" placeholder="PR#" autocomplete="off" wire:model="prNo" >
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <strong class="text-muted d-block mb-2">DR# <span class="requiredTag">&bullet;</span></strong>
+                                        <strong class="text-muted d-block mb-2">DR# </strong>
                                         <input type="text" class="form-control" id="drNo" name="drNo" placeholder="DR#" autocomplete="off" wire:model="drNo" >
                                     </div>
                                     <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">OR# <span class="requiredTag">&bullet;</span></strong>
+                                        <strong class="text-muted d-block mb-2">OR# </strong>
                                         <input type="text" class="form-control" id="orNo" name="orNo" placeholder="OR#" autocomplete="off" wire:model="orNo" >
                                     </div>
                                     <div class="form-group col-md-1">

@@ -50,8 +50,15 @@
     @livewire('rr-smd-system.sales-invoice-list')        
     @endif
     
-    {{-- CLIENT LEDGERE LIST --}}
+    {{-- CLIENT LEDGER LIST --}}
     @if ($clTable == true)
     @livewire('rr-smd-system.client-ledger-list')        
     @endif
+    
+    {{-- DELIVER RECEIPT LIST --}}
+    @if ($drTable == true)
+    @livewire('rr-smd-system.delivery-receipt-list')        
+    @endif
+    
+    
 </div>

@@ -36,6 +36,17 @@ class SalesInvoice extends Model
         'pr_no',
         'dr_no',
         'or_no',
+        'date',
+        'received_by',
+        'goods_type',
+        'is_posted_to_dr',
+        'is_posted_to_dr_by_id',
+        'is_posted_to_dr_by_name',
+        'is_posted_to_dr_at',
+        'is_delivered',
+        'is_delivered_by_id',
+        'is_delivered_by_name',
+        'is_delivered_at',
     ];
     public function sales_invoice_items(){
         return $this->hasMany(SalesInvoiceItem::class,'sales_invoice_code');

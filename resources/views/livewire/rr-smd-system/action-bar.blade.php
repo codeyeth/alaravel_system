@@ -52,6 +52,10 @@
                                 <i class="material-icons">add</i> Client Database
                             </button>
                             <div style="margin-left: 10px;"></div>
+                            <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalCourierDatabase">
+                                <i class="material-icons">add</i> Courier Info Database
+                            </button>
+                            <div style="margin-left: 10px;"></div>
                             <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalSalesInvoice">
                                 <i class="material-icons">add</i> Encode Sales Invoice
                             </button>
@@ -80,6 +84,9 @@
         
         {{-- ACCOMPLISED SALES INVOICE --}}
         @livewire('rr-smd-system.sales-invoice-accomplished')
+        
+        {{-- COURIER INFO DATABASE --}}
+        @livewire('rr-smd-system.courier-info-database')
         
     </div>
 </div>
