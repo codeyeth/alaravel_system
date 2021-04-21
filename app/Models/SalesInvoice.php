@@ -36,9 +36,7 @@ class SalesInvoice extends Model
         'pr_no',
         'dr_no',
         'or_no',
-        'date',
     ];
-    //para di ko na kailangan magjoin query hehehe 
     public function sales_invoice_items(){
         return $this->hasMany(SalesInvoiceItem::class,'sales_invoice_code');
     }

@@ -143,7 +143,7 @@
 <tr style="page-break-inside:avoid; page-break-after:auto">
       <td colspan="6" style="border:1px solid #000000; padding:10px; font-size: x-small; text-align:left"><b>Total:</b></td>
       <td style="border:1px solid #000000; padding:10px; font-size: x-small;"><b> PHP </b></td>
-      <td style="border:1px solid #000000; padding:10px; font-size: x-small;"><b> {{$items->sum('total')}} </b></td>
+      <td style="border:1px solid #000000; padding:10px; font-size: x-small;"><b> {{$si_query->sales_invoice_items->sum('total')}} </b></td>
     </tr>
 <br>
     <tr>
