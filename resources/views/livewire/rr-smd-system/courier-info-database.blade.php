@@ -158,7 +158,7 @@
                             <p style="text-align: center"> No Client/s Found.</p>
                             @endif
                             
-                            <hr class="hr_dashed">
+                            <br>
                             
                             <div class="text-center"> 
                                 {{ $courierList->links() }}

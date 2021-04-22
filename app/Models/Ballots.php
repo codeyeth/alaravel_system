@@ -23,5 +23,21 @@ class Ballots extends Model
         'is_re_print_done_by_id',
         'is_re_print_done_by',
         'is_re_print_done_at',
+        
+        'is_delivered',
+        'is_delivered_by_id',
+        'is_delivered_by',
+        'is_delivered_at',
+        
+        'is_dr_done',
+        'is_dr_done_by_id',
+        'is_dr_done_by',
+        'is_dr_done_at',
+        
+        'is_out_for_delivery',
+        'is_out_for_delivery_by_id',
+        'is_out_for_delivery_by',
+        'is_out_for_delivery_at',
+        
     ];
 }

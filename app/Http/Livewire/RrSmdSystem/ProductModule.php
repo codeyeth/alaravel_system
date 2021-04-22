@@ -59,90 +59,92 @@ class ProductModule extends Component
         $saveProduct = ProductParent::create([
             'product_code' => $productCode,
             'product_name' => Str::upper($this->productName),
-            ]);
-            foreach ($this->productSubName as $sub_name){
-                $subProductCount = ProductSubParent::count() + 1;
-                $subProductCode = str_pad($subProductCount,4,'0',STR_PAD_LEFT);
-                
-                $saveSubProduct = ProductSubParent::create([
-                    'product_code' => $productCode,
-                    'product_sub_code' => 'SUB'. $subProductCode ,
-                    'product_name' => Str::upper($sub_name['product_sub_name']),
-                    ]);
-                }
-                session()->flash('messageSaveProduct', 'Product/s Added Successfully!');
-                $this->refreshTrick();
-            }
+            ]
+        );
+        foreach ($this->productSubName as $sub_name){
+            $subProductCount = ProductSubParent::count() + 1;
+            $subProductCode = str_pad($subProductCount,4,'0',STR_PAD_LEFT);
             
-            public function editProduct($productId, $indexKey){
-                $this->editProductId = $productId;
-                $this->refreshTrick();
-                
-                $this->productAddMode = false;
-                $postEdit = ProductParent::find($productId);
-                $this->productName = $postEdit->product_name;
-                
-                $subProductList = DB::table('product_sub_parents')->where('product_code', $postEdit->product_code)->get();
-                foreach($subProductList as $sub_product_list){
-                    $indexKey++;
-                    $this->arrayCountUpdate = $indexKey + 1;
-                    $this->productSubName[$indexKey]['product_sub_id'] = $sub_product_list->id;
-                    $this->productSubName[$indexKey]['product_sub_name'] = $sub_product_list->product_name;
-                }
-            }
+            $saveSubProduct = ProductSubParent::create([
+                'product_code' => $productCode,
+                'product_sub_code' => 'SUB'. $subProductCode ,
+                'product_name' => Str::upper($sub_name['product_sub_name']),
+                ]
+            );
+        }
+        session()->flash('messageSaveProduct', 'Product/s Added Successfully!');
+        $this->refreshTrick();
+    }
+    
+    public function editProduct($productId, $indexKey){
+        $this->editProductId = $productId;
+        $this->refreshTrick();
+        
+        $this->productAddMode = false;
+        $postEdit = ProductParent::find($productId);
+        $this->productName = $postEdit->product_name;
+        
+        $subProductList = DB::table('product_sub_parents')->where('product_code', $postEdit->product_code)->get();
+        foreach($subProductList as $sub_product_list){
+            $indexKey++;
+            $this->arrayCountUpdate = $indexKey + 1;
+            $this->productSubName[$indexKey]['product_sub_id'] = $sub_product_list->id;
+            $this->productSubName[$indexKey]['product_sub_name'] = $sub_product_list->product_name;
+        }
+    }
+    
+    public function updateProduct($productId){
+        $updateProduct = ProductParent::find($productId);
+        $updateProduct->update(
+            ['product_name' => $this->productName]
+        );
+        
+        foreach ($this->productSubName as $product_sub_name_for){
+            $subProductCount = ProductSubParent::count() + 1;
+            $subProductCode = str_pad($subProductCount,4,'0',STR_PAD_LEFT);
             
-            public function updateProduct($productId){
-                $updateProduct = ProductParent::find($productId);
-                $updateProduct->update(
-                    ['product_name' => $this->productName]
+            if( $product_sub_name_for['product_sub_id'] != "0000" ){
+                $updatesubProduct = ProductSubParent::find($product_sub_name_for['product_sub_id']);
+                $updatesubProduct->update(
+                    ['product_name' => $product_sub_name_for['product_sub_name']]
                 );
-                
-                foreach ($this->productSubName as $product_sub_name_for){
-                    $subProductCount = ProductSubParent::count() + 1;
-                    $subProductCode = str_pad($subProductCount,4,'0',STR_PAD_LEFT);
-                    
-                    if( $product_sub_name_for['product_sub_id'] != "0000" ){
-                        $updatesubProduct = ProductSubParent::find($product_sub_name_for['product_sub_id']);
-                        $updatesubProduct->update(
-                            ['product_name' => $product_sub_name_for['product_sub_name']]
-                        );
-                    }else{
-                        ProductSubParent::create([
-                            'product_code' => $updateProduct->product_code,
-                            'product_sub_code' => 'SUB'.$subProductCode,
-                            'product_name' => Str::upper($product_sub_name_for['product_sub_name']),
-                            ]);
-                        }
-                    }
-                    
-                    session()->flash('messageSaveProduct', 'Product Updated Successfully!');
-                    $this->refreshTrick();
-                }
-                
-                public function deleteProduct($productId){
-                    $postDelete = ProductParent::find($productId);
-                    DB::table('product_sub_parents')->where('product_code', $postDelete->product_code)->delete();
-                    $postDelete->delete();
-                    
-                    session()->flash('messageSaveProduct', 'Deleted Successfully!');
-                    $this->refreshTrick();
-                }
-                
-                public function deleteSubProduct($productId){
-                    $postDelete = ProductSubParent::find($productId);
-                    $postDelete->delete();
-                    session()->flash('messageSaveProduct', 'Deleted Successfully!');
-                    $this->refreshTrick();
-                }
-                
-                public function mount(){
-                    $this->productList = ProductParent::all();
-                    $this->productSubList = ProductSubParent::all();
-                }
-                
-                public function render()
-                {
-                    return view('livewire.rr-smd-system.product-module');
-                }
+            }else{
+                ProductSubParent::create([
+                    'product_code' => $updateProduct->product_code,
+                    'product_sub_code' => 'SUB'.$subProductCode,
+                    'product_name' => Str::upper($product_sub_name_for['product_sub_name']),
+                    ]
+                );
             }
-            
+        }
+        
+        session()->flash('messageSaveProduct', 'Product Updated Successfully!');
+        $this->refreshTrick();
+    }
+    
+    public function deleteProduct($productId){
+        $postDelete = ProductParent::find($productId);
+        DB::table('product_sub_parents')->where('product_code', $postDelete->product_code)->delete();
+        $postDelete->delete();
+        
+        session()->flash('messageSaveProduct', 'Deleted Successfully!');
+        $this->refreshTrick();
+    }
+    
+    public function deleteSubProduct($productId){
+        $postDelete = ProductSubParent::find($productId);
+        $postDelete->delete();
+        session()->flash('messageSaveProduct', 'Deleted Successfully!');
+        $this->refreshTrick();
+    }
+    
+    public function mount(){
+        $this->productList = ProductParent::all();
+        $this->productSubList = ProductSubParent::all();
+    }
+    
+    public function render()
+    {
+        return view('livewire.rr-smd-system.product-module');
+    }
+}

@@ -10,7 +10,7 @@
             }
         </style>
         
-        <div class="col-lg-6 col-md-12">
+        <div class="col-lg-9 col-md-12">
             <div class="card card-small mb-2">
                 <div class="card-header border-bottom">
                     <h6 class="m-0">Actions</h6>
@@ -62,6 +62,10 @@
                             <div style="margin-left: 10px;"></div>
                             <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalAccomplished">
                                 <i class="material-icons">add</i> Accomplished S.I
+                            </button>
+                            <div style="margin-left: 10px;"></div>
+                            <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalSalesReports">
+                                <i class="material-icons">text_snippet</i> Sales Report
                             </button>
                             <div style="margin-left: 10px;"></div>
                         </li>

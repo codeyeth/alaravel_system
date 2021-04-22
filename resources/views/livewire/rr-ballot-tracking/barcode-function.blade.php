@@ -1,18 +1,17 @@
 <div>
-    <br>
-    
+    {{-- ACTION BAR --}}
     <div class="row">
         <div class="col-lg-4 col-md-12">
-            <div class="card card-small mb-3">
+            <div class="card card-small mb-2">
                 <div class="card-header border-bottom">
                     <h6 class="m-0">Actions</h6>
                 </div>
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item p-3">
+                            {{-- SEARCH MODE TOGGLE --}}
                             <span class="d-flex mb-2">
-                                <i class="material-icons mr-1">search</i>
-                                <strong class="mr-1">Search Mode:</strong>
+                                <strong class="mr-1">  <i class="material-icons mr-1">search</i> Search Mode:</strong>
                                 @if ( $searchMode == true)
                                 <strong class="text-success">ON</strong>
                                 @else
@@ -24,9 +23,13 @@
                                     {{-- SEARCH MODE --}}
                                 </div>
                             </span>
+                            
+                            @if ( $isDeliveredMode == false && $isOutForDeliveryMode == false)
+                            
+                            {{-- BALLOT MODE TOGGLE --}}
+                            @if ( $searchMode == false)
                             <span class="d-flex mb-2">
-                                <i class="material-icons mr-1">margin</i>
-                                <strong class="mr-1">Ballot Mode:</strong>
+                                <strong class="mr-1"> <i class="material-icons mr-1">margin</i> Ballot Mode:</strong>
                                 @if ( $ballotIn == true)
                                 <strong class="text-success">BALLOT IN</strong>
                                 @else
@@ -38,6 +41,50 @@
                                     {{-- BALLOT IN --}}
                                 </div>
                             </span>
+                            @endif
+                            
+                            @endif
+                            
+                            @if ( $searchMode == false && Auth::user()->comelec_role == 'COMELEC DELIVERY')
+                            
+                            <hr class="hr_dashed">
+                            
+                            {{-- BALLOT OUT FOR DELIVERY MODE TOGGLE --}}
+                            <span class="d-flex mb-2">
+                                <strong class="mr-1"> <i class="material-icons mr-1">arrow_forward home_work</i> Ballot Out for Delivery Mode:</strong>
+                                @if ( $isOutForDeliveryMode == true)
+                                <strong class="text-success">ON</strong>
+                                @else
+                                <strong class="text-danger">OFF</strong>
+                                @endif
+                                <div class="custom-control custom-toggle custom-toggle-lg mb-1 ml-auto">
+                                    <input type="checkbox" id="toggleOutDelivery" name="toggleOutDelivery" class="custom-control-input custom-control-lg" wire:click="isOutForDeliveryModeToggle" {{ $isOutForDeliveryMode == true ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="toggleOutDelivery"></label> 
+                                    {{-- SEARCH MODE --}}
+                                </div>
+                            </span>
+                            
+                            {{-- BALLOT DELIVERED MODE TOGGLE --}}
+                            <span class="d-flex mb-2">
+                                <strong class="mr-1">  <i class="material-icons mr-1">check home_work</i> Ballot Delivered Mode:</strong>
+                                @if ( $isDeliveredMode == true)
+                                <strong class="text-success">ON</strong>
+                                @else
+                                <strong class="text-danger">OFF</strong>
+                                @endif
+                                <div class="custom-control custom-toggle custom-toggle-lg mb-1 ml-auto">
+                                    <input type="checkbox" id="toggleDelivered" name="toggleDelivered" class="custom-control-input custom-control-lg" wire:click="isDeliveredModeToggle" {{ $isDeliveredMode == true ? 'checked' : '' }}>
+                                    <label class="custom-control-label" for="toggleDelivered"></label> 
+                                    {{-- SEARCH MODE --}}
+                                </div>
+                            </span>
+                            
+                            @endif
+                            
+                            {{-- IF THE CURRENT USER LOGGED IN IS VERIFICATION --}}
+                            
+                            @if ( $searchMode == false)
+                            
                             @if ( Auth::user()->comelec_role == 'VERIFICATION' && $ballotIn == false)
                             <span class="d-flex mb-2">
                                 <i class="material-icons mr-1">margin</i>
@@ -54,7 +101,10 @@
                                 </div>
                             </span>
                             @endif
+                            
+                            @endif
                         </li>
+                        {{-- IF SEARCH MODE ON AND THE USER LOGGED IN IS ADMINISTRATOR --}}
                         <li class="list-group-item d-flex px-3">
                             @if ( $searchMode == true && Auth::user()->is_ballot_tracking == true && Auth::user()->is_admin == true )
                             <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalReport">
@@ -69,71 +119,110 @@
         </div>
     </div>
     
-    <br>
+    <hr class="hr_dashed">
     
+    {{-- BALLOT OUT MODE INFORMATION TEXT --}}
+    @if ( $isDeliveredMode == false && $isOutForDeliveryMode == false)
     @if ($ballotIn == false && $searchMode == false)
-    <h5 class="text-primary"> BALLOT OUT MODE 
+    
+    <div class="alert alert-accent show mb-3" role="alert">
+        <i class="fa fa-info mx-2"></i>
+        <strong>Ballot Out Mode | All Barcoded Items will be Released from Possession.</strong>
+        
         @if ($verificationBadMode == true && Auth::user()->comelec_role == 'VERIFICATION')
-        <small class="text-danger"> VERIFICATION BAD MODE </small>
-        @endif
-    </h5> 
-    @endif
-    
-    @if ($ballotIn == true && $searchMode == false)
-    <h5 class="text-primary"> BALLOT IN MODE 
-        @if ($verificationBadMode == false && Auth::user()->comelec_role == 'VERIFICATION' && $ballotIn == false)
-        <small class="text-success"> VERIFICATION GOOD MODE </small>
-        @endif
-    </h5> 
-    @endif
-    
-    <div class="row">
-        @if ( $searchMode == true )
-        <div class="col-12 col-sm-12">
-            <div class="d-flex">
-                <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
-                    <label class="btn btn-white {{ $keywordMode == true ? 'active' : ''}}" wire:click="$set('keywordMode', true)"><input type="radio" name="options" id="option1"> Search by Keyword </label>
-                    <label class="btn btn-white {{ $keywordMode == true ? '' : 'active'}}" wire:click="$set('keywordMode', false)"><input type="radio" name="options" id="option2"> Search by Date</label>
-                </div>
-                <div class="p-2"></div>
-            </div>
-        </div>
+        <i> The ballot will be Subjected to Re-Print </i> 
+        {{-- VERFICATION BAD --}}
         @endif
         
-        <div class="col-lg-12 col-sm-12">
-            <div class="input-group mb-3">
-                @if ( $searchMode == true )
-                
-                @if ( $keywordMode == true )
-                <input type="text" class="form-control form-control-lg" placeholder="Search here..." wire:model="search" autofocus>
-                @else
-                <input type="date" class="form-control form-control-lg" placeholder="Search here..." wire:model="search" autofocus>
-                @endif
-                
-                @else
-                <input class="form-control form-control-lg mb-0" type="text" placeholder="Ballot ID | Barcode Value here..." wire:model="search" wire:keyup="updateBallotStatus" autofocus>
-                @endif
-                <div class="input-group-append">
-                    <button class="btn btn-warning" type="button" wire:click="clearSearch">Clear</button>
-                </div>
-            </div>
-        </div>
+        @if ($verificationBadMode == false && Auth::user()->comelec_role == 'VERIFICATION')
+        <i> The Ballot is Correct and Valid </i>
+        @endif
     </div>
     
-    <hr>
-    <p style="text-align: center">
-        <img src="{{ asset('shards_template/images/loading2.gif') }}" alt="" wire:loading wire:target="search">
-    </p>    
+    @endif
+    @endif
+    
+    {{-- BALLOT IN MODE INFORMATION TEXT --}}
+    @if ( $isDeliveredMode == false && $isOutForDeliveryMode == false)
+    @if ($ballotIn == true && $searchMode == false)
+    <div class="alert alert-accent show mb-3" role="alert">
+        <i class="fa fa-info mx-2"></i>
+        <strong>Ballot In Mode | All Barcoded Items will be Received to Possession.</strong>
+    </div>
+    @endif
+    @endif
+    
+    @if ( $isOutForDeliveryMode == true && $searchMode == false)
+    <div class="alert alert-accent show mb-3" role="alert">
+        <i class="fa fa-info mx-2"></i>
+        <strong>Out For Delivery Mode Enabled | All barcoded items will be Marked as Out for Delivery.</strong>
+    </div>
+    @endif
+    
+    @if ( $isDeliveredMode == true && $searchMode == false)
+    <div class="alert alert-accent show mb-3" role="alert">
+        <i class="fa fa-info mx-2"></i>
+        <strong>Delivered Mode Enabled | All barcoded items will be Marked as Delivered.</strong>
+    </div>
+    @endif
+    
+    @if ( $isDeliveredMode == false && $isOutForDeliveryMode == false)
     
     {{-- BALLOTS RESULT TABLE --}}
-    <div class="row" wire:loading.remove wire:target="search">
+    <div class="row">
         <div class="col-lg-12 mb-4">
             <div class="card card-small mb-1">
                 <div class="card-header border-bottom">
-                    <h6 class="m-0">Ballot/s Results - <b> {{ $ballotListCount }} </b></h6>
+                    <h6 class="m-0">Ballot/s List</h6>
                 </div>
+                
+                <div class="card-body pt-0 pb-3 text-center">
+                    <div class="row border-bottom py-2 mb-0 bg-light">
+                        {{-- IF SEARCH MODE ON SEARCH BY KEYWORD OR DATE --}}
+                        <div class="col-12 col-sm-12">
+                            @if ( $searchMode == true )
+                            <div class="d-flex">
+                                <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+                                    <label class="btn btn-white {{ $keywordMode == true ? 'active' : ''}}" wire:click="$set('keywordMode', true)"><input type="radio" name="options" id="option1"> Search by Keyword </label>
+                                    <label class="btn btn-white {{ $keywordMode == true ? '' : 'active'}}" wire:click="$set('keywordMode', false)"><input type="radio" name="options" id="option2"> Search by Date</label>
+                                </div>
+                                <div class="p-2"></div>
+                                <div class="ml-auto p-2">
+                                    Total of <b class="text-success" style="font-size: 120%;"> {{ $ballotListCount }} </b> Result/s Found
+                                </div>
+                            </div>
+                            @endif
+                        </div>
+                        
+                        {{-- SEARCH INPUT --}}
+                        <div class="col-lg-12 col-sm-12">
+                            <div class="input-group mb-2">
+                                @if ( $searchMode == true )
+                                
+                                @if ( $keywordMode == true )
+                                <input type="text" class="form-control form-control-lg" placeholder="Search here..." wire:model="search" autofocus>
+                                @else
+                                <input type="date" class="form-control form-control-lg" placeholder="Search here..." wire:model="search" autofocus>
+                                @endif
+                                
+                                @else
+                                <input class="form-control form-control-lg mb-0" type="text" placeholder="Ballot ID | Barcode Value here..." wire:model="search" wire:keyup="updateBallotStatus" autofocus>
+                                @endif
+                                <div class="input-group-append">
+                                    <button class="btn btn-warning" type="button" wire:click="clearSearch">Clear Search</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                {{-- LOADING GIF --}}
+                <p style="text-align: center">
+                    <img src="{{ asset('shards_template/images/loading2.gif') }}" alt="" wire:loading wire:target="search">
+                </p>   
+                
                 {{-- TABLE --}}
-                <ul class="list-group list-group-flush">
+                <ul class="list-group list-group-flush" wire:loading.remove wire:target="search">
                     <li class="list-group-item p-0 pb-3 text-center">
                         @if (count($ballotList) > 0)
                         <table class="table table-hover mb-0">
@@ -149,15 +238,16 @@
                                     <th scope="col" class="border-0" style="text-align: left"></th>
                                     @endif
                                     
-                                    <th scope="col" class="border-0" style="text-align: left">History</th>
-                                    <th scope="col" class="border-0" style="text-align: left">Details</th>
+                                    <th scope="col" class="border-0" style="text-align: center"></th>
+                                    <th scope="col" class="border-0" style="text-align: center"></th>
+                                    <th scope="col" class="border-0" style="text-align: center"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($ballotList as $item)
                                 <tr>
                                     <td>{{ $item->id }}</td>
-                                    <td align="right"><b> {{ $item->ballot_id }} </b></td>
+                                    <td align="right"><b> {{ $item->ballot_id }} </b> </td>
                                     <td align="right"><small>{{ $item->bgy_name }} - {{ $item->mun_name }} - {{ $item->prov_name }}</small> </td>
                                     <td align="left"><small> {{ $item->pollplace }}</small> </td>
                                     <td align="right">
@@ -187,17 +277,33 @@
                                     </td>
                                     @if ( $item->current_status == "QUARANTINE" && Auth::user()->comelec_role == "QUARANTINE")
                                     <td>
-                                        <button type="button" class="btn btn-warning" data-toggle="modal" data-target="#modalBadBallots" wire:click.preventDefault="setBadBallotId({{ $item->id }})"> <i class="material-icons">search</i> Encode Bad Ballots</button>
+                                        <button type="button" class="btn btn-warning btn-block" data-toggle="modal" data-target="#modalBadBallots" wire:click.preventDefault="setBadBallotId({{ $item->id }})"> <i class="material-icons">search</i> Encode Bad Ballots</button>
                                     </td>
                                     @endif
                                     
                                     <td>
-                                        <button type="button" class="btn btn-accent" data-toggle="modal" data-target="#modalBallotHistory" wire:click.preventDefault="getBallotHistory({{ $item->id }})"> <i class="material-icons">search</i> View</button>
+                                        @if($item->is_delivered == true)
+                                        <span class="badge badge-success">Delivered</span>
+                                        @endif
+                                        
+                                        @if($item->is_out_for_delivery == true && $item->is_delivered == false)
+                                        <span class="badge badge-success">Out for Delivery</span>
+                                        @endif
+                                        
+                                        @if($item->is_dr_done == true)
+                                        <span class="badge badge-info">D.R Created</span>
+                                        @endif
                                     </td>
                                     
                                     <td>
-                                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#modalBallotDetails" wire:click.preventDefault="getBallotDetails({{ $item->id }})"> <i class="material-icons">search</i> View</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#modalBallotDetails" wire:click.preventDefault="getBallotDetails({{ $item->id }})" title="View Ballot Description"> <i class="material-icons">description</i></button>
                                     </td>
+                                    
+                                    <td>
+                                        <button type="button" class="btn btn-accent btn-sm" data-toggle="modal" data-target="#modalBallotHistory" wire:click.preventDefault="getBallotHistory({{ $item->id }})"> <i class="material-icons">history</i> History</button>
+                                    </td>
+                                    
+                                    
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -207,11 +313,18 @@
                         <p style="text-align: center">No Ballot found.</p>    
                         @endif
                     </li>
-                    
                 </ul> 
+                
             </div>
         </div>
     </div>
+    
+    @else
+    
+    {{-- DELIVERY MODULE FOR COMELEC DELIVERY --}}
+    @livewire('rr-ballot-tracking.deliver-module', ['isDeliveredMode' => $isDeliveredMode, 'isOutForDeliveryMode' => $isOutForDeliveryMode])
+    
+    @endif
     
     <div class="text-center" wire:loading.remove wire:target="search"> 
         {{ $ballotList->links() }}
@@ -407,8 +520,6 @@
                         </div>
                     </div>
                     
-                    <hr>
-                    
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
                             <div class="form-row">
@@ -427,6 +538,8 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <hr class="hr_dashed">
                     
                 </div>
                 <div class="modal-footer">

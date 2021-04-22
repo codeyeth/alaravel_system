@@ -27,24 +27,39 @@ class CreateBallotsTable extends Migration
             $table->string('group_no');       
             $table->string('ballot_id'); 
             
+            //CURRENT STATUS AND THE UPDATER
             $table->string('current_status')->nullable()->default(false);     
             $table->string('status_updated_by_id')->nullable()->default(false);       
             $table->string('status_updated_by')->nullable()->default(false);    
             $table->string('status_updated_at')->nullable()->default(false);    
             
+            //IF BALLOT IS REPRINT
             $table->boolean('is_re_print')->nullable()->default(false);       
             $table->string('is_re_print_by_id')->nullable();       
             $table->string('is_re_print_by')->nullable();       
             $table->string('is_re_print_at')->nullable();       
             $table->string('re_print_id')->nullable();    
             
+            // IF THIS REPRINT BALLOT IS DONE REPRINTING
             $table->boolean('is_re_print_done')->nullable()->default(false);       
             $table->string('is_re_print_done_by_id')->nullable();       
             $table->string('is_re_print_done_by')->nullable();       
             $table->string('is_re_print_done_at')->nullable();       
             
-            $table->boolean('is_done')->nullable()->default(false);       
+            //BALLOT IS DONE AND DELIVERED TO THE BALLOT LOCATION THIS WILL BE UPDATED BY THE COMELEC DELIVERY
+            $table->boolean('is_delivered')->nullable()->default(false);   
+            $table->string('is_delivered_by_id')->nullable();       
+            $table->string('is_delivered_by')->nullable();       
+            $table->string('is_delivered_at')->nullable();   
             
+            //IF THE BALLOT HAS ASSOCIATED DR 
+            $table->boolean('is_dr_done')->nullable()->default(false);   
+            $table->string('is_dr_done_by_id')->nullable();       
+            $table->string('is_dr_done_by')->nullable();       
+            $table->string('is_dr_done_at')->nullable();  
+            
+            $table->string('new_status_type')->nullable();            
+
             $table->timestamps();
         });
     }

@@ -131,10 +131,16 @@
                             @else
                             <p style="text-align: center"> No Client/s Found.</p>
                             @endif
+
+                            <br>
+
+                            <div class="text-center"> 
+                                {{ $clientList->links() }}
+                            </div>
                             
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="refreshTrick">Close</button>
                             <button type="button" class="btn btn-warning" wire:click="refreshTrick">Reset Form</button>
                             @if ( $clientAddMode == true )
                             <button type="submit" class="btn btn-accent">Save Client Data</button>

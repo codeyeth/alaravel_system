@@ -43,6 +43,11 @@ class SalesInvoiceList extends Component
         $this->keywordMode = true;
     }
     
+    public function updatingSearchSalesInvoice()
+    {
+        $this->resetPage();
+    }
+    
     public function refreshTable(){
         $this->resetPage();
     }
@@ -202,7 +207,7 @@ class SalesInvoiceList extends Component
                 ->orWhere('package_type', 'like', '%'.$this->searchSalesInvoice.'%')    
                 ->orWhere('created_by_name', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orderBy('created_at', 'DESC')
-                ->paginate(20),
+                ->paginate(10),
                 'salesInvoiceListCount' => SalesInvoice::where('sales_invoice_code', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orWhere('stock_no', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orWhere('agency_name', 'like', '%'.$this->searchSalesInvoice.'%')
@@ -222,7 +227,7 @@ class SalesInvoiceList extends Component
             return view('livewire.rr-smd-system.sales-invoice-list', [
                 'salesInvoiceList' => SalesInvoice::where('created_at', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orderBy('created_at', 'DESC')
-                ->paginate(20),
+                ->paginate(10),
                 'salesInvoiceListCount' => SalesInvoice::where('created_at', 'like', '%'.$this->searchSalesInvoice.'%')
                 ->orderBy('created_at', 'DESC')
                 ->count(),

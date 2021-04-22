@@ -40,7 +40,7 @@
                                 </div>
                             </div>
                             
-                            <hr>
+                            <hr class="hr_dashed">
                             
                             @if ($productAddMode == true)
                             <button type="button" class="btn btn-accent btn-block" wire:click="addproductSubName"><i class="material-icons">add</i>Add Sub-Product</button>
@@ -76,7 +76,7 @@
                             <p style="text-align: center"> Click Add Sub-Product to add.</p>
                             @endif
                             
-                            <hr>
+                            <hr class="hr_dashed">
                             
                             @if (count($productList) > 0)
                             <table class="table table-hover mb-0">
