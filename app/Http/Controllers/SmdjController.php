@@ -111,11 +111,33 @@ class SmdjController extends Controller
         $dailydate = request()->get('dailydate');
         $newdate = Carbon::parse($dailydate)->toDateString();
 
-        //$daily_query  = SalesInvoice::where('created_at','like','%'.$newdate.'%')->get();
-       $daily_query = DB::table('sales_invoices')
+        //$daily_query  = SalesInvoice::with('sales_invoice_items')->get();
+       
+        $daily_query  = SalesInvoice::where('created_at','like','%'.$newdate.'%')->get();
+        
+
+   
+        // $daily_query  = DB::table('sales_invoices')
+        // ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
+        // ->where('sales_invoices.created_at','like','%'.$newdate.'%')
+        // ->get();
+
+        $data  = DB::table('sales_invoices')
         ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
-        ->where('sales_invoices.created_at','like','%'.$newdate.'%')
-        ->get();
+        ->where('sales_invoices.created_at','like','%'.$newdate.'%');
+       
+
+        // $data = DB::table('sales_invoice_items')
+        // ->where('created_at','like','%'.$newdate.'%')
+        // ->where('sales_invoice_code',$daily_query->sales_invoice_code)
+        // ->get();
+
+
+        // $num =  $data->groupBy('sales_invoice_code')->map(function ($row) {
+        //     return $row->sum('total');
+        // });
+      
+
 
      
 
@@ -124,7 +146,7 @@ class SmdjController extends Controller
 
 
         $imagepath = public_path();
-        $view = \View::make('j-views.smd.daily_sales_invoice_pdf',compact('imagepath','newdate','daily_query'));
+        $view = \View::make('j-views.smd.daily_sales_invoice_pdf',compact('data','imagepath','daily_query'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom
