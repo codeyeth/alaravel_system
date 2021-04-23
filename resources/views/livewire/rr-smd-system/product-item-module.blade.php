@@ -64,7 +64,7 @@
                                 </div>
                             </div>
                             
-                            <hr>
+                            <hr class="hr_dashed">
                             
                             @if ( $itemAddMode == true )
                             <button type="button" class="btn btn-accent btn-block" wire:click="addItem"><i class="material-icons">add</i>Add Item</button>
@@ -109,7 +109,7 @@
                             <p style="text-align: center"> Click Add Item to add.</p>
                             @endif
                             
-                            <hr>
+                            <hr class="hr_dashed">
                             
                             <div class="row">
                                 <div class="col-12 col-sm-12">
@@ -173,10 +173,16 @@
                             <p style="text-align: center"> No Product Item/s Found.</p>
                             @endif
                             
+                            <br>
+                            
+                            <div class="text-center"> 
+                                {{ $productItemList->links() }}
+                            </div>
+                            
                             
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="refreshTrick">Close</button>
                             <button type="button" class="btn btn-warning" wire:click="refreshTrick">Reset Form</button>
                             @if ( $itemAddMode == true )
                             <button type="submit" class="btn btn-accent">Save Item</button>

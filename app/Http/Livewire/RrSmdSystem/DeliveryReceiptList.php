@@ -36,6 +36,11 @@ class DeliveryReceiptList extends Component
         $this->searchDeliverReceipt = '';
         $this->keywordMode = true;
     }
+
+    public function updatingSearchDeliverReceipt()
+    {
+        $this->resetPage();
+    }
     
     public function getDr($id){
         $this->showViewDrModal = true;
@@ -116,7 +121,7 @@ class DeliveryReceiptList extends Component
                 ->orWhere('agency_name', 'like', '%'.$this->searchDeliverReceipt.'%')
                 ->orWhere('created_by_name', 'like', '%'.$this->searchDeliverReceipt.'%')
                 ->orderBy('created_at', 'DESC')
-                ->paginate(20),
+                ->paginate(10),
                 'drListCount' => SmdDeliveryReceipt::where('dr_no', 'like', '%'.$this->searchDeliverReceipt.'%')
                 ->orWhere('sales_invoice_code', 'like', '%'.$this->searchDeliverReceipt.'%')
                 ->orWhere('stock_no', 'like', '%'.$this->searchDeliverReceipt.'%')
@@ -133,7 +138,7 @@ class DeliveryReceiptList extends Component
             return view('livewire.rr-smd-system.delivery-receipt-list', [
                 'drList' => SmdDeliveryReceipt::where('created_at', 'like', '%'.$this->searchDeliverReceipt.'%')
                 ->orderBy('created_at', 'DESC')
-                ->paginate(20),
+                ->paginate(10),
                 'drListCount' => SmdDeliveryReceipt::where('created_at', 'like', '%'.$this->searchDeliverReceipt.'%')
                 ->orderBy('created_at', 'DESC')
                 ->count(),

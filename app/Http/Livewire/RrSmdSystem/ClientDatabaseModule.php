@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\RrSmdSystem;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\ClientDatabase;
 use Illuminate\Support\Str;
 use DB;
@@ -10,6 +11,9 @@ use Auth;
 
 class ClientDatabaseModule extends Component
 {
+    use WithPagination;
+    protected $paginationTheme = 'bootstrap';
+    
     public $clientAddMode = true;
     public $clientId;
     public $search = '';
@@ -26,6 +30,11 @@ class ClientDatabaseModule extends Component
         $this->search = '';
     }
     
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+    
     public function refreshTrick(){
         $this->agencyName = '';
         $this->agencyAddress = '';
@@ -34,6 +43,8 @@ class ClientDatabaseModule extends Component
         $this->contactNo = '';
         $this->emailAddress = '';
         $this->clientAddMode = true;
+
+        $this->resetPage();
     }
     
     public function saveClientData(){

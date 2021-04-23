@@ -4,7 +4,6 @@ namespace App\Http\Livewire\RrSmdSystem;
 
 use Livewire\Component;
 
-
 class SmdList extends Component
 {
     public $siTable = true;

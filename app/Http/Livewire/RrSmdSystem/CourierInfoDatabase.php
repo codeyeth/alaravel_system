@@ -40,6 +40,11 @@ class CourierInfoDatabase extends Component
         $this->search = '';
     }
     
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function refreshTrick(){
         $this->courierName = '';
         $this->contactNo = '';
@@ -55,6 +60,7 @@ class CourierInfoDatabase extends Component
         $this->edit_currentFileUpload = [];
         
         $this->dispatchBrowserEvent('clear-file');
+        $this->resetPage();
     }
     
     public function updatedFileUpload(){
@@ -176,7 +182,7 @@ class CourierInfoDatabase extends Component
             ->orWhere('dr_no', 'like', '%'.$this->search.'%')
             ->orWhere('created_by_name', 'like', '%'.$this->search.'%')
             ->orderBy('created_at', 'DESC')
-            ->paginate(20),
+            ->paginate(10),
             'courierListCount' => CourierInfoDb::where('name', 'like', '%'.$this->search.'%')
             ->orWhere('contact_no', 'like', '%'.$this->search.'%')
             ->orWhere('company_name', 'like', '%'.$this->search.'%')

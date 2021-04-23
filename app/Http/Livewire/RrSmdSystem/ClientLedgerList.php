@@ -33,6 +33,11 @@ class ClientLedgerList extends Component
         $this->keywordMode = true;
     }
     
+    public function updatingSearchClientLedger()
+    {
+        $this->resetPage();
+    }
+    
     public function mount(){
         $this->clientDatabase = ClientDatabase::all();
         $this->salesInvoiceItems = SalesInvoiceItem::all();
