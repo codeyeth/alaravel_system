@@ -107,46 +107,17 @@ class SmdjController extends Controller
         return response()->download(public_path($fileName))->deleteFileAfterSend(true);
     }
 
-    public function dailysales(){
+    public function dailysalesgeneric(){
         $dailydate = request()->get('dailydate');
+        $goods_type = request()->get('goods');
         $newdate = Carbon::parse($dailydate)->toDateString();
-
-        //$daily_query  = SalesInvoice::with('sales_invoice_items')->get();
-       
-        $daily_query  = SalesInvoice::where('created_at','like','%'.$newdate.'%')->get();
-        
-
-   
-        // $daily_query  = DB::table('sales_invoices')
-        // ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
-        // ->where('sales_invoices.created_at','like','%'.$newdate.'%')
-        // ->get();
-
+        $daily_query  = SalesInvoice::where('created_at','like','%'.$newdate.'%')->where('goods_type',$goods_type)->get();
         $data  = DB::table('sales_invoices')
         ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
-        ->where('sales_invoices.created_at','like','%'.$newdate.'%');
-       
-
-        // $data = DB::table('sales_invoice_items')
-        // ->where('created_at','like','%'.$newdate.'%')
-        // ->where('sales_invoice_code',$daily_query->sales_invoice_code)
-        // ->get();
-
-
-        // $num =  $data->groupBy('sales_invoice_code')->map(function ($row) {
-        //     return $row->sum('total');
-        // });
-      
-
-
-     
-
-     
-
-
-
+        ->where('sales_invoices.created_at','like','%'.$newdate.'%')
+        ->where('sales_invoices.goods_type',$goods_type);
         $imagepath = public_path();
-        $view = \View::make('j-views.smd.daily_sales_invoice_pdf',compact('data','imagepath','daily_query'));
+        $view = \View::make('j-views.smd.daily_sales_invoice_generic_pdf',compact('data','imagepath','daily_query'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom
@@ -161,9 +132,33 @@ class SmdjController extends Controller
         PDF::writeHTML($html_content, true, false, true, false, '');
         PDF::Output('daily.pdf');
         PDF::reset(); 
+    }
 
- 
-            
+    public function dailysalesspecialized(){
+        $dailydate = request()->get('dailydate');
+        $goods_type = request()->get('goods');
+        $newdate = Carbon::parse($dailydate)->toDateString();
+        $daily_query  = SalesInvoice::where('created_at','like','%'.$newdate.'%')->get();
+        $data  = DB::table('sales_invoices')
+        ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
+        ->where('sales_invoices.created_at','like','%'.$newdate.'%')
+        ->where('sales_invoices.goods_type',$goods_type);
+        $imagepath = public_path();
+        $view = \View::make('j-views.smd.daily_sales_invoice_specialized_pdf',compact('data','imagepath','daily_query'));
+        $html_content = $view->render();
+        PDF::setFooterCallback(function($pdf) {
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        });
+        PDF::SetTitle("Daily Sales Invoice");
+        PDF::AddPage('L', 'LEGAL');
+        PDF::writeHTML($html_content, true, false, true, false, '');
+        PDF::Output('daily.pdf');
+        PDF::reset(); 
     }
 
     /**
