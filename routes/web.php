@@ -80,4 +80,5 @@ Route::get('/download_dated_fts_report', ['as' => 'look', 'uses' => 'DeliveryjCo
 Route::get('/view_sales_invoice', ['as' => 'catch', 'uses' => 'SmdjController@si']);
 Route::get('/view_daily_sales_generic', ['as' => 'generic', 'uses' => 'SmdjController@dailysalesgeneric']);
 Route::get('/view_daily_sales_specialized', ['as' => 'specialized', 'uses' => 'SmdjController@dailysalesspecialized']);
+Route::get('/view_monthly_sales', ['as' => 'monthly', 'uses' => 'SmdjController@monthlysales']);
 

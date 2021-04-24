@@ -165,48 +165,63 @@
             <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"></td> 
             <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$asd->total}}</td> 
             @endif
-        @endif
+        @endif    
         <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">---</td> 
     </tr>
     @endforeach
     <tr>
       <td width="30%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"></td>
+      @if($items->payment_mode == 'CASH')
       <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">
       @php
       $total_af = App\Models\SalesInvoiceItem::where('sales_invoice_code',$asd->sales_invoice_code)->where('form_type','AF')->get()
       @endphp
         {{ $total_af->sum('total')}}
       </td>
+      <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"></td>
+      @else
+      <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"></td>
       <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">
       @php
       $total_af = App\Models\SalesInvoiceItem::where('sales_invoice_code',$asd->sales_invoice_code)->where('form_type','AF')->get()
       @endphp
         {{ $total_af->sum('total')}}
       </td>
+      @endif
+      @if($items->payment_mode == 'CASH')
       <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">
       @php
       $total_naf = App\Models\SalesInvoiceItem::where('sales_invoice_code',$asd->sales_invoice_code)->where('form_type','NAF')->get()
       @endphp
         {{ $total_naf->sum('total')}}
       </td>
+      <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"></td>
+      @else
+      <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"></td>
       <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">
       @php
       $total_naf = App\Models\SalesInvoiceItem::where('sales_invoice_code',$asd->sales_invoice_code)->where('form_type','NAF')->get()
       @endphp
-        {{ $total_af->sum('total')}}
+        {{ $total_naf->sum('total')}}
       </td>
+      @endif
+      @if($items->payment_mode == 'CASH')
       <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">
       @php
       $total_sf = App\Models\SalesInvoiceItem::where('sales_invoice_code',$asd->sales_invoice_code)->where('form_type','SF')->get()
       @endphp
         {{ $total_sf->sum('total')}}
       </td>
+      <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"></td>
+      @else
+      <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"></td>
       <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">
       @php
       $total_sf = App\Models\SalesInvoiceItem::where('sales_invoice_code',$asd->sales_invoice_code)->where('form_type','SF')->get()
       @endphp
         {{ $total_sf->sum('total')}}
       </td>
+      @endif
       <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->sales_invoice_items->sum('total')}}</td>
     </tr>
     <br>

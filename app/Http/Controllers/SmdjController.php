@@ -138,7 +138,7 @@ class SmdjController extends Controller
         $dailydate = request()->get('dailydate');
         $goods_type = request()->get('goods');
         $newdate = Carbon::parse($dailydate)->toDateString();
-        $daily_query  = SalesInvoice::where('created_at','like','%'.$newdate.'%')->get();
+        $daily_query  = SalesInvoice::where('created_at','like','%'.$newdate.'%')->where('goods_type',$goods_type)->get();
         $data  = DB::table('sales_invoices')
         ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
         ->where('sales_invoices.created_at','like','%'.$newdate.'%')
@@ -155,6 +155,38 @@ class SmdjController extends Controller
             $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
         });
         PDF::SetTitle("Daily Sales Invoice");
+        PDF::AddPage('L', 'LEGAL');
+        PDF::writeHTML($html_content, true, false, true, false, '');
+        PDF::Output('daily.pdf');
+        PDF::reset(); 
+    }
+
+    public function monthlysales(){
+       
+        $imagepath = public_path();
+        $from = request()->get('datefromdated');
+        $to = request()->get('datetodated');
+
+        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'));
+
+    $data = SalesInvoice::orderBy('sales_invoice_items.created_at')
+    ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
+    ->whereRaw('sales_invoice_items.created_at >= ? AND sales_invoice_items.created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
+    ->get()->groupBy(function($from) {
+        return $from->created_at->format('Y-m-d');
+   });
+
+        $view = \View::make('j-views.smd.monthly_sales_invoice_pdf',compact('from','to','cloned_query','data','imagepath'));
+        $html_content = $view->render();
+        PDF::setFooterCallback(function($pdf) {
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        });
+        PDF::SetTitle("Monthly Sales Invoice");
         PDF::AddPage('L', 'LEGAL');
         PDF::writeHTML($html_content, true, false, true, false, '');
         PDF::Output('daily.pdf');

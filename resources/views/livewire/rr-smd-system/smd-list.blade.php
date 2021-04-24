@@ -90,6 +90,24 @@
 </div>
 </div>
 <div class="tab-pane fade" id="monthly" role="tabpanel" aria-labelledby="monthly-tab" wire:ignore.self>
+<div class="form-group">
+{{Form::open(['route' => 'monthly', 'method' => 'GET', 'autocomplete'=>'off'])}} 
+<br>
+<div class="form-row">
+                                        <div class="form-group col-md-6">
+                                            <strong class="text-muted d-block mb-2">Reports datetime from:</strong>
+                                            <input type="date" name="datefromdated" id="dfrom" class="input-sm form-control" placeholder="Date From" >
+                                            </div>
+                                        <div class="form-group col-md-6">
+                                            <strong class="text-muted d-block mb-2">Reports datetime to:</strong>
+                                            <input type="date" name="datetodated" id="dto"     class="input-sm form-control" placeholder="Date To" >
+                                        </div>
+                                    </div>
+</div>
+<br>
+<button type="button"  class="btn btn-secondary" data-dismiss="modal">Close</button>
+{{ Form::button('Print',['type' => 'submit','class'=>'btn btn-primary']) }}
+{{ Form::close() }}
 </div>
 </div>    
                 </div><!--end modal body-->
