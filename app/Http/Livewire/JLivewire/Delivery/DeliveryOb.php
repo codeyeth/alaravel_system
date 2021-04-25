@@ -8,6 +8,8 @@ use App\Models\Ballots;
 use App\Models\DeliveryConfig;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+use Auth;
 
 class DeliveryOb extends Component
 {
@@ -128,8 +130,16 @@ class DeliveryOb extends Component
                     'CITY_MUN_PROV' => $ballotlist['city_mun_prov'],
                     'CLUSTER_TOTAL' => $ballotlist['quantity']
                     ]);
+                    $update_selected = DB::table('ballots')
+                    ->where('ballot_id', $ballotlist['ballot_id'])
+                    ->update(['is_dr_done' => 1,
+                              'is_dr_done_by_id' => Auth::user()->id,
+                              'status_updated_by' => Auth::user()->name,
+                              'status_updated_at' => Carbon::now()
+                              ]);
                     session()->flash('message', 'DR Number Created!');
                 }
+
                 $this->ballotlists = [ ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => ''] ];
             }else{
                 session()->flash('messageOB', 'There are Invalid Values!');
