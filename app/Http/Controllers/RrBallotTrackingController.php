@@ -31,6 +31,18 @@ class RrBallotTrackingController extends Controller
         }
     }
     
+    public function status_view()
+    {
+        $breadcrumb = "Ballot Tracking Status View";
+        $sidebar = "Ballot Tracking";
+        
+        if(Auth::user()->is_ballot_tracking){
+            return view('rr_ballot_tracking.status_View')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+        }else{
+            abort(403, 'UNAUTHORIZED ACCESS!');
+        }
+    }
+    
     /**
     * Show the form for creating a new resource.
     *

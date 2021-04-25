@@ -13,6 +13,9 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Validator;
 
+//REALTIME functions
+use App\Events\RefreshBallotList;
+
 class DeliverModule extends Component
 {
     use WithPagination;
@@ -74,6 +77,9 @@ class DeliverModule extends Component
                 
                 // SET THE STATUS TO OUT FOR DELIVERY
                 if( $this->isOutForDeliveryMode == true ){
+                    //OUT FOR DELIVERY MODE
+                    $statusType = 'OFDM';
+                    
                     $updateBallotStatus->update([
                         'current_status' => $oldStatus,
                         'new_status_type' => "",
@@ -91,6 +97,8 @@ class DeliverModule extends Component
                 
                 //SET THE STATUS TO DELIVERED
                 if( $this->isDeliveredMode == true ){
+                    //DELIVERED MODE
+                    $statusType = 'DM';
                     $updateBallotStatus->update([
                         'current_status' => $oldStatus,
                         'new_status_type' => "",
@@ -106,6 +114,12 @@ class DeliverModule extends Component
                     );
                 }
                 
+                $userName = Auth::user()->name;
+                $ballot_id = $this->search;
+                $comelec_role = Auth::user()->comelec_role;
+                $barcoded_receiver = Auth::user()->barcoded_receiver;
+                
+                broadcast(new RefreshBallotList($comelec_role, $ballot_id, $barcoded_receiver, $statusType, $userName));
                 
                 if( $this->isOutForDeliveryMode == true ){
                     session()->flash('success', $this->search . ' is Out For Delivery');

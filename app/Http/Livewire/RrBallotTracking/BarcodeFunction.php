@@ -21,6 +21,9 @@ use App\ExcelExports\ExportExcelBallotDate;
 use App\ExcelExports\ExportExcelStatusBallotHistory;
 use App\Models\ComelecRoles;
 
+//REALTIME functions
+use App\Events\RefreshBallotList;
+
 class BarcodeFunction extends Component
 {
     use WithPagination;
@@ -64,6 +67,12 @@ class BarcodeFunction extends Component
     public $updateBadBallot = false;
     public $updateBadBallotId;
     
+    //WEBSOCKETS
+    // Special Syntax: ['echo:{channel},{event}' => '{method}']
+    // protected $listeners = ['echo:RefreshBallotListChannel,RefreshBallotList' => 'refreshContent'];
+    
+    protected $listeners = ['refreshContent'];
+    
     //UPDATE TOGGLE SEARCH MODE
     public function searchModeToggle(){
         $this->search = '';
@@ -82,6 +91,10 @@ class BarcodeFunction extends Component
             session()->flash('success', 'Mode set to Search Mode');
             return redirect()->to('/ballot_tracking');
         }
+    }
+    
+    public function refreshContent($logMessage){
+        // THIS WILL REFRESH THE PAGE CONTENTS HEHEHE CHEAT TRICK NICE LIVEWIRE AND LARAVEL ECHO
     }
     
     public function updatingSearch()
@@ -158,7 +171,8 @@ class BarcodeFunction extends Component
             $updateMyBallotIn = User::find(Auth::user()->id);
             
             if( Auth::user()->comelec_role == 'VERIFICATION'){
-                $updateMyBallotIn->update(['is_ballot_in' => false,'is_verification_type_bad' => true,]);
+                $updateMyBallotIn->update(['is_ballot_in' => false,]);
+                // 'is_verification_type_bad' => true,
             }else{
                 $updateMyBallotIn->update(['is_ballot_in' => false,]);
             }
@@ -170,7 +184,8 @@ class BarcodeFunction extends Component
             $updateMyBallotIn = User::find(Auth::user()->id);
             
             if( Auth::user()->comelec_role == 'VERIFICATION'){
-                $updateMyBallotIn->update(['is_ballot_in' => true,'is_verification_type_bad' => false,]);
+                $updateMyBallotIn->update(['is_ballot_in' => true,]);
+                // 'is_verification_type_bad' => false,
             }else{
                 $updateMyBallotIn->update(['is_ballot_in' => true,]);
             }
@@ -368,6 +383,7 @@ class BarcodeFunction extends Component
     }
     
     //UPDATE BALLOT STATUS
+    //UPDATE BALLOT STATUS
     public function updateBallotStatus(){
         $now = Carbon::now();
         // dd($now);
@@ -453,6 +469,58 @@ class BarcodeFunction extends Component
                 );
                 
                 session()->flash('success', $this->search . ' Ballot ' . $statusType . ' Successful');
+                
+                $userName = Auth::user()->name;
+                $ballot_id = $this->search;
+                
+                if($statusType == 'IN'){
+                    $comelec_role = Auth::user()->comelec_role;
+                    
+                    if($comelec_role == 'SHEETER'){
+                        $barcoded_receiver = 'PRINTER';
+                    }
+                    
+                    if($comelec_role == 'TEMPORARY STORAGE'){
+                        $barcoded_receiver = 'SHEETER';
+                    }
+                    
+                    if($comelec_role == 'VERIFICATION'){
+                        $barcoded_receiver = 'TEMPORARY STORAGE';
+                    }
+                    
+                    if($comelec_role == 'COMELEC DELIVERY'){
+                        if($updateBallotStatus->is_re_print == true){
+                            $barcoded_receiver = 'QUARANTINE';
+                        }else{
+                            $barcoded_receiver = 'VERIFICATION';
+                        }
+                    }
+                    
+                    if($comelec_role == 'QUARANTINE'){
+                        $barcoded_receiver = 'VERIFICATION';
+                    }
+                    
+                    if($comelec_role == 'NPO SMD'){
+                        $barcoded_receiver = 'COMELEC DELIVERY';
+                    }
+                    
+                    // $barcoded_receiver = Auth::user()->barcoded_receiver;
+                    
+                    broadcast(new RefreshBallotList($comelec_role, $ballot_id, $barcoded_receiver, $statusType, $userName));
+                }
+                
+                if($statusType == 'OUT'){
+                    $comelec_role = Auth::user()->comelec_role;
+                    
+                    if($comelec_role == 'VERIFICATION' && $this->verificationBadMode == true ){
+                        $barcoded_receiver = 'QUARANTINE';
+                    }else{
+                        $barcoded_receiver = Auth::user()->barcoded_receiver;
+                    }
+                    
+                    broadcast(new RefreshBallotList($comelec_role, $ballot_id, $barcoded_receiver, $statusType, $userName));
+                }
+                
                 return redirect()->to('/ballot_tracking');
             }
         }

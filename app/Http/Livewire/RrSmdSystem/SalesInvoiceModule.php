@@ -128,13 +128,24 @@ class SalesInvoiceModule extends Component
         ];
         
         $indexKey = $this->itemListCount - 1;
-        $this->itemList[$indexKey]['formType'] = $productCode;
+        
+        if( $productCode == '0001' ){
+            $this->itemList[$indexKey]['formType'] = 'NAF';
+        }elseif( $productCode == '0002' ){
+            $this->itemList[$indexKey]['formType'] = 'AF';
+        }else{
+            $this->itemList[$indexKey]['formType'] = 'SF';
+        }
+        
+        // $this->itemList[$indexKey]['formType'] = $productCode;
+        
         $this->itemList[$indexKey]['itemDescription'] = $productParent . ' ' . $productItems->form_no;
         $this->itemList[$indexKey]['unit'] = $productItems->unit;
     }
     
     public function addItemListManual(){
         $this->itemListCount++;
+        $indexKey = $this->itemListCount - 1;
         
         $this->itemList[] =
         [[
@@ -146,6 +157,8 @@ class SalesInvoiceModule extends Component
             'additionalDescription' => '', 
             ]
         ];
+        $this->itemList[$indexKey]['formType'] = $this->formType;
+        
     }
     
     public function removeItem($index){
@@ -249,58 +262,58 @@ class SalesInvoiceModule extends Component
             foreach ($this->itemList as $item_list){
                 $salesInvoiceTotal = $item_list['quantity'] * $item_list['price'];
                 
-                if($this->goodsType == 'Generic'){
-                    if($item_list['formType'] == '0001'){
-                        $formType = 'NAF';
-                    }elseif($item_list['formType'] == '0002'){
-                        $formType = 'AF';
-                    }else{
-                        $formType = 'SF';
+                // if($this->goodsType == 'Generic'){
+                    //     if($item_list['formType'] == '0001'){
+                        //         $formType = 'NAF';
+                        //     }elseif($item_list['formType'] == '0002'){
+                            //         $formType = 'AF';
+                            //     }else{
+                                //         $formType = 'SF';
+                                //     }
+                                // }
+                                
+                                // if($this->goodsType == 'Specialized'){
+                                    //     $formType = $this->formType;
+                                    // }
+                                    
+                                    $saveSalesInvoiceItem = 
+                                    SalesInvoiceItem::create
+                                    ([
+                                        'sales_invoice_code' => $saveSalesInvoice->sales_invoice_code,
+                                        'quantity' => $item_list['quantity'],
+                                        'unit' => Str::upper($item_list['unit']),
+                                        'item_description' => Str::upper($item_list['itemDescription']),
+                                        'additional_description' => Str::upper($item_list['additionalDescription']),
+                                        'price' => Str::upper($item_list['price']),
+                                        'total' => $salesInvoiceTotal,
+                                        'created_by_id' => Auth::user()->id,
+                                        'created_by_name' => Str::upper(Auth::user()->name),
+                                        'form_type' => Str::upper($item_list['formType']),
+                                        ]
+                                    );
+                                }
+                                
+                                session()->flash('messageSalesInvoice', 'Sales Invoice Created Successfully!');
+                                $this->refreshTrick();
+                            }else{
+                                session()->flash('messageItemsRequired', 'Sales Invoice Items is Required!');
+                            }
+                            
+                        }
+                        
+                        public function mount(){
+                            // $salesInvoiceCount = SalesInvoice::count() + 1;
+                            // $this->salesInvoiceNumber = str_pad($salesInvoiceCount,6,'0',STR_PAD_LEFT);
+                            
+                            //GET PRODUCT PARENT
+                            $this->productParentFor = ProductParent::all();
+                            // $this->issuedBy = Auth::user()->name;
+                            
+                            // dd($now->toDateString());
+                        }
+                        
+                        public function render()
+                        {
+                            return view('livewire.rr-smd-system.sales-invoice-module');
+                        }
                     }
-                }
-                
-                if($this->goodsType == 'Specialized'){
-                    $formType = $this->formType;
-                }
-                
-                $saveSalesInvoiceItem = 
-                SalesInvoiceItem::create
-                ([
-                    'sales_invoice_code' => $saveSalesInvoice->sales_invoice_code,
-                    'quantity' => $item_list['quantity'],
-                    'unit' => Str::upper($item_list['unit']),
-                    'item_description' => Str::upper($item_list['itemDescription']),
-                    'additional_description' => Str::upper($item_list['additionalDescription']),
-                    'price' => Str::upper($item_list['price']),
-                    'total' => $salesInvoiceTotal,
-                    'created_by_id' => Auth::user()->id,
-                    'created_by_name' => Str::upper(Auth::user()->name),
-                    'form_type' => $formType,
-                    ]
-                );
-            }
-            
-            session()->flash('messageSalesInvoice', 'Sales Invoice Created Successfully!');
-            $this->refreshTrick();
-        }else{
-            session()->flash('messageItemsRequired', 'Sales Invoice Items is Required!');
-        }
-        
-    }
-    
-    public function mount(){
-        // $salesInvoiceCount = SalesInvoice::count() + 1;
-        // $this->salesInvoiceNumber = str_pad($salesInvoiceCount,6,'0',STR_PAD_LEFT);
-        
-        //GET PRODUCT PARENT
-        $this->productParentFor = ProductParent::all();
-        // $this->issuedBy = Auth::user()->name;
-        
-        // dd($now->toDateString());
-    }
-    
-    public function render()
-    {
-        return view('livewire.rr-smd-system.sales-invoice-module');
-    }
-}

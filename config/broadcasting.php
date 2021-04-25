@@ -1,7 +1,7 @@
 <?php
 
 return [
-
+    
     /*
     |--------------------------------------------------------------------------
     | Default Broadcaster
@@ -14,9 +14,9 @@ return [
     | Supported: "pusher", "redis", "log", "null"
     |
     */
-
+    
     'default' => env('BROADCAST_DRIVER', 'null'),
-
+    
     /*
     |--------------------------------------------------------------------------
     | Broadcast Connections
@@ -27,9 +27,9 @@ return [
     | each available type of connection are provided inside this array.
     |
     */
-
+    
     'connections' => [
-
+        
         'pusher' => [
             'driver' => 'pusher',
             'key' => env('PUSHER_APP_KEY'),
@@ -38,27 +38,30 @@ return [
             'options' => [
                 'cluster' => env('PUSHER_APP_CLUSTER'),
                 'useTLS' => true,
+                'host' => '127.0.0.1',
+                'port' => 6001,
+                'scheme' => 'http'
             ],
         ],
-
+        
         'ably' => [
             'driver' => 'ably',
             'key' => env('ABLY_KEY'),
         ],
-
+        
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
         ],
-
+        
         'log' => [
             'driver' => 'log',
         ],
-
+        
         'null' => [
             'driver' => 'null',
         ],
-
+        
     ],
-
+    
 ];

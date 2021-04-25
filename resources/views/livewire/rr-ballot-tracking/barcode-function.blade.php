@@ -9,6 +9,13 @@
                 <div class="card-body p-0">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item p-3">
+                            
+                            {{-- STATUS VIEW PAGE --}}
+                            <span class="d-flex mb-2">
+                                <strong class="mr-1"> <i class="material-icons mr-1">dashboard</i> Status View:</strong> 
+                                <a class="text-accent" href="{{ asset('/status_view') }}" target="_blank"><b> View </b></a>
+                            </span>
+                            
                             {{-- SEARCH MODE TOGGLE --}}
                             <span class="d-flex mb-2">
                                 <strong class="mr-1">  <i class="material-icons mr-1">search</i> Search Mode:</strong>
@@ -239,8 +246,10 @@
                                     @endif
                                     
                                     <th scope="col" class="border-0" style="text-align: center"></th>
+                                    @if ( $searchMode == true )
                                     <th scope="col" class="border-0" style="text-align: center"></th>
                                     <th scope="col" class="border-0" style="text-align: center"></th>
+                                    @endif
                                 </tr>
                             </thead>
                             <tbody>
@@ -295,6 +304,7 @@
                                         @endif
                                     </td>
                                     
+                                    @if ( $searchMode == true )
                                     <td>
                                         <button type="button" class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#modalBallotDetails" wire:click.preventDefault="getBallotDetails({{ $item->id }})" title="View Ballot Description"> <i class="material-icons">description</i></button>
                                     </td>
@@ -302,6 +312,8 @@
                                     <td>
                                         <button type="button" class="btn btn-accent btn-sm" data-toggle="modal" data-target="#modalBallotHistory" wire:click.preventDefault="getBallotHistory({{ $item->id }})"> <i class="material-icons">history</i> History</button>
                                     </td>
+                                    @endif
+                                    
                                     
                                     
                                 </tr>

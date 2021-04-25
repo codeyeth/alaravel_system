@@ -38,7 +38,7 @@
                                         </div>
                                         <div class="form-group col-md-3">
                                             <strong class="text-muted d-block mb-2">Contact No <span class="requiredTag">&bullet;</span></strong>
-                                            <input type="text" class="form-control" id="contactNo" name="contactNo" placeholder="Contact No" autocomplete="off" required wire:model="contactNo" >
+                                            <input type="text" class="form-control" id="contactNos" name="contactNos" placeholder="Contact No" autocomplete="off" required wire:model="contactNo" >
                                         </div>
                                         <div class="form-group col-md-4">
                                             <strong class="text-muted d-block mb-2">Vehicle Type <span class="requiredTag">&bullet;</span></strong>

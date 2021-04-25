@@ -28,10 +28,11 @@ class CreateBallotsTable extends Migration
             $table->string('ballot_id'); 
             
             //CURRENT STATUS AND THE UPDATER
-            $table->string('current_status')->nullable()->default(false);     
-            $table->string('status_updated_by_id')->nullable()->default(false);       
-            $table->string('status_updated_by')->nullable()->default(false);    
-            $table->string('status_updated_at')->nullable()->default(false);    
+            $table->string('current_status');    
+            $table->string('new_status_type')->nullable();            
+            $table->string('status_updated_by_id')->nullable();       
+            $table->string('status_updated_by')->nullable();    
+            $table->string('status_updated_at')->nullable();    
             
             //IF BALLOT IS REPRINT
             $table->boolean('is_re_print')->nullable()->default(false);       
@@ -46,20 +47,24 @@ class CreateBallotsTable extends Migration
             $table->string('is_re_print_done_by')->nullable();       
             $table->string('is_re_print_done_at')->nullable();       
             
-            //BALLOT IS DONE AND DELIVERED TO THE BALLOT LOCATION THIS WILL BE UPDATED BY THE COMELEC DELIVERY
-            $table->boolean('is_delivered')->nullable()->default(false);   
-            $table->string('is_delivered_by_id')->nullable();       
-            $table->string('is_delivered_by')->nullable();       
-            $table->string('is_delivered_at')->nullable();   
-            
             //IF THE BALLOT HAS ASSOCIATED DR 
             $table->boolean('is_dr_done')->nullable()->default(false);   
             $table->string('is_dr_done_by_id')->nullable();       
             $table->string('is_dr_done_by')->nullable();       
             $table->string('is_dr_done_at')->nullable();  
             
-            $table->string('new_status_type')->nullable();            
-
+            //BALLOT IS DONE AND FOR DELIVERY TO THE BALLOT LOCATION THIS WILL BE UPDATED BY THE COMELEC DELIVERY
+            $table->boolean('is_out_for_delivery')->nullable()->default(false);   
+            $table->string('is_out_for_delivery_by_id')->nullable();       
+            $table->string('is_out_for_delivery_by')->nullable();       
+            $table->string('is_out_for_delivery_at')->nullable();   
+            
+            //BALLOT IS DONE AND DELIVERED TO THE BALLOT LOCATION THIS WILL BE UPDATED BY THE COMELEC DELIVERY
+            $table->boolean('is_delivered')->nullable()->default(false);   
+            $table->string('is_delivered_by_id')->nullable();       
+            $table->string('is_delivered_by')->nullable();       
+            $table->string('is_delivered_at')->nullable();   
+            
             $table->timestamps();
         });
     }

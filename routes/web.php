@@ -34,6 +34,7 @@ Route::resource('change_pass', 'RrChangePasswordController');
 
 //BALLOT TRACKING
 Route::get('/ballot_tracking', [App\Http\Controllers\RrBallotTrackingController::class, 'index']);
+Route::get('/status_view', [App\Http\Controllers\RrBallotTrackingController::class, 'status_view']);
 
 //COMPOSING SYSTEM
 Route::get('/composing_system', [App\Http\Controllers\RrComposingSystemController::class, 'index']);

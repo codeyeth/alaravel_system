@@ -282,6 +282,7 @@
                             <thead>
                                 <tr>
                                     <th>ITEM DESCRIPTION <span class="requiredTag">&bullet;</span></th>
+                                    <th>FORM <span class="requiredTag">&bullet;</span></th>
                                     <th>UNIT <span class="requiredTag">&bullet;</span></th>
                                     <th>QTY <span class="requiredTag">&bullet;</span></th>
                                     <th>PRICE <span class="requiredTag">&bullet;</span></th>
@@ -294,6 +295,9 @@
                                 <tr>
                                     <td>
                                         <input type="text" class="form-control" placeholder="Description" wire:model="itemList.{{$loop->index}}.itemDescription" required>
+                                    </td>
+                                    <td width="10%">
+                                        <input type="text" class="form-control" placeholder="Form Type" wire:model="itemList.{{$loop->index}}.formType" required>
                                     </td>
                                     <td width="10%">
                                         <input type="text" class="form-control" placeholder="Unit" wire:model="itemList.{{$loop->index}}.unit" required>

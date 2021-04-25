@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "beyondcode/laravel-websockets": "^1.12",
         "elibyy/tcpdf-laravel": "^8.0",
         "fideloper/proxy": "^4.4",
         "fruitcake/laravel-cors": "^2.0",
@@ -19,7 +20,8 @@
         "laravelcollective/html": "^6.2",
         "livewire/livewire": "^2.3",
         "maatwebsite/excel": "^3.1",
-        "milon/barcode": "^8.0"
+        "milon/barcode": "^8.0",
+        "pusher/pusher-php-server": "~3.0"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.5",

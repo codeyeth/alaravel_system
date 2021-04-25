@@ -4,6 +4,7 @@
 
 @livewire('rr-home-dashboard.home-dashboard')
 
-<a href="{{ asset('#')}}" class="btn btn-accent">Must Echo ROYETH</a>
+{{-- FOR WEBSOCKETS --}}
+{{-- <script src="js/app.js"></script> --}}
 
 @endsection
