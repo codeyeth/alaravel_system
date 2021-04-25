@@ -212,7 +212,7 @@ class DeliveryjController extends Controller
         
         for ($i = 0; $i < $copy->count(); $i++) {
             foreach($copy as $i => $value){
-                $deliveries = DB::table('deliveries')
+    $deliveries = DB::table('deliveries')
       ->where('BALLOT_ID','<>','')
       ->Where('BALLOT_ID', 'not like', '%F_%')
       ->whereRaw('updated_at >= ? AND updated_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
