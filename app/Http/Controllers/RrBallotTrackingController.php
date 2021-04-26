@@ -37,7 +37,7 @@ class RrBallotTrackingController extends Controller
         $sidebar = "Ballot Tracking";
         
         if(Auth::user()->is_ballot_tracking){
-            return view('rr_ballot_tracking.status_View')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+            return view('rr_ballot_tracking.status_view')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
         }else{
             abort(403, 'UNAUTHORIZED ACCESS!');
         }

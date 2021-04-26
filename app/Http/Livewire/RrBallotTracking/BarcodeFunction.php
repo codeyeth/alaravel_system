@@ -504,8 +504,6 @@ class BarcodeFunction extends Component
                         $barcoded_receiver = 'COMELEC DELIVERY';
                     }
                     
-                    // $barcoded_receiver = Auth::user()->barcoded_receiver;
-                    
                     broadcast(new RefreshBallotList($comelec_role, $ballot_id, $barcoded_receiver, $statusType, $userName));
                 }
                 
