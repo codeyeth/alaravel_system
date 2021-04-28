@@ -193,6 +193,118 @@ class SmdjController extends Controller
         PDF::reset(); 
     }
 
+    public function claimedgeneric(){
+       
+        $imagepath = public_path();
+        $from = request()->get('datefromdated');
+        $to = request()->get('datetodated');
+
+        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
+        ->where('goods_type','GENERIC')
+        ->where('is_delivered',1)
+        ->get();
+        
+
+      
+        $view = \View::make('j-views.smd.generic_goods_claimed',compact('from','to','imagepath','cloned_query'));
+        $html_content = $view->render();
+        PDF::setFooterCallback(function($pdf) {
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        });
+        PDF::SetTitle("REPORTS OF CLAIMED GOODS IN-HOUSE GENERIC");
+        PDF::AddPage('L', 'LEGAL');
+        PDF::writeHTML($html_content, true, false, true, false, '');
+        PDF::Output('daily.pdf');
+        PDF::reset(); 
+    }
+
+    public function unclaimedgeneric(){
+       
+        $imagepath = public_path();
+        $from = request()->get('datefromdated');
+        $to = request()->get('datetodated');
+
+        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
+        ->where('goods_type','GENERIC')
+        ->where('is_delivered','!=',1)
+        ->get();
+        
+
+      
+        $view = \View::make('j-views.smd.generic_goods_unclaimed',compact('from','to','imagepath','cloned_query'));
+        $html_content = $view->render();
+        PDF::setFooterCallback(function($pdf) {
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        });
+        PDF::SetTitle("REPORTS OF CLAIMED GOODS IN-HOUSE GENERIC");
+        PDF::AddPage('L', 'LEGAL');
+        PDF::writeHTML($html_content, true, false, true, false, '');
+        PDF::Output('daily.pdf');
+        PDF::reset(); 
+    }
+
+    public function claimedspecialized(){
+       
+        $imagepath = public_path();
+        $from = request()->get('datefromdated');
+        $to = request()->get('datetodated');
+        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
+        ->where('goods_type','SPECIALIZED')
+        ->where('is_delivered',1)
+        ->get();
+        $view = \View::make('j-views.smd.specialized_goods_claimed',compact('from','to','imagepath','cloned_query'));
+        $html_content = $view->render();
+        PDF::setFooterCallback(function($pdf) {
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        });
+        PDF::SetTitle("REPORTS OF CLAIMED GOODS SPECIALIZED");
+        PDF::AddPage('L', 'LEGAL');
+        PDF::writeHTML($html_content, true, false, true, false, '');
+        PDF::Output('daily.pdf');
+        PDF::reset(); 
+    }
+
+    public function unclaimedspecialized(){
+       
+        $imagepath = public_path();
+        $from = request()->get('datefromdated');
+        $to = request()->get('datetodated');
+        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
+        ->where('goods_type','SPECIALIZED')
+        ->where('is_delivered','!=',1)
+        ->get();
+        $view = \View::make('j-views.smd.specialized_goods_unclaimed',compact('from','to','imagepath','cloned_query'));
+        $html_content = $view->render();
+        PDF::setFooterCallback(function($pdf) {
+            // Position at 15 mm from bottom
+            $pdf->SetY(-15);
+            // Set font
+            $pdf->SetFont('helvetica', 'I', 8);
+            // Page number
+            $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+        });
+        PDF::SetTitle("REPORTS OF UNCLAIMED GOODS SPECIALIZED");
+        PDF::AddPage('L', 'LEGAL');
+        PDF::writeHTML($html_content, true, false, true, false, '');
+        PDF::Output('daily.pdf');
+        PDF::reset(); 
+    }
+
     /**
      * Show the form for editing the specified resource.
      *

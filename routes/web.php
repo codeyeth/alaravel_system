@@ -82,4 +82,8 @@ Route::get('/view_sales_invoice', ['as' => 'catch', 'uses' => 'SmdjController@si
 Route::get('/view_daily_sales_generic', ['as' => 'generic', 'uses' => 'SmdjController@dailysalesgeneric']);
 Route::get('/view_daily_sales_specialized', ['as' => 'specialized', 'uses' => 'SmdjController@dailysalesspecialized']);
 Route::get('/view_monthly_sales', ['as' => 'monthly', 'uses' => 'SmdjController@monthlysales']);
+Route::get('/view_claimed_generic', ['as' => 'genericclaimed', 'uses' => 'SmdjController@claimedgeneric']);
+Route::get('/view_claimed_specialized', ['as' => 'specializedclaimed', 'uses' => 'SmdjController@claimedspecialized']);
+Route::get('/view_unclaimed_generic', ['as' => 'genericunclaimed', 'uses' => 'SmdjController@unclaimedgeneric']);
+Route::get('/view_unclaimed_specialized', ['as' => 'specializedunclaimed', 'uses' => 'SmdjController@unclaimedspecialized']);
 
