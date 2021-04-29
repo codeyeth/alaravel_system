@@ -39,6 +39,7 @@ class CreateSalesInvoicesTable extends Migration
             $table->string('pr_no')->nullable();
             $table->string('dr_no')->nullable();
             $table->string('or_no')->nullable();
+            $table->string('or_no_date')->nullable();
             
             //IS POSTED TO CLIENT LEDGER
             $table->boolean('is_posted')->nullable()->default(false);

@@ -29,7 +29,13 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 //USER MANAGEMENT
 Route::get('/user_mgt', [App\Http\Controllers\RrUserManagementController::class, 'index']);
-Route::resource('add_user', 'RrUserManagementController');
+Route::get('/user_profile/{id}', function ($user_id) {
+    $breadcrumb = "User Profile";
+    $sidebar = "User Management";
+    
+    return view('rr_user_mgt.user_profile')->with('user_id', $user_id)->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+});
+
 Route::resource('change_pass', 'RrChangePasswordController');
 
 //BALLOT TRACKING
@@ -43,16 +49,12 @@ Route::get('/search_engine_composing', [App\Http\Controllers\RrComposingSearchEn
 //SMD SYSTEM
 Route::get('/smd_system', [App\Http\Controllers\RrSmdSystemController::class, 'index']);
 Route::get('/logbook_system', [App\Http\Controllers\RrSmdLogbookSystemController::class, 'logbook_system']);
-// Route::get('/client_ledger/{id}', [App\Http\Controllers\RrSmdSystemController::class, 'client_ledger']);
-
 Route::get('/client_ledger/{id}', function ($client_id) {
     return view('rr_smd_system.client_ledger')->with('client_id', $client_id);
 });
-
 Route::get('/view_courier/{id}', function ($courierId) {
     return view('rr_smd_system.courier')->with('courierId', $courierId);
 });
-
 Route::get('/accomplished_si/{monthSelected}/{preparedBy}/{prepPosition}/{submittedBy}/{subPosition}', function ($monthSelected, $preparedBy, $prepPosition, $submittedBy, $subPosition) {
     return view('rr_smd_system.accomplished_si')
     ->with('monthSelected', $monthSelected)

@@ -37,6 +37,7 @@ class SalesInvoiceList extends Component
     public $prNo;
     public $drNo;
     public $orNo;
+    public $orNoDate;
     
     public function clearSearch(){
         $this->searchSalesInvoice = '';
@@ -117,6 +118,7 @@ class SalesInvoiceList extends Component
             'pr_no' => $prNo,
             'dr_no' => $drNo,
             'or_no' => $orNo,
+            'or_no_date' => $this->orNoDate,
             ]
         );
         

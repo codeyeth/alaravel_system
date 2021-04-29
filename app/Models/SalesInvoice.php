@@ -36,6 +36,7 @@ class SalesInvoice extends Model
         'pr_no',
         'dr_no',
         'or_no',
+        'or_no_date',
         'date',
         'received_by',
         'goods_type',

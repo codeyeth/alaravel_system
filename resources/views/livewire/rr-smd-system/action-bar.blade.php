@@ -92,5 +92,8 @@
         {{-- COURIER INFO DATABASE --}}
         @livewire('rr-smd-system.courier-info-database')
         
+        {{-- J DAILY AND MONTHLY REPORTS --}}
+        @include('rr_smd_system.daily-monthly-report')
+
     </div>
 </div>

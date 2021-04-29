@@ -70,15 +70,14 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col" class="border-0">#</th>
-                                    <th scope="col" class="border-0">SI NO</th>
-                                    <th scope="col" class="border-0">AGENCY NAME</th>
-                                    <th scope="col" class="border-0">T. TYPE</th>
-                                    <th scope="col" class="border-0">MOP</th>
-                                    <th scope="col" class="border-0">GOODS TYPE</th>
-                                    <th scope="col" class="border-0">CREATED BY</th>
-                                    <th scope="col" class="border-0">CREATED AT</th>
-                                    <th scope="col" class="border-0"></th>
-                                    <th scope="col" class="border-0">C.L POSTING</th>
+                                    <th scope="col" class="border-0" style="text-align: right;">SI NO</th>
+                                    <th scope="col" class="border-0" style="text-align: left;">AGENCY NAME</th>
+                                    <th scope="col" class="border-0" style="text-align: right;">T. TYPE</th>
+                                    <th scope="col" class="border-0" style="text-align: left;">MOP</th>
+                                    <th scope="col" class="border-0" style="text-align: left;">GOODS TYPE</th>
+                                    <th scope="col" class="border-0"  style="text-align: right;">CREATED BY</th>
+                                    <th scope="col" class="border-0" width="2%"></th>
+                                    <th scope="col" class="border-0" width="2%">C.L POSTING</th>
                                     <th scope="col" class="border-0">D.R POSTING</th>
                                 </tr>
                             </thead>
@@ -86,57 +85,68 @@
                                 @foreach ($salesInvoiceList as $sales_invoice_list)
                                 <tr>
                                     <td>{{ $sales_invoice_list->id }}</td>
-                                    <td>
+                                    <td  style="text-align: right;">
                                         <a href="#" title="View Sales Invoice" data-toggle="modal" data-target="#modalViewSalesInvoice" wire:click="getSalesInvoice({{ $sales_invoice_list->id }})">
-                                            {{-- <i class="material-icons">search</i>  --}}
-                                            <b>{{ $sales_invoice_list->sales_invoice_code }}</b>
+                                            <b style="font-size: 120%;">{{ $sales_invoice_list->sales_invoice_code }}</b>
                                         </a>
                                     </td>
-                                    <td>{{ $sales_invoice_list->agency_name }}</td>
-                                    <td>{{ $sales_invoice_list->transaction_type }}</td>
-                                    <td>{{ $sales_invoice_list->payment_mode }}</td>
-                                    <td>{{ $sales_invoice_list->goods_type }}</td>
-                                    <td>{{ $sales_invoice_list->created_by_name }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($sales_invoice_list->created_at)->toDayDateTimeString() }}</td>
+                                    <td  style="text-align: left;"> 
+                                        @if( $sales_invoice_list->goods_type == 'GENERIC')
+                                        <span class="badge badge-accent">{{ $sales_invoice_list->agency_name }}</span> 
+                                        @else
+                                        <span class="badge badge-secondary">{{ $sales_invoice_list->agency_name }}</span> 
+                                        @endif
+                                    </td>
+                                    <td style="text-align: right;">{{ $sales_invoice_list->transaction_type }}</td>
+                                    <td style="text-align: left;">{{ $sales_invoice_list->payment_mode }}</td>
+                                    <td style="text-align: left;"> 
+                                        @if( $sales_invoice_list->goods_type == 'GENERIC')
+                                        <span class="badge badge-accent"> {{ $sales_invoice_list->goods_type }} </span>
+                                        @else
+                                        <span class="badge badge-secondary"> {{ $sales_invoice_list->goods_type }} </span>
+                                        @endif
+                                    </td>
                                     
-                                    <!--J CODES START -->
-                                    {{Form::open(['route' => 'catch', 'method' => 'GET', 'target' => '__blank' , 'autocomplete'=>'off'])}} 
-                                    <input type="hidden" value="{{ $sales_invoice_list->sales_invoice_code }}" name="si_id">
-                                    <th>
-                                        {{ Form::button('<i class="material-icons">text_snippet</i> PDF',['type' => 'submit','class'=>'btn btn-accent btn-block btn-sm']) }}
-                                    </th>
-                                    {{ Form::close() }}
-                                    <!--J CODES END -->
+                                    <td  style="text-align: right;">{{ $sales_invoice_list->created_by_name }} <br> at {{ \Carbon\Carbon::parse($sales_invoice_list->created_at)->toDayDateTimeString() }}</td>
+                                    <td>
+                                        <!--J CODES START -->
+                                        {{Form::open(['route' => 'catch', 'method' => 'GET', 'target' => '__blank' , 'autocomplete'=>'off'])}} 
+                                        <input type="hidden" value="{{ $sales_invoice_list->sales_invoice_code }}" name="si_id">
+                                        {{ Form::button('<i class="material-icons">text_snippet</i> PDF',['type' => 'submit','class'=>'btn btn-accent btn-sm']) }}
+                                        {{ Form::close() }}
+                                        <!--J CODES END -->
+                                    </td>
                                     
                                     {{-- CLIENT LEDGER POSTING --}}
-                                    <th>
+                                    <td width="2%">
                                         @if ( $sales_invoice_list->or_no != null )
                                         @if ($sales_invoice_list->is_posted == false)
-                                        <button class="btn btn-accent btn-block btn-sm" data-toggle="modal" data-target="#modalConfirmCl" wire:click="confirmPostCl({{ $sales_invoice_list->id }})"> <i class="material-icons">text_snippet</i> Post to C.L</button>
+                                        <button class="btn btn-accent btn-sm" data-toggle="modal" data-target="#modalConfirmCl" wire:click="confirmPostCl({{ $sales_invoice_list->id }})"> <i class="material-icons">text_snippet</i> Post to C.L</button>
                                         @else
-                                        <p class="text-success mb-0">POSTED</p>
+                                        <span class="badge badge-success">POSTED</span>
                                         @endif
                                         @else
-                                        <p class="text-danger mb-0">Pending OR NO.</p>
+                                        <span class="badge badge-danger">PENDING OR NO.</span>
+
                                         @endif
-                                    </th>
+                                    </td>
                                     
                                     {{-- DELIVERY RECEIPT POSTING --}}
-                                    <th>
+                                    <td>
                                         @if ( $sales_invoice_list->or_no != null )
                                         @if ( $sales_invoice_list->is_posted_to_dr == false )
-                                        <button class="btn btn-accent btn-block btn-sm" data-toggle="modal" data-target="#modalConfirmDr" wire:click="confirmPostDr({{ $sales_invoice_list->id }})"> <i class="material-icons">text_snippet</i> Post to D.R</button>
+                                        <button class="btn btn-accent btn-sm" data-toggle="modal" data-target="#modalConfirmDr" wire:click="confirmPostDr({{ $sales_invoice_list->id }})"> <i class="material-icons">text_snippet</i> Post to D.R</button>
                                         @else
-                                        <p class="text-success mb-0">POSTED
+                                        <span class="badge badge-success">POSTED
                                             @if ( $sales_invoice_list->is_delivered == true )
                                             / DELIVERED
                                             @endif
-                                        </p>
+                                        </span>
                                         @endif
                                         @else
-                                        <p class="text-danger mb-0">Pending OR NO.</p>
+                                        <span class="badge badge-danger">PENDING OR NO.</span>
                                         @endif
-                                    </th>
+                                    </td>
                                     
                                 </tr>      
                                 @endforeach
@@ -270,7 +280,7 @@
                                 <div class="col-sm-12 col-md-4">
                                     <h6 class="mb-1"><b>PR#</b> {{ $parentSalesInvoiceDetails->pr_no }}</h6>
                                     <h6 class="mb-1"><b>DR#</b> {{ $parentSalesInvoiceDetails->dr_no }}</h6>
-                                    <h6 class="mb-1"><b>OR#</b> {{ $parentSalesInvoiceDetails->or_no }}</h6>
+                                    <h6 class="mb-1"><b>OR#</b> {{ $parentSalesInvoiceDetails->or_no }} at {{ \Carbon\Carbon::parse($parentSalesInvoiceDetails->or_no_date)->toFormattedDateString() }}</h6>
                                     {{-- <h6 class="mb-1"><b>Transaction Type</b> {{ $parentSalesInvoiceDetails->transaction_type }}</h6>
                                     <h6 class="mb-1"><b>Payment Type </b> {{ $parentSalesInvoiceDetails->payment_type }}</h6> --}}
                                     <h6 class="mb-1"><b>W.O#</b> {{ $parentSalesInvoiceDetails->work_order_no }}</h6>
@@ -353,7 +363,7 @@
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-3">
                                         <strong class="text-muted d-block mb-2">PR#/PO# </strong>
                                         <input type="text" class="form-control" id="prNo" name="prNo" placeholder="PR#" autocomplete="off" wire:model="prNo" >
                                     </div>
@@ -361,10 +371,16 @@
                                         <strong class="text-muted d-block mb-2">DR# </strong>
                                         <input type="text" class="form-control" id="drNo" name="drNo" placeholder="DR#" autocomplete="off" wire:model="drNo" >
                                     </div>
-                                    <div class="form-group col-md-4">
+                                    <div class="form-group col-md-3">
                                         <strong class="text-muted d-block mb-2">OR# </strong>
                                         <input type="text" class="form-control" id="orNo" name="orNo" placeholder="OR#" autocomplete="off" wire:model="orNo" >
                                     </div>
+                                    @if ($orNo != null)
+                                    <div class="form-group col-md-2">
+                                        <strong class="text-muted d-block mb-2">OR# DATE </strong>
+                                        <input type="date" class="form-control" id="orNoDate" name="orNoDate" autocomplete="off" wire:model="orNoDate" >
+                                    </div>
+                                    @endif
                                     <div class="form-group col-md-1">
                                         <strong class="text-muted d-block mb-2"></strong>
                                         <br>

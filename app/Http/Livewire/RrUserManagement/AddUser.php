@@ -13,9 +13,9 @@ use Illuminate\Support\Str;
 use Auth;
 use Illuminate\Support\Facades\Hash;
 
-class RrUserManagement extends Component
+class AddUser extends Component
 {
-    //ADD NEW USER PROPERTIES
+    //USER DETAILS
     public $fname;
     public $mname;
     public $lname;
@@ -37,43 +37,7 @@ class RrUserManagement extends Component
     public $divisionsList = [];
     public $sectionsList = [];
     public $comelecRolesList = [];
-    
-    
-    protected $rules = [
-        'fname' => 'required|max:15|regex:/^[\pL\s\-]+$/u',
-        'mname' => 'max:15|regex:/^[\pL\s\-]+$/u',
-        'lname' => 'required|max:15|regex:/^[\pL\s\-]+$/u',
-        'position' => 'required|max:50|regex:/^[a-zA-Z0-9\s]+$/',
-        'division' => 'required',
-        'section' => 'required',
-        'userRole' => 'required',
-        
-        'isUserMgt' => 'max:10',
-        'isBallot' => 'max:10',
-        'isDr' => 'max:10',
-        'isGazette' => 'max:10',
-        'isMotorpool' => 'max:10',
-        'comelecRole' => 'max:30',
-        'barcodedReceiver' => 'max:30',
-    ];
-    
-    protected $messages = [
-        // FIRSTNAME
-        'fname.required' => 'First name is required',
-        'fname.max' => 'First name may not be greater than 15 characters',
-        'fname.regex' => 'First name may only contain letters',
-        // MIDDLENAME
-        'mname.max' => 'Middle name may not be greater than 15 characters',
-        'mname.regex' => 'Middle name may only contain letters',
-        // LASTNAME
-        'lname.required' => 'Last name is required',
-        'lname.max' => 'Last name may not be greater than 15 characters',
-        'lname.regex' => 'Last name may only contain letters',
-        // POSITION
-        'position.required' => 'Position is required',
-        'position.max' => 'Position may not be greater than 50 characters',
-        'position.regex' => 'Position may only contain letters and numbers',
-    ];
+    public $barcodedReceiverList = [];
     
     public function refreshTrick(){
         $this->fname = '';
@@ -93,15 +57,14 @@ class RrUserManagement extends Component
         $this->barcodedReceiver = '';
     }
     
+    public function spitBarcodedReceiverList($comelecRole){
+        $this->barcodedReceiverList = ComelecRoles::where('comelec_role', '!=', $comelecRole)->get();
+        $this->barcodedReceiver = '';
+    }
+    
     public function spitMatchedSection($selectedDivision){
         $this->sectionsList = Section::where('division_id', $selectedDivision)->get();
         $this->section = '';
-    }
-    
-    public function checkAlsoBallot(){
-        if( $this->isDr == true ){
-            $this->isBallot = true;
-        }
     }
     
     public function saveNewUser(){
@@ -113,24 +76,31 @@ class RrUserManagement extends Component
             $name = $this->fname . ' ' . $this->mname . ' ' . $this->lname;
         }
         
-        $this->validate();
+        if($this->userRole == 2){
+            $userRoleSA = true;
+            $userRole = true;
+        }else{
+            $userRoleSA = false;
+            $userRole = $this->userRole;
+        }
         
         $replaced = Str::replaceArray(' ', ['_'], $this->lname);
         $email = Str::lower($replaced.Str::random(3). '@example.org');
         
         $saveNewUser = User::create([
             'user_id' => Str::uuid(),
-            'fname' => $this->fname,
-            'mname' => $this->mname,
-            'lname' => $this->lname,
-            'name' => $name,
+            'fname' => Str::upper($this->fname),
+            'mname' => Str::upper($this->mname),
+            'lname' => Str::upper($this->lname),
+            'name' => Str::upper($name),
             'email' => $email,
             
-            'position' =>  $this->position,
+            'position' => Str::upper($this->position),
             'division' =>  $this->division,
             'section' =>  $this->section,
             
-            'is_admin' => $this->userRole,
+            'is_super_admin' => $userRoleSA,
+            'is_admin' => $userRole,
             'is_user_mgt' =>  $this->isUserMgt,
             'is_ballot_tracking' =>  $this->isBallot,
             'is_dr' =>  $this->isDr,
@@ -138,8 +108,8 @@ class RrUserManagement extends Component
             'is_gazette' =>  $this->isGazette,
             'is_motorpool' =>  $this->isMotorpool,
             
-            'comelec_role' =>  $this->comelecRole,
-            'barcoded_receiver' =>  $this->barcodedReceiver,
+            'comelec_role' =>  Str::upper($this->comelecRole),
+            'barcoded_receiver' =>  Str::upper($this->barcodedReceiver),
             
             'created_by_id' => Auth::user()->id,
             'created_by_name' => Auth::user()->name,
@@ -160,16 +130,8 @@ class RrUserManagement extends Component
         $this->allUserCount = User::all()->count();
     }
     
-    public function updated($propertyName){
-        $validator = $this->validateOnly($propertyName);
-        
-        if( $this->isDr == true ){
-            $this->isBallot = true;
-        }
-    }
-    
     public function render()
     {
-        return view('livewire.rr-user-management.rr-user-management');
+        return view('livewire.rr-user-management.add-user');
     }
 }

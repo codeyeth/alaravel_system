@@ -52,7 +52,7 @@
               <span class="d-none d-md-inline-block"> {{ Auth::user()->name }}</span>
             </a>
             <div class="dropdown-menu dropdown-menu-small">
-              <a class="dropdown-item" href="user-profile-lite.html">
+              <a class="dropdown-item" href="{{ asset ('/user_profile') }}/{{ Auth::user()->id }}">
                 <i class="material-icons">&#xE7FD;</i> Profile</a>
                 {{-- <a class="dropdown-item" href="components-blog-posts.html">
                   <i class="material-icons">vertical_split</i> Blog Posts</a>

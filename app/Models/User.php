@@ -24,7 +24,7 @@ class User extends Authenticatable
         'is_gazette', 'is_motorpool', 'comelec_role', 'barcoded_receiver', 'created_by_id', 'created_by_name',
         'last_updated_by_id', 'last_updated_by_name', 'password', 'password_string', 'is_pw_changed', 'is_admin',
         'is_ballot_in', 'is_search_mode', 'is_verification_type_bad', 'is_smd_system',
-        'is_delivered_mode', 'is_out_for_delivery_mode',
+        'is_delivered_mode', 'is_out_for_delivery_mode', 'is_super_admin',
     ];
     
     /**
