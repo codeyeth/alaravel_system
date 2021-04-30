@@ -36,7 +36,12 @@ class DeliveryReceiptList extends Component
         $this->searchDeliverReceipt = '';
         $this->keywordMode = true;
     }
-
+    
+    public function updatedKeywordMode()
+    {
+        $this->searchDeliverReceipt = '';
+    }
+    
     public function updatingSearchDeliverReceipt()
     {
         $this->resetPage();

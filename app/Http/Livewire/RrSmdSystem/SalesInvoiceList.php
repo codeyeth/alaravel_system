@@ -44,6 +44,11 @@ class SalesInvoiceList extends Component
         $this->keywordMode = true;
     }
     
+    public function updatedKeywordMode()
+    {
+        $this->searchSalesInvoice = '';
+    }
+    
     public function updatingSearchSalesInvoice()
     {
         $this->resetPage();

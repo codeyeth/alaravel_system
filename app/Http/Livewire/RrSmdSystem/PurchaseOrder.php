@@ -7,15 +7,15 @@ use App\Models\ProductParent;
 use App\Models\ProductSubParent;
 use App\Models\ClientDatabase;
 use App\Models\ProductItems;
-use App\Models\SalesInvoice;
-use App\Models\SalesInvoiceItem;
+use App\Models\PurchaseOrderModel;
+use App\Models\PurchaseOrderItem;
 
 use Illuminate\Support\Str;
 use DB;
 use Auth;
 use Carbon\Carbon;
 
-class SalesInvoiceModule extends Component
+class PurchaseOrder extends Component
 {
     public $search = '';
     
@@ -28,16 +28,8 @@ class SalesInvoiceModule extends Component
     public $contactPerson;
     public $contactNo;
     public $emailAddress;
-    public $transactionType = '';
-    public $paymentMode = '';
-    public $packageType = '';
-    public $workOrderNo;
-    public $code;
-    public $issuedBy;
-    public $receivedBy;
-    public $stockNo;
     
-    // public $siCode;
+    public $poSource = '';
     
     //ENCODING FROM STOCK FORM
     public $itemList = [];
@@ -56,7 +48,6 @@ class SalesInvoiceModule extends Component
     public $productSubParent = '';
     public $productItems = '';
     public $itemListCount;
-    
     
     public function searchClientDatabase(){
         if($this->agencyName != ''){
@@ -165,10 +156,6 @@ class SalesInvoiceModule extends Component
         unset($this->itemList[$index]);
         $this->itemList = array_values($this->itemList);
         $this->itemListCount--;
-        
-        // $this->productParent = '';
-        // $this->productSubParentFor = [];
-        // $this->productItemsFor = [];
     }
     
     public function refreshTrick(){
@@ -179,14 +166,7 @@ class SalesInvoiceModule extends Component
         $this->contactPerson = '';
         $this->contactNo = '';
         $this->emailAddress = '';
-        $this->transactionType = '';
-        $this->paymentMode = '';
-        $this->packageType = '';
-        $this->workOrderNo = '';
-        $this->code = '';
-        $this->issuedBy = '';
-        $this->receivedBy = '';
-        $this->stockNo = '';
+        $this->poSource = '';
         
         //ENCODING FROM STOCK FORM
         $this->itemList = [];
@@ -204,8 +184,9 @@ class SalesInvoiceModule extends Component
         $this->productParent = '';
         $this->productSubParent = '';
         $this->productItems = '';
-        
-        $this->emit('newSalesInvoiceAdded');
+
+        $this->emit('newPurchaseOrderAdded');
+
     }
     
     public function resetGoodsType(){
@@ -222,18 +203,17 @@ class SalesInvoiceModule extends Component
         $this->productItems = '';
     }
     
-    public function saveSalesInvoice(){
+    public function savePurchaseOrder(){
         $now = Carbon::now();
         
-        $salesInvoiceCount = SalesInvoice::count() + 1;
-        $salesInvoiceNumber = str_pad($salesInvoiceCount,6,'0',STR_PAD_LEFT);
+        $purchaseOrderCount = PurchaseOrderModel::count() + 1;
+        $purchaseOrderNumber = str_pad($purchaseOrderCount,6,'0',STR_PAD_LEFT);
         
         if(count($this->itemList) > 0){
-            $saveSalesInvoice = 
-            SalesInvoice::create
+            $savePurchaseOrder = 
+            PurchaseOrderModel::create
             ([
-                'sales_invoice_code' => $salesInvoiceNumber,
-                'code' => Str::upper($this->code),
+                'purchase_order_no' => $purchaseOrderNumber,
                 'agency_id' => $this->agencyId,
                 'agency_code' => Str::upper($this->agencyCode),
                 'agency_name' => Str::upper($this->agencyName),
@@ -242,33 +222,30 @@ class SalesInvoiceModule extends Component
                 'contact_person' => Str::upper($this->contactPerson),
                 'contact_no' => $this->contactNo,
                 'email' => Str::upper($this->emailAddress),
-                'payment_mode' => $this->paymentMode,
-                'package_type' => $this->packageType,
+               
                 'goods_type' => Str::upper($this->goodsType),
-                'transaction_type' => $this->transactionType,
-                'work_order_no' => $this->workOrderNo,
-                'stock_no' => $this->stockNo,
-                'issued_by' => Str::upper($this->issuedBy),
+                'po_source' => $this->poSource,
+            
                 'created_by_id' => Auth::user()->id,
                 'created_by_name' => Str::upper(Auth::user()->name),
                 'date' => $now->toDateString(),
-                'received_by' => Str::upper($this->receivedBy),
+             
                 ]
             );
             
             foreach ($this->itemList as $item_list){
-                $salesInvoiceTotal = $item_list['quantity'] * $item_list['price'];
+                $savePurchaseOrderTotal = $item_list['quantity'] * $item_list['price'];
                 
-                $saveSalesInvoiceItem = 
-                SalesInvoiceItem::create
+                $savePurchaseOrderItem = 
+                PurchaseOrderItem::create
                 ([
-                    'sales_invoice_code' => $saveSalesInvoice->sales_invoice_code,
+                    'purchase_order_no' => $savePurchaseOrder->purchase_order_no,
                     'quantity' => $item_list['quantity'],
                     'unit' => Str::upper($item_list['unit']),
                     'item_description' => Str::upper($item_list['itemDescription']),
                     'additional_description' => Str::upper($item_list['additionalDescription']),
                     'price' => Str::upper($item_list['price']),
-                    'total' => $salesInvoiceTotal,
+                    'total' => $savePurchaseOrderTotal,
                     'created_by_id' => Auth::user()->id,
                     'created_by_name' => Str::upper(Auth::user()->name),
                     'form_type' => Str::upper($item_list['formType']),
@@ -276,14 +253,14 @@ class SalesInvoiceModule extends Component
                 );
             }
             
-            session()->flash('messageSalesInvoice', 'Sales Invoice Created Successfully!');
+            session()->flash('messagePurchaseOrder', 'Purchase Order Saved Successfully!');
             $this->refreshTrick();
         }else{
-            session()->flash('messageItemsRequired', 'Sales Invoice Items is Required!');
+            session()->flash('messageItemsRequired', 'Purchase Order Items is Required!');
         }
         
     }
-    
+
     public function mount(){
         //GET PRODUCT PARENT
         $this->productParentFor = ProductParent::all();
@@ -291,6 +268,6 @@ class SalesInvoiceModule extends Component
     
     public function render()
     {
-        return view('livewire.rr-smd-system.sales-invoice-module');
+        return view('livewire.rr-smd-system.purchase-order');
     }
 }
