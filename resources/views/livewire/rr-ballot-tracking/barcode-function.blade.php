@@ -590,15 +590,15 @@
                     
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
-                            <button type="button" class="btn btn-primary btn-block" wire:click="exportDateBallot">Generate base on Date</button>
+                            <button type="button" class="btn btn-primary btn-block" wire:click="exportDateBallot">Generate History based on Date</button>
                         </div>
                     </div>
                     
-                    <hr>
+                    <hr class="hr_dashed">
                     
                     <button type="button" class="btn btn-block btn-success" wire:click="exportAllBallotHistory">Generate All Available History</button>
                     
-                    <hr>
+                    <hr class="hr_dashed">
                     
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
@@ -631,10 +631,18 @@
                     
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
-                            <button type="button" class="btn btn-block btn-secondary" wire:click="exportStatusBallotHistory">Generate base on Status</button>   
+                            <button type="button" class="btn btn-block btn-secondary" wire:click="exportStatusBallotHistory">Generate History based on Status</button>   
                         </div>
                     </div>
+
+                    <hr class="hr_dashed">
                     
+                    <button type="button" class="btn btn-block btn-danger" wire:click="exportRePrints">Generate All Re-prints</button>
+
+                    <hr class="hr_dashed">
+                    
+                    <button type="button" class="btn btn-block btn-success" wire:click="exportDelivered">Generate All Delivered Ballots</button>
+
                     
                 </div>
                 <div class="modal-footer">

@@ -13,10 +13,12 @@ use DB;
 
 class StatusView extends Component
 {
+    //COUNTS
     public $logList = [];
     public $totalBallots;
     public $remainingBallots;
     public $printedBallots;
+    public $rePrints;
     public $deliveredBallots;
     public $outForDeliveryBallots;
     
@@ -43,6 +45,7 @@ class StatusView extends Component
         $this->totalBallots = Ballots::sum('cluster_total');
         $this->printedBallots = Ballots::where('current_status', '!=', 'PRINTER')->sum('cluster_total');
         $this->remainingBallots = $this->totalBallots - $this->printedBallots;
+        $this->rePrints = BadBallots::all()->count();
         $this->outForDeliveryBallots = Ballots::where('is_out_for_delivery', true)->where('is_delivered', false)->sum('cluster_total');
         $this->deliveredBallots = Ballots::where('is_delivered', true)->sum('cluster_total');
         

@@ -12,6 +12,7 @@ use Livewire\WithPagination;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Validator;
+use App\Models\ComelecRoles;
 
 //Excel Exports
 use Maatwebsite\Excel\Facades\Excel;
@@ -19,7 +20,10 @@ use App\ExcelExports\ExportExcelSingleBallotHistory;
 use App\ExcelExports\ExportExcelAllHistory;
 use App\ExcelExports\ExportExcelBallotDate;
 use App\ExcelExports\ExportExcelStatusBallotHistory;
-use App\Models\ComelecRoles;
+
+use App\ExcelExports\ExportExcelRePrints;
+use App\ExcelExports\ExportExcelDelivered;
+
 
 //REALTIME functions
 use App\Events\RefreshBallotList;
@@ -533,6 +537,8 @@ class BarcodeFunction extends Component
         $this->search = '';
     }
     
+    //////////////////////////////////////////////REPORTSSSS
+    
     //GET BALLOT HISTORY
     public function getBallotHistory($ballotId){
         $ballotResult = Ballots::find($ballotId);   
@@ -570,6 +576,16 @@ class BarcodeFunction extends Component
         $export = new ExportExcelStatusBallotHistory($statusSelected, $statusType);
         return Excel::download($export, $statusSelected . '_status_ballot_history.xlsx');
     }
+    
+    public function exportRePrints(){
+        return Excel::download(new ExportExcelRePrints, 'reprinted_ballot.xlsx');
+    }
+    
+    public function exportDelivered(){
+        return Excel::download(new ExportExcelDelivered, 'delivered_ballots.xlsx');
+    }
+    
+    //////////////////////////////////////////////REPORTSSSS
     
     //MOUNT FUNCTION
     public function mount(){

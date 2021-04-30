@@ -3,7 +3,7 @@
 namespace App\Http\Livewire\RrComposingSystem;
 
 use Livewire\Component;
-use App\Models\OgSoftCopy;
+use App\Models\OgSoftcopy;
 use App\Models\SEComposing;
 use App\Models\OgFile;
 use App\Models\PublicationType;
@@ -262,8 +262,8 @@ class AddItem extends Component
     }
     
     public function mount(){
-        $visibleCount = OgSoftCopy::where('is_searchable', true)->count();
-        $downloadableCount = OgSoftCopy::where('is_downloadable', true)->count();
+        $visibleCount = OgSoftcopy::where('is_searchable', true)->count();
+        $downloadableCount = OgSoftcopy::where('is_downloadable', true)->count();
         $allCount = OgSoftCopy::all()->count();
         $this->visiblePublications = $visibleCount;
         $this->downloadablePublications = $downloadableCount;
