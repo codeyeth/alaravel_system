@@ -242,7 +242,7 @@ class BarcodeFunction extends Component
     {
         $ballotId = Ballots::find($this->badBallotId);
         $this->badBallotIdFor = $ballotId->ballot_id;
-        $this->badBallotsFor = BadBallots::where('ballot_id', $ballotId->ballot_id)->get();
+        $this->badBallotsFor = BadBallots::where('ballot_id', $ballotId->ballot_id)->orderBy('id', 'DESC')->get();
     }
     
     //SAVE THE BAD BALLOTS
@@ -271,6 +271,8 @@ class BarcodeFunction extends Component
         session()->flash('messageBadBallots', 'Bad Ballots Saved Successfully!');
         $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
         $this->getBadBallot();
+        
+        $this->emit('refreshReprintModule');
     }
     
     public function deleteBadBallots($id){

@@ -720,7 +720,7 @@
                                 </tbody>
                             </table>
                             
-                            <hr>
+                            <hr class="hr_dashed">
                             
                             <div class="row">
                                 <div class="col-sm-12 col-md-12">
