@@ -33,9 +33,9 @@ class StatusView extends Component
     protected $listeners = ['refreshContent'];
     
     //ADD LOG TO THE logList ARRAY
-    public function refreshContent($logDetails, $userName){
+    public function refreshContent($logMessage, $userName){
         $now = Carbon::now();
-        $this->logList [] = ['logDetails' => $logDetails, 'userName' => $userName, 'now' => $now->toDateTimeString()];
+        $this->logList [] = ['logMessage' => $logMessage, 'userName' => $userName, 'now' => $now->toDateTimeString()];
         $logsCount = count($this->logList) - 1;
         $this->emit('scrollToTop', $logsCount);
         $this->countMetrics();

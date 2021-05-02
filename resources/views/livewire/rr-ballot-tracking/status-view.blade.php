@@ -153,7 +153,7 @@
                         @if(count($logList) > 0)
                         @foreach ($logList as $item)
                         <li class="list-group-item d-flex px-3" id="li_{{ $loop->index }}">
-                            <span class="text-semibold text-fiord-blue">{{ $item['logDetails'] }}</span>
+                            <span class="text-semibold text-fiord-blue">{{ $item['logMessage'] }}</span>
                             <span class="ml-auto text-right text-semibold text-reagent-gray"><b class="text-accent"> {{ Str::upper($item['userName']) }} </b> at {{ \Carbon\Carbon::parse($item['now'])->toDayDateTimeString() }}</span>
                         </li>
                         @endforeach

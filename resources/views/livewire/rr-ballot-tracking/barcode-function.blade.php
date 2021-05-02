@@ -119,6 +119,12 @@
                             </button>
                             <div style="margin-left: 10px;"></div>
                             @endif
+                            @if ( $searchMode == true && Auth::user()->is_ballot_tracking == true && Auth::user()->comelec_role == 'QUARANTINE' && Auth::user()->is_admin == true )
+                            <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalRePrint">
+                                <i class="material-icons">print</i> Ballots Re-Prints
+                            </button>
+                            <div style="margin-left: 10px;"></div>
+                            @endif
                         </li>
                     </ul>
                 </div>
@@ -241,9 +247,7 @@
                                     <th scope="col" class="border-0" style="text-align: left">Ballot Pollplace</th>
                                     <th scope="col" class="border-0" style="text-align: right">Current Status/Location</th>
                                     <th scope="col" class="border-0" style="text-align: left">Status BY</th>
-                                    @if ( Auth::user()->comelec_role == "QUARANTINE")
                                     <th scope="col" class="border-0" style="text-align: left"></th>
-                                    @endif
                                     
                                     <th scope="col" class="border-0" style="text-align: center"></th>
                                     @if ( $searchMode == true )
@@ -284,11 +288,11 @@
                                         {{ \Carbon\Carbon::parse($item->status_updated_at)->toDayDateTimeString() }}
                                         @endif
                                     </td>
-                                    @if ( $item->current_status == "QUARANTINE" && Auth::user()->comelec_role == "QUARANTINE")
                                     <td>
-                                        <button type="button" class="btn btn-warning btn-block" data-toggle="modal" data-target="#modalBadBallots" wire:click.preventDefault="setBadBallotId({{ $item->id }})"> <i class="material-icons">search</i> Encode Bad Ballots</button>
+                                        @if ( $item->current_status == "QUARANTINE" && $item->new_status_type == "IN" && Auth::user()->comelec_role == "QUARANTINE")
+                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalBadBallots" wire:click.preventDefault="setBadBallotId({{ $item->id }})"> <i class="material-icons">text_snippet</i> Bad Ballots </button>
+                                        @endif
                                     </td>
-                                    @endif
                                     
                                     <td>
                                         @if($item->is_delivered == true)
@@ -341,6 +345,9 @@
     <div class="text-center" wire:loading.remove wire:target="search"> 
         {{ $ballotList->links() }}
     </div>
+    
+    {{-- BALLOT RE-PRINTS --}}
+    @livewire('rr-ballot-tracking.reprints-module')
     
     {{-- MODAL HISTORY --}}
     <div class="modal fade" id="modalBallotHistory" tabindex="-1" role="dialog" aria-labelledby="modalBallotHistory" aria-hidden="true" wire:ignore.self>
@@ -634,15 +641,15 @@
                             <button type="button" class="btn btn-block btn-secondary" wire:click="exportStatusBallotHistory">Generate History based on Status</button>   
                         </div>
                     </div>
-
+                    
                     <hr class="hr_dashed">
                     
                     <button type="button" class="btn btn-block btn-danger" wire:click="exportRePrints">Generate All Re-prints</button>
-
+                    
                     <hr class="hr_dashed">
                     
                     <button type="button" class="btn btn-block btn-success" wire:click="exportDelivered">Generate All Delivered Ballots</button>
-
+                    
                     
                 </div>
                 <div class="modal-footer">
@@ -655,7 +662,7 @@
     
     {{-- MODAL BAD BALLOTS --}}
     <div class="modal fade" id="modalBadBallots" tabindex="-1" role="dialog" aria-labelledby="modalBadBallots" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalBadBallotsTitle">Encode Bad Ballots for <b> {{ $badBallotIdFor }} </b></h5>
@@ -755,8 +762,10 @@
                                         <td>{{ $bad_ballot_for->description }}</td>
                                         <td>{{ $bad_ballot_for->created_by_name }} <br> {{ \Carbon\Carbon::parse($bad_ballot_for->created_at)->toDayDateTimeString() }}</td>
                                         <td align="right">
+                                            @if( $bad_ballot_for->created_by_id == Auth::user()->id )
                                             <button type="button" class="btn btn-accent" wire:click="editBadBallots({{ $bad_ballot_for->id }})"><i class="material-icons">mode_edit</i></button>
                                             <button type="button" class="btn btn-danger" wire:click="deleteBadBallots({{ $bad_ballot_for->id }})"><i class="material-icons">delete</i></button>
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach
@@ -776,5 +785,6 @@
                 </div>
             </div>
         </div>
+        
         
     </div>

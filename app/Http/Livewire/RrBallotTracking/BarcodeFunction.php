@@ -263,6 +263,7 @@ class BarcodeFunction extends Component
                 'description' => $badballotlist['description'],
                 'created_by_id' => Auth::user()->id,
                 'created_by_name' => Auth::user()->name,
+                'created_by_comelec_role' => Auth::user()->comelec_role,
                 ]
             );
             
