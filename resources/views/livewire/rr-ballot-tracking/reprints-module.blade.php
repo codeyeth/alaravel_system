@@ -37,6 +37,7 @@
                         @if($batchMode == true)
                         <h5><i class="material-icons">info</i> <i> All Items below will be Added to the RE-PRINT batch </i> <i class="text-accent">No. {{ $batchCount }}</i> </h5>
                         
+                        {{-- BAD BALLOTS TABLE --}}
                         <table class="table table-hover mb-0">
                             <thead class="bg-light">
                                 <tr>
@@ -158,11 +159,16 @@
                                         @if( $reprint_list->is_reprint_done_successful == true)
                                         <span class="badge badge-success">REPRINT SUCCESS AT - {{ \Carbon\Carbon::parse($reprint_list->is_reprint_done_successful_at)->toDayDateTimeString() }}</span>
                                         @endif
+                                        
+                                        @if( $reprint_list->is_reprint_done_successful == false && $reprint_list->is_reprint_done_successful_by_id != null )
+                                        <span class="badge badge-danger">REPRINT FAILED AT - {{ \Carbon\Carbon::parse($reprint_list->is_reprint_done_successful_at)->toDayDateTimeString() }}</span>
+                                        @endif
                                     </td>
                                     
                                     <td>
-                                        @if( $reprint_list->is_reprint_done == true && $reprint_list->is_reprint_done_successful == false)
-                                        <button class="btn btn-success btn-sm" type="button" id="successfulRePrint_{{ $reprint_list->id }}" wire:click="successfulRePrint({{ $reprint_list->id }})"><i class="material-icons">check</i> Re-Print Successful </button>
+                                        @if( $reprint_list->is_reprint_done == true && $reprint_list->is_reprint_done_successful == false && $reprint_list->is_reprint_done_successful_by_id == null)
+                                        <button class="btn btn-success btn-sm mb-1" type="button" id="successfulRePrint_{{ $reprint_list->id }}" wire:click="successfulRePrint({{ $reprint_list->id }})"><i class="material-icons">check</i> Re-Print Successful </button>
+                                        <button class="btn btn-danger btn-sm mb-1" type="button" id="unsuccessfulRePrint_{{ $reprint_list->id }}" wire:click="unsuccessfulRePrint({{ $reprint_list->id }})"><i class="material-icons">dangerous</i> Re-Print Un-Successful </button>
                                         @endif
                                     </td>
                                 </tr>

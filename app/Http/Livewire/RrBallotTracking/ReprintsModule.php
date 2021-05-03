@@ -63,6 +63,7 @@ class ReprintsModule extends Component
         $this->dispatchBrowserEvent('removeFromBatchList', ['btnID' => $id]);
     }
     
+    //RESET THE BATCH LIST CONTENT
     public function resetRePrints(){
         foreach( $this->batchList as $batch_list ){
             $this->dispatchBrowserEvent('removeFromBatchList', ['btnID' => $batch_list['id']]);
@@ -226,8 +227,35 @@ class ReprintsModule extends Component
         session()->flash('messageReprint', 'Re-Printing of ' . $updateSingleBadBallots->unique_number . ' Done Successfully.');
     }
     
+    //REPRINT OUTPUT BAD
+    public function unsuccessfulRePrint($id){
+        $now = Carbon::now();
+        
+        $updateSingleBadBallots = BadBallots::find($id);
+        $updateSingleBadBallots->update([
+            'is_reprint_done_successful' => false,
+            'is_reprint_done_successful_by_id' => Auth::user()->id,
+            'is_reprint_done_successful_by' => Auth::user()->name,
+            'is_reprint_done_successful_at' => $now,
+            ]
+        );
+        
+        //LOG TO REPRINTS HISTORY
+        $reprintsHistory = RePrintsHistory::create([
+            'ballot_id' => $updateSingleBadBallots->ballot_id,
+            'unique_number' => $updateSingleBadBallots->unique_number,
+            'description' => $updateSingleBadBallots->description,
+            'action' => 'SET AS RE-PRINT OUTPUT UNSUCCESSFUL BATCH NO. ' . $updateSingleBadBallots->reprint_batch ,
+            'date' => $now->toDateString(),
+            'created_by_id' => Auth::user()->id,
+            'created_by_name' => Auth::user()->name,
+            ]
+        );
+        
+        session()->flash('error', 'Re-Printing of ' . $updateSingleBadBallots->unique_number . ' Not Successful.');
+    }
+    
     public function mount(){
-        // $this->batchCount = RePrintBatch::count() + 1;
     }
     
     public function render()
