@@ -18,7 +18,14 @@ class StatusView extends Component
     public $totalBallots;
     public $remainingBallots;
     public $printedBallots;
+    
     public $rePrints;
+    public $printedRePrintsSuccessful;
+    public $printedRePrintsFailed;
+    public $printedRePrintsPending;
+    public $printedRePrintsPrinting;
+    public $printedRePrintsToVerify;
+    
     public $deliveredBallots;
     public $outForDeliveryBallots;
     
@@ -45,7 +52,17 @@ class StatusView extends Component
         $this->totalBallots = Ballots::sum('cluster_total');
         $this->printedBallots = Ballots::where('current_status', '!=', 'PRINTER')->sum('cluster_total');
         $this->remainingBallots = $this->totalBallots - $this->printedBallots;
+        
         $this->rePrints = BadBallots::all()->count();
+        $this->printedRePrintsSuccessful = BadBallots::where('is_reprint_done_successful', true)->count();
+        $this->printedRePrintsFailed = BadBallots::where('is_reprint_done_successful', false)->where('is_reprint_done_successful_by_id', '!=', null)->count();
+        
+        $this->printedRePrintsPending = BadBallots::where('reprint_batch', null)->orWhere('is_reprint_batch_start', false)->count();
+
+        $this->printedRePrintsPrinting = BadBallots::where('is_reprint_batch_start', true)->where('is_reprint_done', false)->count();
+
+        $this->printedRePrintsToVerify = BadBallots::where('is_reprint_done', true)->where('is_reprint_done_successful_by_id', null)->count();
+        
         $this->outForDeliveryBallots = Ballots::where('is_out_for_delivery', true)->where('is_delivered', false)->sum('cluster_total');
         $this->deliveredBallots = Ballots::where('is_delivered', true)->sum('cluster_total');
         

@@ -76,7 +76,7 @@
                                     <button type="button" class="btn btn-block btn-success" wire:click="exportAllBallotHistory"><i class="material-icons">text_snippet</i> All History</button>
                                 </div>
                                 <div class="col-sm-12 col-md-4">
-                                    <button type="button" class="btn btn-block btn-success" wire:click="exportDelivered"><i class="material-icons">text_snippet</i> Out for Delivery</button>
+                                    <button type="button" class="btn btn-block btn-success" wire:click="exportOutForDelivery"><i class="material-icons">text_snippet</i> Out for Delivery</button>
                                 </div>
                                 <div class="col-sm-12 col-md-4">
                                     <button type="button" class="btn btn-block btn-success" wire:click="exportDelivered"><i class="material-icons">text_snippet</i> Delivered Ballots</button>
@@ -94,17 +94,14 @@
                                     <button type="button" class="btn btn-block btn-danger" wire:click="exportRePrints"><i class="material-icons">text_snippet</i> Generate All Re-prints ( Ballot ID )</button>
                                 </div>
                                 <div class="col-sm-12 col-md-4">
-                                    <button type="button" class="btn btn-block btn-danger" wire:click="exportRePrints"><i class="material-icons">text_snippet</i> Generate All Re-prints ( Ballot/s )</button>
+                                    <button type="button" class="btn btn-block btn-danger" wire:click="exportBadBallots"><i class="material-icons">text_snippet</i> Generate All Re-prints ( Ballot/s )</button>
                                 </div>
                                 <div class="col-sm-12 col-md-4">
-                                    <button type="button" class="btn btn-block btn-danger" wire:click="exportRePrints"><i class="material-icons">text_snippet</i> Generate Re-Print History</button>
+                                    <button type="button" class="btn btn-block btn-danger" wire:click="exportRePrintHistory"><i class="material-icons">text_snippet</i> Generate Re-Print History</button>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    
-                    
-                    
                     
                 </div>
                 <div class="modal-footer">

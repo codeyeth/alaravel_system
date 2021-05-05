@@ -249,9 +249,9 @@
                                     <th scope="col" class="border-0" style="text-align: left">Status BY</th>
                                     <th scope="col" class="border-0" style="text-align: left"></th>
                                     
-                                    <th scope="col" class="border-0" style="text-align: center"></th>
+                                    <th scope="col" class="border-0" style="text-align: right"></th>
                                     @if ( $searchMode == true )
-                                    <th scope="col" class="border-0" style="text-align: center"></th>
+                                    <th scope="col" class="border-0" style="text-align: left"></th>
                                     <th scope="col" class="border-0" style="text-align: center"></th>
                                     @endif
                                 </tr>
@@ -288,23 +288,31 @@
                                         {{ \Carbon\Carbon::parse($item->status_updated_at)->toDayDateTimeString() }}
                                         @endif
                                     </td>
-                                    <td>
+                                    <td style="text-align: right">
+                                        @if( $item->is_re_print == true && $item->is_re_print_done == false)
+                                        
                                         @if ( $item->current_status == "QUARANTINE" && $item->new_status_type == "IN" && Auth::user()->comelec_role == "QUARANTINE")
-                                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#modalBadBallots" wire:click.preventDefault="setBadBallotId({{ $item->id }})"> <i class="material-icons">text_snippet</i> Bad Ballots </button>
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalBadBallots" wire:click.preventDefault="setBadBallotId({{ $item->id }})"> <i class="material-icons">text_snippet</i> Bad Ballots </button>
+                                        @endif
+                                        
+                                        @endif
+                                        
+                                        @if( $item->is_re_print == true && $item->is_re_print_done == true)
+                                        <span class="badge badge-success">ALL RE-PRINTS DONE</span>
                                         @endif
                                     </td>
                                     
-                                    <td>
+                                    <td style="text-align: left">
                                         @if($item->is_delivered == true)
-                                        <span class="badge badge-success">Delivered</span>
+                                        <span class="badge badge-success mb-1">Delivered</span>
                                         @endif
                                         
                                         @if($item->is_out_for_delivery == true && $item->is_delivered == false)
-                                        <span class="badge badge-success">Out for Delivery</span>
+                                        <span class="badge badge-success mb-1">Out for Delivery</span>
                                         @endif
                                         
                                         @if($item->is_dr_done == true)
-                                        <span class="badge badge-info">D.R Created</span>
+                                        <span class="badge badge-info mb-1">D.R Attached</span>
                                         @endif
                                     </td>
                                     
@@ -664,6 +672,7 @@
                                         <th>Description</th>
                                         <th>Added at/by</th>
                                         <th></th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -673,10 +682,21 @@
                                         <td>{{ $bad_ballot_for->unique_number }}</td>
                                         <td>{{ $bad_ballot_for->description }}</td>
                                         <td>{{ $bad_ballot_for->created_by_name }} <br> {{ \Carbon\Carbon::parse($bad_ballot_for->created_at)->toDayDateTimeString() }}</td>
-                                        <td align="right">
+                                        <td style="text-align: right"> 
+                                            @if( $bad_ballot_for->is_reprint_done_successful == true )
+                                            <span class="badge badge-success">RE-PRINT SUCCESS</span>
+                                            @endif    
+                                            
+                                            @if( $bad_ballot_for->is_reprint_done_successful == false &&  $bad_ballot_for->is_reprint_done_successful_by_id != null )
+                                            <span class="badge badge-danger">RE-PRINT FAILED</span>
+                                            @endif    
+                                        </td>
+                                        <td style="text-align: left">
+                                            @if( $bad_ballot_for->reprint_batch == null )
                                             @if( $bad_ballot_for->created_by_id == Auth::user()->id )
                                             <button type="button" class="btn btn-accent" wire:click="editBadBallots({{ $bad_ballot_for->id }})"><i class="material-icons">mode_edit</i></button>
                                             <button type="button" class="btn btn-danger" wire:click="deleteBadBallots({{ $bad_ballot_for->id }})"><i class="material-icons">delete</i></button>
+                                            @endif
                                             @endif
                                         </td>
                                     </tr>
@@ -691,8 +711,22 @@
                     </form>
                     
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" wire:click="resetBadBallots">Reset Form</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <div class="col-12 col-sm-12">
+                            
+                            <div class="d-flex">
+                                <div class="mr-auto p-2">
+                                    <button type="button" class="btn btn-success" wire:click="rePrintDone({{ $badBallotId }})">SET RE-PRINT DONE</button>
+                                </div>
+                                <div class="p-2">
+                                    <button type="button" class="btn btn-warning" wire:click="resetBadBallots">Reset Form</button>
+                                    
+                                </div>
+                                <div class="p-2">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
             </div>

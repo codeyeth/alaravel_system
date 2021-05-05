@@ -23,13 +23,17 @@ class ExportExcelRePrints implements FromQuery, WithHeadings, WithMapping, Shoul
     public function headings(): array
     {
         return [
-            ['ID', 'BALLOT ID', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'POLLPLACE', 'POLLSTREET', 'CLUSTER NO', 'CLUSTERED PREC', 'CLUSTER TOTAL', 'GROUP NO', 'REPRINT STATUS BY', 'REPRINT STATUS AT' ],
+            [
+                'ID', 'BALLOT ID', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'POLLPLACE', 'POLLSTREET', 'CLUSTER NO', 'CLUSTERED PREC', 'CLUSTER TOTAL', 'GROUP NO', 'REPRINT STATUS BY', 'REPRINT STATUS AT', 
+                'REPRINT DONE BY', 'REPRINT DONE AT', 
+            ],
         ];
     }
     
     public function map($all_re_prints): array
     {
         $is_re_print_at = Carbon::create($all_re_prints->is_re_print_at);
+        $is_re_print_done_at = Carbon::create($all_re_prints->is_re_print_done_at);
         
         return [
             $all_re_prints->id,
@@ -46,6 +50,8 @@ class ExportExcelRePrints implements FromQuery, WithHeadings, WithMapping, Shoul
             $all_re_prints->group_no,
             $all_re_prints->is_re_print_by,
             $is_re_print_at->toDayDateTimeString(),
+            $all_re_prints->is_re_print_done_by,
+            $is_re_print_done_at->toDayDateTimeString(),
         ];
     }
 }

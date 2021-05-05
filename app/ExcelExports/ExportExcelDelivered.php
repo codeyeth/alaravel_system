@@ -23,7 +23,7 @@ class ExportExcelDelivered implements FromQuery, WithHeadings, WithMapping, Shou
     public function headings(): array
     {
         return [
-            ['ID', 'BALLOT ID', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'POLLPLACE', 'POLLSTREET', 'CLUSTER NO', 'CLUSTERED PREC', 'CLUSTER TOTAL', 'GROUP NO', 'DELIVERED STATUS BY', 'DELIVERED STATUS AT' ],
+            ['ID', 'BALLOT ID', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'POLLPLACE', 'POLLSTREET', 'CLUSTER NO', 'CLUSTERED PREC', 'CLUSTER TOTAL', 'GROUP NO', 'DELIVERED BY', 'DELIVERED AT' ],
         ];
     }
     
@@ -44,7 +44,7 @@ class ExportExcelDelivered implements FromQuery, WithHeadings, WithMapping, Shou
             $all_delivered->clustered_prec,
             $all_delivered->cluster_total,
             $all_delivered->group_no,
-            $all_delivered->is_re_print_by,
+            $all_delivered->is_delivered_by,
             $delivered_at->toDayDateTimeString(),
         ];
     }

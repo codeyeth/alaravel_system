@@ -23,6 +23,9 @@ use App\ExcelExports\ExportExcelStatusBallotHistory;
 
 use App\ExcelExports\ExportExcelRePrints;
 use App\ExcelExports\ExportExcelDelivered;
+use App\ExcelExports\ExportExcelBadBallots;
+use App\ExcelExports\ExportExcelRePrintsHistory;
+use App\ExcelExports\ExportExcelOutForDelivery;
 
 class ReportModule extends Component
 {
@@ -59,7 +62,9 @@ class ReportModule extends Component
     public function exportDateBallot(){
         if($this->dateFrom != null &&  $this->dateTo != null){
             $export = new ExportExcelBallotDate($this->dateFrom, $this->dateTo);
-            return Excel::download($export, 'date_ballot_history.xlsx');
+            $dateFromFormatted = Carbon::create($this->dateFrom)->toDayDateTimeString();
+            $dateToFormatted = Carbon::create($this->dateTo)->toDayDateTimeString();
+            return Excel::download($export, 'date_ballot_history' . ' ' . $dateFromFormatted . ' ' . $dateToFormatted . '.xlsx');
         }
     }
     
@@ -71,12 +76,29 @@ class ReportModule extends Component
         return Excel::download($export, $statusSelected . '_status_ballot_history.xlsx');
     }
     
+    //EXPORT REPRINTS (BALLOT ID)
     public function exportRePrints(){
         return Excel::download(new ExportExcelRePrints, 'reprinted_ballot.xlsx');
     }
     
+    //EXPORT DELIVERED BALLOTS
     public function exportDelivered(){
         return Excel::download(new ExportExcelDelivered, 'delivered_ballots.xlsx');
+    }
+    
+    //EXPORT OUT FOR DELIVERY BALLOTS
+    public function exportOutForDelivery(){
+        return Excel::download(new ExportExcelOutForDelivery, 'out_for_delivery_ballots.xlsx');
+    }
+    
+    //EXPORT ALL BAD BALLOTS
+    public function exportBadBallots(){
+        return Excel::download(new ExportExcelBadBallots, 'bad_ballots.xlsx');
+    }
+    
+    //EXPORT RE-PRINT HISTORY
+    public function exportRePrintHistory(){
+        return Excel::download(new ExportExcelRePrintsHistory, 're-prints_history.xlsx');
     }
     
     public function mount(){

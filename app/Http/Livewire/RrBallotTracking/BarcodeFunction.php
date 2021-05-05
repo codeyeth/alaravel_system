@@ -333,6 +333,20 @@ class BarcodeFunction extends Component
         $this->updateBadBallot = false;
     }
     
+    public function rePrintDone($id){
+        $now = Carbon::now();
+        $ballotId = Ballots::find($id);
+        $ballotId->update([
+            'is_re_print_done' => true,
+            'is_re_print_done_by_id' => Auth::user()->id,
+            'is_re_print_done_by' => Auth::user()->name,
+            'is_re_print_done_at' => $now,
+            ]
+        );
+        
+        session()->flash('messageBadBallots', 'Re-Printing Done Successfully!');
+    }
+    
     //ALTER THE BALLOT STATUS
     public function alterBallotStatus($id){
         $now = Carbon::now();
