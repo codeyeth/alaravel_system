@@ -8,6 +8,7 @@
                 <div class="p-2"></div>
                 
                 <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
+                    <label class="btn btn-white {{ $poTable == true ? 'active' : '' }}" wire:click="showPoTable"><input type="radio" name="options" id="option3"> Purchase Request Table</label>
                     <label class="btn btn-white {{ $siTable == true ? 'active' : '' }}" wire:click="showSiTable"><input type="radio" name="options" id="option1"> Sales Invoice Table</label>
                     <label class="btn btn-white {{ $clTable == true ? 'active' : ''}}" wire:click="showClTable"><input type="radio" name="options" id="option2"> Client Ledger Table</label>
                     <label class="btn btn-white {{ $drTable == true ? 'active' : ''}}" wire:click="showDrTable"><input type="radio" name="options" id="option3"> Delivery Receipt Table</label>
@@ -30,4 +31,10 @@
     @if ($drTable == true)
     @livewire('rr-smd-system.delivery-receipt-list')        
     @endif
+    
+    {{-- DELIVER RECEIPT LIST --}}
+    @if ($poTable == true)
+    @livewire('rr-smd-system.purchase-order-list')        
+    @endif
+
 </div>

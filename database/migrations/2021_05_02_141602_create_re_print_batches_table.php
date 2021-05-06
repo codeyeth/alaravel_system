@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBadBallotsTable extends Migration
+class CreateRePrintBatchesTable extends Migration
 {
     /**
     * Run the migrations.
@@ -13,19 +13,10 @@ class CreateBadBallotsTable extends Migration
     */
     public function up()
     {
-        Schema::create('bad_ballots', function (Blueprint $table) {
+        Schema::create('re_print_batches', function (Blueprint $table) {
             $table->id();
-            $table->string('ballot_id');
-            $table->string('unique_number');
-            $table->text('description');
-            $table->string('created_by_id');
-            $table->string('created_by_name');
-            $table->string('created_by_comelec_role');
-            
-            $table->string('reprint_batch')->nullable();       
-            $table->string('reprint_batch_by_id')->nullable();       
-            $table->string('reprint_batch_by')->nullable();       
-            $table->string('reprint_batch_at')->nullable();  
+            $table->integer('batch_count');
+            $table->string('batch_content');
             
             $table->boolean('is_reprint_batch_start')->nullable()->default(false);       
             $table->string('is_reprint_batch_start_by_id')->nullable();       
@@ -42,6 +33,8 @@ class CreateBadBallotsTable extends Migration
             $table->string('is_reprint_done_successful_by')->nullable();       
             $table->string('is_reprint_done_successful_at')->nullable();  
             
+            $table->string('created_by_id');
+            $table->string('created_by_name');
             $table->timestamps();
         });
     }
@@ -53,6 +46,6 @@ class CreateBadBallotsTable extends Migration
     */
     public function down()
     {
-        Schema::dropIfExists('bad_ballots');
+        Schema::dropIfExists('re_print_batches');
     }
 }

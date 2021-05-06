@@ -242,7 +242,7 @@ class BarcodeFunction extends Component
     {
         $ballotId = Ballots::find($this->badBallotId);
         $this->badBallotIdFor = $ballotId->ballot_id;
-        $this->badBallotsFor = BadBallots::where('ballot_id', $ballotId->ballot_id)->get();
+        $this->badBallotsFor = BadBallots::where('ballot_id', $ballotId->ballot_id)->orderBy('id', 'DESC')->get();
     }
     
     //SAVE THE BAD BALLOTS
@@ -263,6 +263,7 @@ class BarcodeFunction extends Component
                 'description' => $badballotlist['description'],
                 'created_by_id' => Auth::user()->id,
                 'created_by_name' => Auth::user()->name,
+                'created_by_comelec_role' => Auth::user()->comelec_role,
                 ]
             );
             
@@ -270,6 +271,8 @@ class BarcodeFunction extends Component
         session()->flash('messageBadBallots', 'Bad Ballots Saved Successfully!');
         $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
         $this->getBadBallot();
+        
+        $this->emit('refreshReprintModule');
     }
     
     public function deleteBadBallots($id){
@@ -328,6 +331,20 @@ class BarcodeFunction extends Component
         $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
         $this->getBadBallot();
         $this->updateBadBallot = false;
+    }
+    
+    public function rePrintDone($id){
+        $now = Carbon::now();
+        $ballotId = Ballots::find($id);
+        $ballotId->update([
+            'is_re_print_done' => true,
+            'is_re_print_done_by_id' => Auth::user()->id,
+            'is_re_print_done_by' => Auth::user()->name,
+            'is_re_print_done_at' => $now,
+            ]
+        );
+        
+        session()->flash('messageBadBallots', 'Re-Printing Done Successfully!');
     }
     
     //ALTER THE BALLOT STATUS
@@ -538,53 +555,6 @@ class BarcodeFunction extends Component
     }
     
     //////////////////////////////////////////////REPORTSSSS
-    
-    //GET BALLOT HISTORY
-    public function getBallotHistory($ballotId){
-        $ballotResult = Ballots::find($ballotId);   
-        $this->exportSingleId = $ballotId;
-        $this->modalBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->get();  
-        $this->alterBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->groupBy('old_status', 'new_status_type')->get();  
-        $this->ballotHistoryCount = count($this->modalBallotHistoryList);
-    }
-    
-    //EXPORT SINGLE BALLOT HISTORY
-    public function exportSingleBallotHistory($exportSingleId){
-        $ballotSingleExportResult = Ballots::find($exportSingleId);   
-        $ballotIdToExcel = $ballotSingleExportResult->ballot_id;
-        $export = new ExportExcelSingleBallotHistory($ballotIdToExcel);
-        return Excel::download($export, $ballotIdToExcel . '_single_ballot_history.xlsx');
-    }
-    
-    //EXPORT ALL BALLOT HISTORY
-    public function exportAllBallotHistory(){
-        return Excel::download(new ExportExcelAllHistory, 'all_ballot_history.xlsx');
-    }
-    
-    //EXPORT DATE RANGE BALLOT HISTORY
-    public function exportDateBallot(){
-        if($this->dateFrom != null &&  $this->dateTo != null){
-            $export = new ExportExcelBallotDate($this->dateFrom, $this->dateTo);
-            return Excel::download($export, 'date_ballot_history.xlsx');
-        }
-    }
-    
-    //EXPORT BASED ON STATUS SELECTED BALLOT HISTORY
-    public function exportStatusBallotHistory(){
-        $statusSelected = $this->statusSelected;
-        $statusType = $this->statusType;
-        $export = new ExportExcelStatusBallotHistory($statusSelected, $statusType);
-        return Excel::download($export, $statusSelected . '_status_ballot_history.xlsx');
-    }
-    
-    public function exportRePrints(){
-        return Excel::download(new ExportExcelRePrints, 'reprinted_ballot.xlsx');
-    }
-    
-    public function exportDelivered(){
-        return Excel::download(new ExportExcelDelivered, 'delivered_ballots.xlsx');
-    }
-    
     //////////////////////////////////////////////REPORTSSSS
     
     //MOUNT FUNCTION

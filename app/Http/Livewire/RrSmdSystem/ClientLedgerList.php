@@ -32,6 +32,11 @@ class ClientLedgerList extends Component
         $this->searchClientLedger = '';
         $this->keywordMode = true;
     }
+
+    public function updatedKeywordMode()
+    {
+        $this->searchClientLedger = '';
+    }
     
     public function updatingSearchClientLedger()
     {

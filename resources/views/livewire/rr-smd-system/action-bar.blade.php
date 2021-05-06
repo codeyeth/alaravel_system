@@ -56,6 +56,10 @@
                                 <i class="material-icons">add</i> Courier Info Database
                             </button>
                             <div style="margin-left: 10px;"></div>
+                            <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalPurchaseOrder">
+                                <i class="material-icons">add</i> Log Purchase Order
+                            </button>
+                            <div style="margin-left: 10px;"></div>
                             <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalSalesInvoice">
                                 <i class="material-icons">add</i> Encode Sales Invoice
                             </button>
@@ -80,6 +84,9 @@
         {{-- PRODUCT ITEM/S MODULE --}}
         @livewire('rr-smd-system.product-item-module')
         
+        {{-- PURCHASE ORDER MODULE --}}
+        @livewire('rr-smd-system.purchase-order')
+        
         {{-- SALES INVOICE MODULE --}}
         @livewire('rr-smd-system.sales-invoice-module')
         
@@ -95,5 +102,6 @@
         {{-- J DAILY AND MONTHLY GENERIC SPECIALIZED CLAIMED UNCLAIMED REPORTS --}}
         @include('livewire.j-livewire.smd.jreports_modal')  
 
+        
     </div>
 </div>

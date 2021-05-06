@@ -1,24 +1,24 @@
 <div>
     {{-- MODAL ADD SOFTCOPY --}}
-    <div class="modal fade" id="modalSalesInvoice" tabindex="-1" role="dialog" aria-labelledby="modalSalesInvoice" aria-hidden="true" wire:ignore.self>
+    <div class="modal fade" id="modalPurchaseOrder" tabindex="-1" role="dialog" aria-labelledby="modalPurchaseOrder" aria-hidden="true" wire:ignore.self>
         <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Encode Sales Invoice</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Log Purchase Order</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form wire:submit.prevent="saveSalesInvoice" autocomplete="off">
+                <form wire:submit.prevent="savePurchaseOrder" autocomplete="off">
                     @csrf
                     
-                    @if(session('messageSalesInvoice'))
+                    @if(session('messagePurchaseOrder'))
                     <div class="alert alert-accent alert-dismissible fade show mb-0" role="alert">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                             <span aria-hidden="true">×</span>
                         </button>
                         <i class="fa fa-info mx-2"></i>
-                        <strong style="font-size: 150%">  {!! Str::upper(session('messageSalesInvoice')) !!} </strong> {{ \Carbon\Carbon::parse(session('now'))->toDayDateTimeString() }}
+                        <strong style="font-size: 150%">  {!! Str::upper(session('messagePurchaseOrder')) !!} </strong> {{ \Carbon\Carbon::parse(session('now'))->toDayDateTimeString() }}
                     </div>
                     @endif
                     
@@ -29,7 +29,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
                                         <strong class="text-muted d-block mb-2">AGENCY NAME <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="SIagencyName" name="SIagencyName" placeholder="Agency Name" autocomplete="off" required autofocus wire:model="agencyName" wire:keyup="searchClientDatabase">
+                                        <input type="text" class="form-control" id="POagencyName" name="POagencyName" placeholder="Agency Name" autocomplete="off" required autofocus wire:model="agencyName" wire:keyup="searchClientDatabase">
                                     </div>
                                 </div>
                             </div>
@@ -57,10 +57,9 @@
                                             <td>{{ $client_database->agency_code }}</td>
                                             <td>{{ $client_database->agency_name }}</td>
                                             <td>{{ $client_database->agency_address }} - {{ $client_database->region }}</td>
-                                            <td><button class="btn btn-accent btn-sm" id="getClientDatabase{{ $client_database->id }}" name="getClientDatabase{{ $client_database->id }}" wire:click="getClientDatabase({{ $client_database->id }})">Get Client Data</button></td>
+                                            <td><button class="btn btn-accent btn-sm" id="POgetClientDatabase{{ $client_database->id }}" name="POgetClientDatabase{{ $client_database->id }}" wire:click="getClientDatabase({{ $client_database->id }})">Get Client Data</button></td>
                                         </tr>
                                         @endforeach
-                                        
                                     </tbody>
                                 </table>
                                 <hr>
@@ -76,11 +75,11 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-10">
                                         <strong class="text-muted d-block mb-2">COMPLETE ADDRESS <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="SIagencyAddress" name="SIagencyAddress" placeholder="Complete Address" autocomplete="off" required autofocus wire:model="agencyAddress" >
+                                        <input type="text" class="form-control" id="POagencyAddress" name="POagencyAddress" placeholder="Complete Address" autocomplete="off" required autofocus wire:model="agencyAddress" >
                                     </div>
                                     <div class="form-group col-md-2">
                                         <strong class="text-muted d-block mb-2">REGION <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="SIregion" name="SIregion" placeholder="Region" autocomplete="off" required autofocus wire:model="region" >
+                                        <input type="text" class="form-control" id="POregion" name="POregion" placeholder="Region" autocomplete="off" required autofocus wire:model="region" >
                                     </div>
                                 </div>
                             </div>
@@ -91,15 +90,15 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">CONTACT PERSON <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="SIcontactPerson" name="SIcontactPerson" placeholder="Contact Person" autocomplete="off" required autofocus wire:model="contactPerson" >
+                                        <input type="text" class="form-control" id="POcontactPerson" name="POcontactPerson" placeholder="Contact Person" autocomplete="off" required autofocus wire:model="contactPerson" >
                                     </div>
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">CONTACT NO <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="SIcontactNo" name="SIcontactNo" placeholder="Contact No" autocomplete="off" required autofocus wire:model="contactNo" >
+                                        <input type="text" class="form-control" id="POcontactNo" name="POcontactNo" placeholder="Contact No" autocomplete="off" required autofocus wire:model="contactNo" >
                                     </div>
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">EMAIL ADDRESS <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="SIemailAddress" name="SIemailAddress" placeholder="Email Address" autocomplete="off" required autofocus wire:model="emailAddress" >
+                                        <input type="text" class="form-control" id="POemailAddress" name="POemailAddress" placeholder="Email Address" autocomplete="off" required autofocus wire:model="emailAddress" >
                                     </div>
                                 </div>
                             </div>
@@ -111,78 +110,25 @@
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">TRANSACTION TYPE <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="transactionType" id="transactionType" class="form-control" wire:model="transactionType" required>
+                                        <strong class="text-muted d-block mb-2">PURCHASE ORDER SOURCE <span class="requiredTag">&bullet;</span></strong>
+                                        <select name="poSource" id="poSource" class="form-control" wire:model="poSource" required>
                                             <option disabled selected value="">Select Here</option>
                                             <option value="WALK-IN">WALK-IN</option>
                                             <option value="EMAIL">EMAIL</option>
                                         </select>
                                     </div>
-                                    <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">MODE OF PAYMENT <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="paymentMode" id="paymentMode" class="form-control" wire:model="paymentMode" required>
-                                            <option disabled selected value="">Select Here</option>
-                                            <option value="CASH">CASH</option>
-                                            <option value="CHECK">CHECK</option>
-                                            <option value="ADA">ADA</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">PACKAGE TYPE <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="packageType" id="packageType" class="form-control" wire:model="packageType" required>
-                                            <option disabled selected value="">Select Here</option>
-                                            <option value="CARRY">CARRY</option>
-                                            <option value="COURIER">COURIER</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="row">
-                            <div class="col-sm-12 col-md-12">
-                                <div class="form-row">
-                                    <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">CODE <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="code" name="code" placeholder="Code" autocomplete="off" required autofocus wire:model="code" >
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">WORK ORDER NO <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="workOrderNo" name="workOrderNo" placeholder="Work Order No" autocomplete="off" required autofocus wire:model="workOrderNo" >
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">STOCK NO <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="stockNo" name="stockNo" placeholder="Stock No" autocomplete="off" required autofocus wire:model="stockNo" >
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        
-                        <div class="row">
-                            <div class="col-sm-12 col-md-12">
-                                <div class="form-row">
-                                    <div class="form-group col-md-6">
-                                        <strong class="text-muted d-block mb-2">ISSUED BY <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="issuedBy" name="issuedBy" placeholder="Issued By" autocomplete="off" required autofocus wire:model="issuedBy" >
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <strong class="text-muted d-block mb-2">RECEIVED BY <span class="requiredTag">&bullet;</span></strong>
-                                        <input type="text" class="form-control" id="receivedBy" name="receivedBy" placeholder="Received By" autocomplete="off" required autofocus wire:model="receivedBy" >
-                                    </div>
                                 </div>
                             </div>
                         </div>
                         
                         <hr class="hr_dashed">
-                        
                         
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">GOODS TYPE <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="goodsType" id="goodsType" class="form-control" wire:model="goodsType" wire:change="resetGoodsType" required>
+                                        <select name="POgoodsType" id="POgoodsType" class="form-control" wire:model="goodsType" wire:change="resetGoodsType" required>
                                             <option disabled selected value="">Select Here</option>
                                             <option value="Generic">GENERIC</option>
                                             <option value="Specialized">SPECIALIZED</option>
@@ -192,7 +138,7 @@
                                     @if ($goodsType == 'Specialized')
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">FORMS TYPE <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="formType" id="formType" class="form-control" wire:model="formType" required>
+                                        <select name="POformType" id="POformType" class="form-control" wire:model="formType" required>
                                             <option disabled selected value="">Select Here</option>
                                             <option value="AF">ACCOUNTABLE FORM</option>
                                             <option value="NAF">NON-ACCOUNTABLE FORM</option>
@@ -215,7 +161,7 @@
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">PRODUCT<span class="requiredTag">&bullet;</span></strong>
-                                        <select name="productParent" id="productParent" class="form-control" wire:model="productParent" wire:change="spitMatchedSubProduct($event.target.value)" required>
+                                        <select name="POproductParent" id="POproductParent" class="form-control" wire:model="productParent" wire:change="spitMatchedSubProduct($event.target.value)" required>
                                             @if (count($productParentFor) > 0)
                                             <option disabled selected value="">Select Here</option>
                                             @foreach ($productParentFor as $product_parent)
@@ -230,7 +176,7 @@
                                     @if (count($productSubParentFor) > 0)
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">SUB-PRODUCT <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="productSubParent" id="productSubParent" class="form-control" wire:model="productSubParent" wire:change="spitMatchedProductItems" required>
+                                        <select name="POproductSubParent" id="POproductSubParent" class="form-control" wire:model="productSubParent" wire:change="spitMatchedProductItems" required>
                                             @if (count($productSubParentFor) > 0)
                                             <option disabled value="">Select Sub-Product Here</option>
                                             @foreach ($productSubParentFor as $product_sub_parent)
@@ -246,7 +192,7 @@
                                     @if (count($productItemsFor) > 0)
                                     <div class="form-group col-md-4">
                                         <strong class="text-muted d-block mb-2">PRODUCT ITEM/S <span class="requiredTag">&bullet;</span></strong>
-                                        <select name="productItems" id="productItems" class="form-control" wire:model="productItems" wire:change="addItemList($event.target.value)" required>
+                                        <select name="POproductItems" id="POproductItems" class="form-control" wire:model="productItems" wire:change="addItemList($event.target.value)" required>
                                             @if (count($productItemsFor) > 0)
                                             <option disabled value="">Select Item Here</option>
                                             @foreach ($productItemsFor as $product_item)
@@ -326,7 +272,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="refreshTrick">Close</button>
-                        <button type="submit" class="btn btn-accent">Save Sales Invoice</button>
+                        <button type="submit" class="btn btn-accent">Save Purchase Order</button>
                     </div>
                 </form>
                 

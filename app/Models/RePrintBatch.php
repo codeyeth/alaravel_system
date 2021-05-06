@@ -5,21 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class BadBallots extends Model
+class RePrintBatch extends Model
 {
     use HasFactory;
+    
     protected $fillable = [
-        'ballot_id',
-        'unique_number',
-        'description',
-        'created_by_id',
-        'created_by_name',
-        'created_by_comelec_role',
-        
-        'reprint_batch',
-        'reprint_batch_by_id',
-        'reprint_batch_by',
-        'reprint_batch_at',
+        'batch_count', 
+        'batch_content',
         
         'is_reprint_batch_start',
         'is_reprint_batch_start_by_id',
@@ -36,5 +28,7 @@ class BadBallots extends Model
         'is_reprint_done_successful_by',
         'is_reprint_done_successful_at',
         
+        'created_by_id',
+        'created_by_name',
     ];
 }

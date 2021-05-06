@@ -119,6 +119,12 @@
                             </button>
                             <div style="margin-left: 10px;"></div>
                             @endif
+                            @if ( $searchMode == true && Auth::user()->is_ballot_tracking == true && Auth::user()->comelec_role == 'QUARANTINE' && Auth::user()->is_admin == true )
+                            <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalRePrint">
+                                <i class="material-icons">print</i> Ballots Re-Prints
+                            </button>
+                            <div style="margin-left: 10px;"></div>
+                            @endif
                         </li>
                     </ul>
                 </div>
@@ -241,13 +247,11 @@
                                     <th scope="col" class="border-0" style="text-align: left">Ballot Pollplace</th>
                                     <th scope="col" class="border-0" style="text-align: right">Current Status/Location</th>
                                     <th scope="col" class="border-0" style="text-align: left">Status BY</th>
-                                    @if ( Auth::user()->comelec_role == "QUARANTINE")
                                     <th scope="col" class="border-0" style="text-align: left"></th>
-                                    @endif
                                     
-                                    <th scope="col" class="border-0" style="text-align: center"></th>
+                                    <th scope="col" class="border-0" style="text-align: right"></th>
                                     @if ( $searchMode == true )
-                                    <th scope="col" class="border-0" style="text-align: center"></th>
+                                    <th scope="col" class="border-0" style="text-align: left"></th>
                                     <th scope="col" class="border-0" style="text-align: center"></th>
                                     @endif
                                 </tr>
@@ -284,23 +288,31 @@
                                         {{ \Carbon\Carbon::parse($item->status_updated_at)->toDayDateTimeString() }}
                                         @endif
                                     </td>
-                                    @if ( $item->current_status == "QUARANTINE" && Auth::user()->comelec_role == "QUARANTINE")
-                                    <td>
-                                        <button type="button" class="btn btn-warning btn-block" data-toggle="modal" data-target="#modalBadBallots" wire:click.preventDefault="setBadBallotId({{ $item->id }})"> <i class="material-icons">search</i> Encode Bad Ballots</button>
+                                    <td style="text-align: right">
+                                        @if( $item->is_re_print == true && $item->is_re_print_done == false)
+                                        
+                                        @if ( $item->current_status == "QUARANTINE" && $item->new_status_type == "IN" && Auth::user()->comelec_role == "QUARANTINE")
+                                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalBadBallots" wire:click.preventDefault="setBadBallotId({{ $item->id }})"> <i class="material-icons">text_snippet</i> Bad Ballots </button>
+                                        @endif
+                                        
+                                        @endif
+                                        
+                                        @if( $item->is_re_print == true && $item->is_re_print_done == true)
+                                        <span class="badge badge-success">ALL RE-PRINTS DONE</span>
+                                        @endif
                                     </td>
-                                    @endif
                                     
-                                    <td>
+                                    <td style="text-align: left">
                                         @if($item->is_delivered == true)
-                                        <span class="badge badge-success">Delivered</span>
+                                        <span class="badge badge-success mb-1">Delivered</span>
                                         @endif
                                         
                                         @if($item->is_out_for_delivery == true && $item->is_delivered == false)
-                                        <span class="badge badge-success">Out for Delivery</span>
+                                        <span class="badge badge-success mb-1">Out for Delivery</span>
                                         @endif
                                         
                                         @if($item->is_dr_done == true)
-                                        <span class="badge badge-info">D.R Created</span>
+                                        <span class="badge badge-info mb-1">D.R Attached</span>
                                         @endif
                                     </td>
                                     
@@ -341,6 +353,9 @@
     <div class="text-center" wire:loading.remove wire:target="search"> 
         {{ $ballotList->links() }}
     </div>
+    
+    {{-- BALLOT RE-PRINTS --}}
+    @livewire('rr-ballot-tracking.reprints-module')
     
     {{-- MODAL HISTORY --}}
     <div class="modal fade" id="modalBallotHistory" tabindex="-1" role="dialog" aria-labelledby="modalBallotHistory" aria-hidden="true" wire:ignore.self>
@@ -562,100 +577,12 @@
         </div>
     </div>
     
-    {{-- MODAL REPORT --}}
-    <div class="modal fade" id="modalReport" tabindex="-1" role="dialog" aria-labelledby="modalReport" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Generate Report</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-sm-12 col-md-12">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <strong class="text-muted d-block mb-2">Date From </strong>
-                                    <input type="datetime-local" name="dfrom" id="dfrom"  wire:model="dateFrom" class="form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <strong class="text-muted d-block mb-2">Date To </strong>
-                                    <input type="datetime-local" wire:model="dateTo" name="dto" id="dto" class="form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-sm-12 col-md-12">
-                            <button type="button" class="btn btn-primary btn-block" wire:click="exportDateBallot">Generate History based on Date</button>
-                        </div>
-                    </div>
-                    
-                    <hr class="hr_dashed">
-                    
-                    <button type="button" class="btn btn-block btn-success" wire:click="exportAllBallotHistory">Generate All Available History</button>
-                    
-                    <hr class="hr_dashed">
-                    
-                    <div class="row">
-                        <div class="col-sm-12 col-md-12">
-                            <div class="form-row">
-                                <div class="form-group col-md-6">
-                                    <strong class="text-muted d-block mb-2">Status </strong>
-                                    <select id="statusReport" name="statusReport" class="form-control" wire:model="statusSelected">
-                                        <option disabled selected value="">Select Status here</option>
-                                        @if(count($comelecRolesList) > 0)
-                                        @foreach($comelecRolesList as $comrole)
-                                        <option value="{{$comrole->comelec_role}}">{{ Str::title($comrole->comelec_role) }}</option>
-                                        @endforeach
-                                        @else
-                                        <option disabled selected>No Status available</option>
-                                        @endif                
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-6">
-                                    <strong class="text-muted d-block mb-2">Status Type </strong>
-                                    <select id="statusType" name="statusType" class="form-control" wire:model="statusType">
-                                        <option disabled selected value="">Select Status Type here</option>
-                                        <option value="IN">IN</option>               
-                                        <option value="OUT">OUT</option>               
-                                        <option value="ALL">IN AND OUT</option>               
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-sm-12 col-md-12">
-                            <button type="button" class="btn btn-block btn-secondary" wire:click="exportStatusBallotHistory">Generate History based on Status</button>   
-                        </div>
-                    </div>
-
-                    <hr class="hr_dashed">
-                    
-                    <button type="button" class="btn btn-block btn-danger" wire:click="exportRePrints">Generate All Re-prints</button>
-
-                    <hr class="hr_dashed">
-                    
-                    <button type="button" class="btn btn-block btn-success" wire:click="exportDelivered">Generate All Delivered Ballots</button>
-
-                    
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                </div>
-                
-            </div>
-        </div>
-    </div>
+    {{-- REPORTING MODULE --}}
+    @livewire('rr-ballot-tracking.report-module')
     
     {{-- MODAL BAD BALLOTS --}}
     <div class="modal fade" id="modalBadBallots" tabindex="-1" role="dialog" aria-labelledby="modalBadBallots" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="modalBadBallotsTitle">Encode Bad Ballots for <b> {{ $badBallotIdFor }} </b></h5>
@@ -713,7 +640,7 @@
                                 </tbody>
                             </table>
                             
-                            <hr>
+                            <hr class="hr_dashed">
                             
                             <div class="row">
                                 <div class="col-sm-12 col-md-12">
@@ -745,6 +672,7 @@
                                         <th>Description</th>
                                         <th>Added at/by</th>
                                         <th></th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -754,9 +682,22 @@
                                         <td>{{ $bad_ballot_for->unique_number }}</td>
                                         <td>{{ $bad_ballot_for->description }}</td>
                                         <td>{{ $bad_ballot_for->created_by_name }} <br> {{ \Carbon\Carbon::parse($bad_ballot_for->created_at)->toDayDateTimeString() }}</td>
-                                        <td align="right">
+                                        <td style="text-align: right"> 
+                                            @if( $bad_ballot_for->is_reprint_done_successful == true )
+                                            <span class="badge badge-success">RE-PRINT SUCCESS</span>
+                                            @endif    
+                                            
+                                            @if( $bad_ballot_for->is_reprint_done_successful == false &&  $bad_ballot_for->is_reprint_done_successful_by_id != null )
+                                            <span class="badge badge-danger">RE-PRINT FAILED</span>
+                                            @endif    
+                                        </td>
+                                        <td style="text-align: left">
+                                            @if( $bad_ballot_for->reprint_batch == null )
+                                            @if( $bad_ballot_for->created_by_id == Auth::user()->id )
                                             <button type="button" class="btn btn-accent" wire:click="editBadBallots({{ $bad_ballot_for->id }})"><i class="material-icons">mode_edit</i></button>
                                             <button type="button" class="btn btn-danger" wire:click="deleteBadBallots({{ $bad_ballot_for->id }})"><i class="material-icons">delete</i></button>
+                                            @endif
+                                            @endif
                                         </td>
                                     </tr>
                                     @endforeach
@@ -770,11 +711,26 @@
                     </form>
                     
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" wire:click="resetBadBallots">Reset Form</button>
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <div class="col-12 col-sm-12">
+                            
+                            <div class="d-flex">
+                                <div class="mr-auto p-2">
+                                    <button type="button" class="btn btn-success" wire:click="rePrintDone({{ $badBallotId }})">SET RE-PRINT DONE</button>
+                                </div>
+                                <div class="p-2">
+                                    <button type="button" class="btn btn-warning" wire:click="resetBadBallots">Reset Form</button>
+                                    
+                                </div>
+                                <div class="p-2">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                            </div>
+                            
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        
         
     </div>
