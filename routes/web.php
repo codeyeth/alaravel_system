@@ -72,20 +72,16 @@ Route::get('/delivery_ob', 'DeliveryjController@ob');
 Route::get('/delivery_fts', 'DeliveryjController@fts');
 Route::get('/delivery_configuration', 'DeliveryjController@config');
 
-Route::get('/download_motorpool_letter', ['as' => 'brought', 'uses' => 'MotorpoolRequestjController@savemotorpoolreport']);
+Route::get('/download_motorpool_letter', ['as' => 'brought', 'uses' => 'MotorpoolRequestjController@save_motorpool_report']);
 
-Route::get('/download_dr_ob_report', ['as' => 'search', 'uses' => 'DeliveryjController@savepdfobdr']);
-Route::get('/download_dated_ob_report', ['as' => 'retrieve', 'uses' => 'DeliveryjController@savepdfobdated']);
+Route::get('/download_pdf_dr', ['as' => 'look', 'uses' => 'DeliveryjController@save_dr_pdf']);
 
-Route::get('/download_dr_fts_report', ['as' => 'view', 'uses' => 'DeliveryjController@savepdfftsdr']);
-Route::get('/download_dated_fts_report', ['as' => 'look', 'uses' => 'DeliveryjController@savepdfftsdated']);
-
-Route::get('/view_sales_invoice', ['as' => 'catch', 'uses' => 'SmdjController@si']);
-Route::get('/view_daily_sales_generic', ['as' => 'generic', 'uses' => 'SmdjController@dailysalesgeneric']);
-Route::get('/view_daily_sales_specialized', ['as' => 'specialized', 'uses' => 'SmdjController@dailysalesspecialized']);
-Route::get('/view_monthly_sales', ['as' => 'monthly', 'uses' => 'SmdjController@monthlysales']);
-Route::get('/view_claimed_generic', ['as' => 'genericclaimed', 'uses' => 'SmdjController@claimedgeneric']);
-Route::get('/view_claimed_specialized', ['as' => 'specializedclaimed', 'uses' => 'SmdjController@claimedspecialized']);
-Route::get('/view_unclaimed_generic', ['as' => 'genericunclaimed', 'uses' => 'SmdjController@unclaimedgeneric']);
-Route::get('/view_unclaimed_specialized', ['as' => 'specializedunclaimed', 'uses' => 'SmdjController@unclaimedspecialized']);
+Route::get('/view_sales_invoice', ['as' => 'catch', 'uses' => 'SmdjController@sales_invoice']);
+Route::get('/view_daily_sales_generic', ['as' => 'generic', 'uses' => 'SmdjController@daily_sales_generic']);
+Route::get('/view_daily_sales_specialized', ['as' => 'specialized', 'uses' => 'SmdjController@daily_sales_specialized']);
+Route::get('/view_monthly_sales', ['as' => 'monthly', 'uses' => 'SmdjController@monthly_sales_invoice']);
+Route::get('/view_claimed_generic', ['as' => 'genericclaimed', 'uses' => 'SmdjController@claimed_generic']);
+Route::get('/view_claimed_specialized', ['as' => 'specializedclaimed', 'uses' => 'SmdjController@claimed_specialized']);
+Route::get('/view_unclaimed_generic', ['as' => 'genericunclaimed', 'uses' => 'SmdjController@unclaimed_generic']);
+Route::get('/view_unclaimed_specialized', ['as' => 'specializedunclaimed', 'uses' => 'SmdjController@unclaimed_specialized']);
 

@@ -30,8 +30,4 @@
     @if ($drTable == true)
     @livewire('rr-smd-system.delivery-receipt-list')        
     @endif
-    
-    <!--start Jcodes modal for reports daily and monthly-->
-    @include('livewire.j-livewire.smd.jreports_modal')    
-    <!--end start Jcodes modal for reports daily and monthly-->
 </div>

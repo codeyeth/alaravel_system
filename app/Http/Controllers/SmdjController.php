@@ -74,8 +74,6 @@ class SmdjController extends Controller
                     $totalrowcount = 32;
                     $totaladdrow = $totalrowcount - $itemcount;
                 }
-               
-                
                 $view = \View::make('j-views.smd.sales_invoice_pdf',compact('totaladdrow','value','imagepath','si_query','count'));
                 $html_content = $view->render();
                 PDF::setFooterCallback(function($pdf) {
@@ -107,17 +105,16 @@ class SmdjController extends Controller
         return response()->download(public_path($fileName))->deleteFileAfterSend(true);
     }
 
-    public function dailysalesgeneric(){
-        $dailydate = request()->get('dailydate');
-        $goods_type = request()->get('goods');
-        $newdate = Carbon::parse($dailydate)->toDateString();
-        $daily_query  = SalesInvoice::where('created_at','like','%'.$newdate.'%')->where('goods_type',$goods_type)->get();
+    public function daily_sales_generic(){
+        $data_daily_generic = request()->get('input_daily_generic');
+        $generic_daily_date = Carbon::parse($data_daily_generic)->toDateString();
+        $daily_query  = SalesInvoice::where('created_at','like','%'.$generic_daily_date.'%')->where('goods_type','GENERIC')->get();
         $data  = DB::table('sales_invoices')
-        ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
-        ->where('sales_invoices.created_at','like','%'.$newdate.'%')
-        ->where('sales_invoices.goods_type',$goods_type);
+            ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
+            ->where('sales_invoices.created_at','like','%'.$generic_daily_date.'%')
+            ->where('sales_invoices.goods_type','GENERIC');
         $imagepath = public_path();
-        $view = \View::make('j-views.smd.daily_sales_invoice_generic_pdf',compact('data','imagepath','daily_query'));
+        $view = \View::make('j-views.smd.daily_sales_invoice_generic_pdf',compact('data','imagepath','daily_query','generic_daily_date'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom
@@ -134,17 +131,16 @@ class SmdjController extends Controller
         PDF::reset(); 
     }
 
-    public function dailysalesspecialized(){
-        $dailydate = request()->get('dailydate');
-        $goods_type = request()->get('goods');
-        $newdate = Carbon::parse($dailydate)->toDateString();
-        $daily_query  = SalesInvoice::where('created_at','like','%'.$newdate.'%')->where('goods_type',$goods_type)->get();
+    public function daily_sales_specialized(){
+        $data_daily_specialized = request()->get('input_daily_specialized');
+        $specialized_daily_date = Carbon::parse($data_daily_specialized)->toDateString();
+        $daily_query  = SalesInvoice::where('created_at','like','%'.$specialized_daily_date.'%')->where('goods_type','SPECIALIZED')->get();
         $data  = DB::table('sales_invoices')
         ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
-        ->where('sales_invoices.created_at','like','%'.$newdate.'%')
-        ->where('sales_invoices.goods_type',$goods_type);
+        ->where('sales_invoices.created_at','like','%'.$specialized_daily_date.'%')
+        ->where('sales_invoices.goods_type','SPECIALIZED');
         $imagepath = public_path();
-        $view = \View::make('j-views.smd.daily_sales_invoice_specialized_pdf',compact('data','imagepath','daily_query'));
+        $view = \View::make('j-views.smd.daily_sales_invoice_specialized_pdf',compact('data','imagepath','daily_query','specialized_daily_date'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom
@@ -161,22 +157,19 @@ class SmdjController extends Controller
         PDF::reset(); 
     }
 
-    public function monthlysales(){
+    public function monthly_sales_invoice(){
        
         $imagepath = public_path();
-        $from = request()->get('datefromdated');
-        $to = request()->get('datetodated');
-
-        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'));
-
-    $data = SalesInvoice::orderBy('sales_invoice_items.created_at')
-    ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
-    ->whereRaw('sales_invoice_items.created_at >= ? AND sales_invoice_items.created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
-    ->get()->groupBy(function($from) {
-        return $from->created_at->format('Y-m-d');
-   });
-
-        $view = \View::make('j-views.smd.monthly_sales_invoice_pdf',compact('from','to','cloned_query','data','imagepath'));
+        $monthly_si_from = request()->get('input_monthly_si_datefrom');
+        $monthly_si_to  = request()->get('input_monthly_si_dateto');
+        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($monthly_si_from.' 00:00:00', $monthly_si_to.' 23:59:59'));
+        $data = SalesInvoice::orderBy('sales_invoice_items.created_at')
+            ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
+            ->whereRaw('sales_invoice_items.created_at >= ? AND sales_invoice_items.created_at <= ?', array($monthly_si_from.' 00:00:00', $monthly_si_to.' 23:59:59'))
+            ->get()->groupBy(function($item) {
+                return $item->created_at->format('Y-m-d');
+            });     
+        $view = \View::make('j-views.smd.monthly_sales_invoice_pdf',compact('monthly_si_from','monthly_si_to','cloned_query','data','imagepath'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom
@@ -189,24 +182,20 @@ class SmdjController extends Controller
         PDF::SetTitle("Monthly Sales Invoice");
         PDF::AddPage('L', 'LEGAL');
         PDF::writeHTML($html_content, true, false, true, false, '');
-        PDF::Output('daily.pdf');
+        PDF::Output('Monthly Sales Invoice.pdf');
         PDF::reset(); 
     }
 
-    public function claimedgeneric(){
+    public function claimed_generic(){
        
         $imagepath = public_path();
-        $from = request()->get('datefromdated');
-        $to = request()->get('datetodated');
-
-        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
+        $generic_claimed_from = request()->get('input_generic_claimed_datefrom');
+        $generic_claimed_to = request()->get('input_generic_claimed_dateto');
+        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($generic_claimed_from.' 00:00:00', $generic_claimed_to.' 23:59:59'))
         ->where('goods_type','GENERIC')
         ->where('is_delivered',1)
         ->get();
-        
-
-      
-        $view = \View::make('j-views.smd.generic_goods_claimed',compact('from','to','imagepath','cloned_query'));
+        $view = \View::make('j-views.smd.generic_goods_claimed',compact('generic_claimed_from','generic_claimed_to','imagepath','cloned_query'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom
@@ -219,24 +208,20 @@ class SmdjController extends Controller
         PDF::SetTitle("REPORTS OF CLAIMED GOODS IN-HOUSE GENERIC");
         PDF::AddPage('L', 'LEGAL');
         PDF::writeHTML($html_content, true, false, true, false, '');
-        PDF::Output('daily.pdf');
+        PDF::Output('REPORTS OF CLAIMED GOODS IN-HOUSE GENERIC.pdf');
         PDF::reset(); 
     }
 
-    public function unclaimedgeneric(){
+    public function unclaimed_generic(){
        
         $imagepath = public_path();
-        $from = request()->get('datefromdated');
-        $to = request()->get('datetodated');
-
-        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
+        $generic_unclaimed_from = request()->get('input_generic_unclaimed_datefrom');
+        $generic_unclaimed_to = request()->get('input_generic_claimed_dateto');
+        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($generic_unclaimed_from.' 00:00:00', $generic_unclaimed_to.' 23:59:59'))
         ->where('goods_type','GENERIC')
         ->where('is_delivered','!=',1)
         ->get();
-        
-
-      
-        $view = \View::make('j-views.smd.generic_goods_unclaimed',compact('from','to','imagepath','cloned_query'));
+        $view = \View::make('j-views.smd.generic_goods_unclaimed',compact('generic_unclaimed_from','generic_unclaimed_to','imagepath','cloned_query'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom
@@ -249,20 +234,20 @@ class SmdjController extends Controller
         PDF::SetTitle("REPORTS OF CLAIMED GOODS IN-HOUSE GENERIC");
         PDF::AddPage('L', 'LEGAL');
         PDF::writeHTML($html_content, true, false, true, false, '');
-        PDF::Output('daily.pdf');
+        PDF::Output('REPORTS OF CLAIMED GOODS IN-HOUSE GENERIC.pdf');
         PDF::reset(); 
     }
 
-    public function claimedspecialized(){
+    public function claimed_specialized(){
        
         $imagepath = public_path();
-        $from = request()->get('datefromdated');
-        $to = request()->get('datetodated');
-        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
+        $specialized_claimed_from = request()->get('input_specialized_claimed_datefrom');
+        $specialized_claimed_to = request()->get('input_specialized_claimed_dateto');
+        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($specialized_claimed_from.' 00:00:00', $specialized_claimed_to.' 23:59:59'))
         ->where('goods_type','SPECIALIZED')
         ->where('is_delivered',1)
         ->get();
-        $view = \View::make('j-views.smd.specialized_goods_claimed',compact('from','to','imagepath','cloned_query'));
+        $view = \View::make('j-views.smd.specialized_goods_claimed',compact('specialized_claimed_from','specialized_claimed_to','imagepath','cloned_query'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom
@@ -275,20 +260,20 @@ class SmdjController extends Controller
         PDF::SetTitle("REPORTS OF CLAIMED GOODS SPECIALIZED");
         PDF::AddPage('L', 'LEGAL');
         PDF::writeHTML($html_content, true, false, true, false, '');
-        PDF::Output('daily.pdf');
+        PDF::Output('REPORTS OF CLAIMED GOODS SPECIALIZED.pdf');
         PDF::reset(); 
     }
 
-    public function unclaimedspecialized(){
+    public function unclaimed_specialized(){
        
         $imagepath = public_path();
-        $from = request()->get('datefromdated');
-        $to = request()->get('datetodated');
-        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
+        $specialized_unclaimed_from = request()->get('input_specialized_unclaimed_datefrom');
+        $specialized_unclaimed_to = request()->get('input_specialized_unclaimed_dateto');
+        $cloned_query = SalesInvoice::whereRaw('created_at >= ? AND created_at <= ?', array($specialized_unclaimed_from.' 00:00:00', $specialized_unclaimed_to.' 23:59:59'))
         ->where('goods_type','SPECIALIZED')
         ->where('is_delivered','!=',1)
         ->get();
-        $view = \View::make('j-views.smd.specialized_goods_unclaimed',compact('from','to','imagepath','cloned_query'));
+        $view = \View::make('j-views.smd.specialized_goods_unclaimed',compact('specialized_unclaimed_from','specialized_unclaimed_to','imagepath','cloned_query'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom
@@ -301,7 +286,7 @@ class SmdjController extends Controller
         PDF::SetTitle("REPORTS OF UNCLAIMED GOODS SPECIALIZED");
         PDF::AddPage('L', 'LEGAL');
         PDF::writeHTML($html_content, true, false, true, false, '');
-        PDF::Output('daily.pdf');
+        PDF::Output('REPORTS OF UNCLAIMED GOODS SPECIALIZED.pdf');
         PDF::reset(); 
     }
 
