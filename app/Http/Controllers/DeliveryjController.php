@@ -23,9 +23,13 @@ class DeliveryjController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index()
-    {   $breadcrumb = "Delivery";
+    {   /*$breadcrumb = "Delivery";
         $sidebar = "Delivery";
-        return view('j-views.delivery.delivery')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+        return view('j-views.delivery.delivery')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);*/
+        $breadcrumb = "Delivery";
+        $sidebar = "Delivery";
+        return view('j-views.delivery.delivery_management')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+
     }
 
     /**
@@ -39,11 +43,7 @@ class DeliveryjController extends Controller
     }
 
 
-    public function reports()
-    {   $breadcrumb = "DR Reports Management";
-        $sidebar = "Delivery";
-        return view('j-views.delivery.delivery_reports')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
-    }
+
 
     public function ob()
     {   $breadcrumb = "Offical Ballot";
@@ -58,6 +58,13 @@ class DeliveryjController extends Controller
     }
 
     public function config()
+    {   $breadcrumb = "CONFIGURATION";
+        $sidebar = "Delivery";
+
+        return view('j-views.delivery.delivery_configuration')->with('breadcrumb', $breadcrumb)->with('sidebar', $sidebar);
+    }
+
+    public function delivery_management()
     {   $breadcrumb = "CONFIGURATION";
         $sidebar = "Delivery";
 
@@ -124,271 +131,114 @@ class DeliveryjController extends Controller
         //
     }
 
-    public function savepdfobdr()
+     public function save_dr_pdf()
      {
-        $copies = Request::all();
-        $imagepath = public_path();
-        $search = request()->get('search');
-        $dated= request()->get('dated');
-        $delivered_to = request()->get('delivered');
-        $description = request()->get('description');
-
-        $query_config = DB::table('delivery_configs')->get();
-
-        $issued_by = (clone $query_config)->Where('id', request()->get('issued'))->first();
-        $approved_by = (clone $query_config)->Where('id', request()->get('approved'))->first();
-        $received_by = (clone $query_config)->Where('id', request()->get('received'))->first();
-        $inspected_by = (clone $query_config)->Where('id', request()->get('inspected'))->first();
- 
-        $copy = DB::table('delivery_configs')
+        $var_copies = Request::all();
+        $var_imagepath = public_path();
+        $var_monthly_dr_from = request()->get('modal_input_monthly_datefrom');
+        $var_monthly_dr_to = request()->get('modal_input_monthly_dateto');
+        $var_search_dr_no = request()->get('modal_input_search_dr_no');
+        $var_daily_dr = request()->get('modal_input_daily_date');
+        $var_dr_no_dated = request()->get('modal_input_dated');
+        $var_delivered_to = request()->get('modal_input_delivered');
+        $var_description = request()->get('modal_input_description');
+        $query_all_delivery_config = DB::table('delivery_configs')->get();
+        $var_issued_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_issued'))->first();
+        $var_approved_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_approved'))->first();
+        $var_received_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_received'))->first();
+        $var_inspected_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_inspected'))->first();
+        $var_copy = DB::table('delivery_configs')
         ->where('copies','<>','')
-        ->whereIn('id',$copies['copies'])
+        ->whereIn('id',$var_copies['modal_input_copies'])
         ->get();
-        
-        for ($i = 0; $i < $copy->count(); $i++) {
-            foreach($copy as $i => $value){
-                $deliveries = DB::table('deliveries')
-      ->where('BALLOT_ID','<>','')
-      ->Where('BALLOT_ID', 'not like', '%F_%')
-      ->Where('DR_NO',$search)
-      ->get();
-      $total_row = $deliveries->count();
-      $total_sum = $deliveries->sum('CLUSTER_TOTAL');
-               
-                $view = \View::make('j-views.delivery.delivery_dr_pdf',compact('value','deliveries','imagepath','total_row','total_sum','copy','delivered_to','description','issued_by','dated','approved_by','received_by','inspected_by'));
+        $query_all_deliveries = DB::table('deliveries')
+        ->where('BALLOT_ID','<>','');
+
+        $var_reports_identifier = request()->get('modal_input_dr_reports_identifier');
+        $var_dr_identifier = request()->get('modal_input_dr_types_identifier');
+        for ($i = 0; $i < $var_copy->count(); $i++) {
+            foreach($var_copy as $i => $value){
+                if($var_dr_identifier == 1){
+                    if($var_reports_identifier == 1){
+                        $cloned_query_all_deliveries = clone $query_all_deliveries
+                        ->Where('BALLOT_ID', 'not like', '%F_%')
+                        ->Where('DR_NO',$var_search_dr_no)
+                        ->get();
+                        $var_downloaded_title = 'OB Reports for DR No. '.$var_search_dr_no;
+                        $var_date_to_display= Carbon::parse($var_dr_no_dated)->format('d F Y');
+                    }elseif($var_reports_identifier == 2) {
+                        $cloned_query_all_deliveries = clone $query_all_deliveries
+                        ->Where('BALLOT_ID', 'not like', '%F_%')
+                        ->where('created_at','like','%'.$var_daily_dr.'%')
+                        ->get();
+                        $var_downloaded_title = 'Daily Reports for OB for ALL DR Dated '.Carbon::parse($var_daily_dr)->format('d F Y');
+                        $var_date_to_display= Carbon::parse($var_dr_no_dated)->format('d F Y');
+                    }else{
+                        $cloned_query_all_deliveries = clone $query_all_deliveries
+                        ->Where('BALLOT_ID', 'not like', '%F_%')
+                        ->whereRaw('updated_at >= ? AND updated_at <= ?', array($var_monthly_dr_from.' 00:00:00', $var_monthly_dr_to.' 23:59:59'))
+                        ->get();
+                        $var_downloaded_title = 'OB Dated DR Reports';
+                        $var_date_to_display= 'From '.Carbon::parse($var_monthly_dr_from)->format('d F Y').' To '.Carbon::parse($var_monthly_dr_to)->format('d F Y').'';
+                    }
+                }else{
+                    if($var_reports_identifier == 1){
+                        $cloned_query_all_deliveries = clone $query_all_deliveries
+                        ->Where('BALLOT_ID', 'like', '%F_%')
+                        ->Where('DR_NO',$var_search_dr_no)
+                        ->get();
+                        $var_downloaded_title = 'FTS Reports for DR No. '.$var_search_dr_no;
+                        $var_date_to_display= Carbon::parse($var_dr_no_dated)->format('d F Y');
+                    }elseif($var_reports_identifier == 2) {
+                        $cloned_query_all_deliveries = clone $query_all_deliveries
+                        ->Where('BALLOT_ID', 'like', '%F_%')
+                        ->where('created_at','like','%'.$var_daily_dr.'%')
+                        ->get();
+                        $var_downloaded_title = 'Daily Reports for FTS for ALL DR Dated '.Carbon::parse($var_daily_dr)->format('d F Y');
+                        $var_date_to_display= Carbon::parse($var_dr_no_dated)->format('d F Y');
+                    }else{
+                        $cloned_query_all_deliveries = clone $query_all_deliveries
+                        ->Where('BALLOT_ID', 'like', '%F_%')
+                        ->whereRaw('updated_at >= ? AND updated_at <= ?', array($var_monthly_dr_from.' 00:00:00', $var_monthly_dr_to.' 23:59:59'))
+                        ->get();
+                        $var_downloaded_title = 'OB Dated DR Reports';
+                        $var_date_to_display= 'From '.Carbon::parse($var_monthly_dr_from)->format('d F Y').' To '.Carbon::parse($var_monthly_dr_to)->format('d F Y').'';
+                    }
+                }
+                $var_total_row = $query_all_deliveries->count();
+                $var_total_sum = $query_all_deliveries->sum('CLUSTER_TOTAL');
+                $view = \View::make('j-views.delivery.delivery_reports_pdf',compact('value','cloned_query_all_deliveries','var_imagepath','var_total_row','var_total_sum','var_copy','var_date_to_display','var_delivered_to','var_downloaded_title','var_description','var_issued_by','var_approved_by','var_received_by','var_inspected_by'));
                 $html_content = $view->render();
                 PDF::setFooterCallback(function($pdf) {
-                    // Position at 15 mm from bottom
-                    $pdf->SetY(-15);
-                    // Set font
-                    $pdf->SetFont('helvetica', 'I', 8);
-                    // Page number
-                    $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+                // Position at 15 mm from bottom
+                $pdf->SetY(-15);
+                // Set font
+                $pdf->SetFont('helvetica', 'I', 8);
+                // Page number
+                $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
                 });
                 PDF::SetTitle("List of users");
                 PDF::AddPage();
                 PDF::writeHTML($html_content, true, false, true, false, '');
-                PDF::Output(public_path('DeliveryFiles/OB DR '.$search.' Report for ' .  $value->copies . '.pdf'), 'F');
+                PDF::Output(public_path('DeliveryFiles/'.$var_downloaded_title.' ' .  $value->copies . '.pdf'), 'F');
                 PDF::reset(); 
-            } 
-        }
-      
-        $time_generate = Carbon::now();
-        $zip = new ZipArchive;
-        $fileName = 'FTS OB Reports '.$search.' ' . $time_generate->toDateString() . '.zip';
-        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE){
-            $files = File::files(public_path('DeliveryFiles'));
-            foreach ($files as $key => $value) {
-                $relativeNameInZipFile = basename($value);
-                $zip->addFile($value, $relativeNameInZipFile);
+                } 
             }
-            $zip->close();
-        }
-        File::cleanDirectory(public_path('DeliveryFiles'));
-        return response()->download(public_path($fileName))->deleteFileAfterSend(true);
           
-     }
-
-     public function savepdfobdated()
-     {
-        $copies = Request::all();
-        $imagepath = public_path();
-        $from = request()->get('datefromdated');
-        $to = request()->get('datetodated');
-        $delivered_to = request()->get('delivered');
-        $description = request()->get('description');
-
-        $query_config = DB::table('delivery_configs')->get();
-
-        $issued_by = (clone $query_config)->Where('id', request()->get('issued'))->first();
-        $approved_by = (clone $query_config)->Where('id', request()->get('approved'))->first();
-        $received_by = (clone $query_config)->Where('id', request()->get('received'))->first();
-        $inspected_by = (clone $query_config)->Where('id', request()->get('inspected'))->first();
- 
-        $copy = DB::table('delivery_configs')
-        ->where('copies','<>','')
-        ->whereIn('id',$copies['copies'])
-        ->get();
-        
-        for ($i = 0; $i < $copy->count(); $i++) {
-            foreach($copy as $i => $value){
-    $deliveries = DB::table('deliveries')
-      ->where('BALLOT_ID','<>','')
-      ->Where('BALLOT_ID', 'not like', '%F_%')
-      ->whereRaw('updated_at >= ? AND updated_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
-      ->get();
-      $total_row = $deliveries->count();
-      $total_sum = $deliveries->sum('CLUSTER_TOTAL');
-               
-                $view = \View::make('j-views.delivery.delivery_dated_pdf',compact('value','deliveries','imagepath','total_row','total_sum','copy','from','to','delivered_to','description','issued_by','approved_by','received_by','inspected_by'));
-                $html_content = $view->render();
-                PDF::setFooterCallback(function($pdf) {
-                    // Position at 15 mm from bottom
-                    $pdf->SetY(-15);
-                    // Set font
-                    $pdf->SetFont('helvetica', 'I', 8);
-                    // Page number
-                    $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
-                });
-                PDF::SetTitle("List of users");
-                PDF::AddPage();
-                PDF::writeHTML($html_content, true, false, true, false, '');
-                PDF::Output(public_path('DeliveryFiles/OB Dated DR Report for ' .  $value->copies . '.pdf'), 'F');
-                PDF::reset(); 
-            } 
-        }
-      
-        $time_generate = Carbon::now();
-        $zip = new ZipArchive;
-        $fileName = 'OB Dated DR Reports ' . $time_generate->toDateString() . '.zip';
-        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE){
-            $files = File::files(public_path('DeliveryFiles'));
-            foreach ($files as $key => $value) {
-                $relativeNameInZipFile = basename($value);
-                $zip->addFile($value, $relativeNameInZipFile);
+            $time_generate = Carbon::now();
+            $zip = new ZipArchive;
+            $fileName = $var_downloaded_title.' - '.$time_generate->toDateString() . '.zip';
+            if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE){
+                $files = File::files(public_path('DeliveryFiles'));
+                foreach ($files as $key => $value) {
+                    $relativeNameInZipFile = basename($value);
+                    $zip->addFile($value, $relativeNameInZipFile);
+                }
+                $zip->close();
             }
-            $zip->close();
-        }
-        File::cleanDirectory(public_path('DeliveryFiles'));
-        return response()->download(public_path($fileName))->deleteFileAfterSend(true);
- 
-         
-
-          
-     }
-
-  
-
-     public function savepdfftsdr()
-     {
-
-        $copies = Request::all();
-        $imagepath = public_path();
-        $search = request()->get('search');
-        $dated= request()->get('dated');
-        $delivered_to = request()->get('delivered');
-        $description = request()->get('description');
-
-        $query_config = DB::table('delivery_configs')->get();
-
-        $issued_by = (clone $query_config)->Where('id', request()->get('issued'))->first();
-        $approved_by = (clone $query_config)->Where('id', request()->get('approved'))->first();
-        $received_by = (clone $query_config)->Where('id', request()->get('received'))->first();
-        $inspected_by = (clone $query_config)->Where('id', request()->get('inspected'))->first();
- 
-        $copy = DB::table('delivery_configs')
-        ->where('copies','<>','')
-        ->whereIn('id',$copies['copies'])
-        ->get();
-        
-        for ($i = 0; $i < $copy->count(); $i++) {
-            foreach($copy as $i => $value){
-                $deliveries = DB::table('deliveries')
-      ->where('BALLOT_ID','<>','')
-      ->Where('BALLOT_ID', 'like', '%F_%')
-      ->Where('DR_NO',$search)
-      ->get();
-      $total_row = $deliveries->count();
-      $total_sum = $deliveries->sum('CLUSTER_TOTAL');
-               
-                $view = \View::make('j-views.delivery.delivery_dr_pdf',compact('value','deliveries','imagepath','total_row','total_sum','copy','delivered_to','description','issued_by','dated','approved_by','received_by','inspected_by'));
-                $html_content = $view->render();
-                PDF::setFooterCallback(function($pdf) {
-                    // Position at 15 mm from bottom
-                    $pdf->SetY(-15);
-                    // Set font
-                    $pdf->SetFont('helvetica', 'I', 8);
-                    // Page number
-                    $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
-                });
-                PDF::SetTitle("List of users");
-                PDF::AddPage();
-                PDF::writeHTML($html_content, true, false, true, false, '');
-                PDF::Output(public_path('DeliveryFiles/FTS DR '.$search.' Report for ' .  $value->copies . '.pdf'), 'F');
-                PDF::reset(); 
-            } 
-        }
-      
-        $time_generate = Carbon::now();
-        $zip = new ZipArchive;
-        $fileName = 'FTS DR Reports '.$search.' ' . $time_generate->toDateString() . '.zip';
-        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE){
-            $files = File::files(public_path('DeliveryFiles'));
-            foreach ($files as $key => $value) {
-                $relativeNameInZipFile = basename($value);
-                $zip->addFile($value, $relativeNameInZipFile);
-            }
-            $zip->close();
-        }
-        File::cleanDirectory(public_path('DeliveryFiles'));
-        return response()->download(public_path($fileName))->deleteFileAfterSend(true);
-        
-     }
+            File::cleanDirectory(public_path('DeliveryFiles'));
+            return response()->download(public_path($fileName))->deleteFileAfterSend(true);
    
-
-     public function savepdfftsdated()
-     {
-
-        $copies = Request::all();
-        $imagepath = public_path();
-        $from = request()->get('datefromdated');
-        $to = request()->get('datetodated');
-        $delivered_to = request()->get('delivered');
-        $description = request()->get('description');
-
-        $query_config = DB::table('delivery_configs')->get();
-
-        $issued_by = (clone $query_config)->Where('id', request()->get('issued'))->first();
-        $approved_by = (clone $query_config)->Where('id', request()->get('approved'))->first();
-        $received_by = (clone $query_config)->Where('id', request()->get('received'))->first();
-        $inspected_by = (clone $query_config)->Where('id', request()->get('inspected'))->first();
- 
-        $copy = DB::table('delivery_configs')
-        ->where('copies','<>','')
-        ->whereIn('id',$copies['copies'])
-        ->get();
-        
-        for ($i = 0; $i < $copy->count(); $i++) {
-            foreach($copy as $i => $value){
-                $deliveries = DB::table('deliveries')
-      ->where('BALLOT_ID','<>','')
-      ->Where('BALLOT_ID', 'like', '%F_%')
-      ->whereRaw('updated_at >= ? AND updated_at <= ?', array($from.' 00:00:00', $to.' 23:59:59'))
-      ->get();
-      $total_row = $deliveries->count();
-      $total_sum = $deliveries->sum('CLUSTER_TOTAL');
-               
-                $view = \View::make('j-views.delivery.delivery_dated_pdf',compact('value','deliveries','imagepath','total_row','total_sum','copy','from','to','delivered_to','description','issued_by','approved_by','received_by','inspected_by'));
-                $html_content = $view->render();
-                PDF::setFooterCallback(function($pdf) {
-                    // Position at 15 mm from bottom
-                    $pdf->SetY(-15);
-                    // Set font
-                    $pdf->SetFont('helvetica', 'I', 8);
-                    // Page number
-                    $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
-                });
-                PDF::SetTitle("List of users");
-                PDF::AddPage();
-                PDF::writeHTML($html_content, true, false, true, false, '');
-                PDF::Output(public_path('DeliveryFiles/FTS Dated DR Report for ' .  $value->copies . '.pdf'), 'F');
-                PDF::reset(); 
-            } 
-        }
-      
-        $time_generate = Carbon::now();
-        $zip = new ZipArchive;
-        $fileName = 'FTS Dated DR Reports ' . $time_generate->toDateString() . '.zip';
-        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE){
-            $files = File::files(public_path('DeliveryFiles'));
-            foreach ($files as $key => $value) {
-                $relativeNameInZipFile = basename($value);
-                $zip->addFile($value, $relativeNameInZipFile);
-            }
-            $zip->close();
-        }
-        File::cleanDirectory(public_path('DeliveryFiles'));
-        return response()->download(public_path($fileName))->deleteFileAfterSend(true);
      }
      
 

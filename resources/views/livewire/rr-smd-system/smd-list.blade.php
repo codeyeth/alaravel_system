@@ -36,8 +36,5 @@
     @if ($poTable == true)
     @livewire('rr-smd-system.purchase-order-list')        
     @endif
-    
-    <!--start Jcodes modal for reports daily and monthly-->
-    @include('livewire.j-livewire.smd.jreports_modal')    
-    <!--end start Jcodes modal for reports daily and monthly-->
+
 </div>
