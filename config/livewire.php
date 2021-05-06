@@ -54,7 +54,7 @@ return [
     */
     
     'asset_url' => null,
-    // 'asset_url'  => 'http://192.168.0.253/alaravel_system/public',
+    // 'asset_url'  => 'http://192.168.0.250/alaravel_system/public',
     
     
     /*

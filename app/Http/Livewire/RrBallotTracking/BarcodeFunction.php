@@ -554,6 +554,15 @@ class BarcodeFunction extends Component
         $this->search = '';
     }
     
+    //GET BALLOT HISTORY
+    public function getBallotHistory($ballotId){
+        $ballotResult = Ballots::find($ballotId);   
+        $this->exportSingleId = $ballotId;
+        $this->modalBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->get();  
+        $this->alterBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->groupBy('old_status', 'new_status_type')->get();  
+        $this->ballotHistoryCount = count($this->modalBallotHistoryList);
+    }
+    
     //////////////////////////////////////////////REPORTSSSS
     //////////////////////////////////////////////REPORTSSSS
     

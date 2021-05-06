@@ -27,6 +27,7 @@
 
 <body>
     <div class="container-fluid pt-5">
+        
         <style scoped>
             .requiredTag{
                 color: red;
@@ -40,14 +41,18 @@
             }
         </style>
         
-        {{-- <div class="pt-3"></div> --}}
         @yield('content')
     </div>
     
     @livewireScripts
+    @livewireChartsScripts
+
     
     {{-- BALLOT TRACKING --}}
     @include('livewire.rr-livewire-script.rr-ballot-tracking-script')
+
+    <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts" defer></script>
     
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
     {{-- <script src="{{ asset('shards_template/from_cdn/jquery-3.3.1.min.js') }}"></script> --}}
@@ -58,7 +63,7 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     {{-- <script src="{{ asset('shards_template/from_cdn/bootstrap.min.js') }}"></script> --}}
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script> --}}
     {{-- <script src="{{ asset('shards_template/from_cdn/Chart.min.js') }}"></script> --}}
     
     {{-- <script src="https://unpkg.com/shards-ui@latest/dist/js/shards.min.js"></script> --}}
@@ -68,7 +73,7 @@
     <script src="{{ asset('shards_template/from_cdn/jquery.sharrre.min.js') }}"></script>
     
     <script src="{{ asset('shards_template/scripts/extras.1.1.0.min.js') }}"></script>
-    <script src="{{ asset('shards_template/scripts/shards-dashboards.1.1.0.min.js') }}"></script>
-    <script src="{{ asset('shards_template/scripts/app/app-blog-overview.1.1.0.js') }}"></script>
+    {{-- <script src="{{ asset('shards_template/scripts/shards-dashboards.1.1.0.min.js') }}"></script> --}}
+    {{-- <script src="{{ asset('shards_template/scripts/app/app-blog-overview.1.1.0.js') }}"></script> --}}
 </body>
 </html>

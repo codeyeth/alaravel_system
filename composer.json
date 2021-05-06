@@ -9,6 +9,7 @@
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
+        "asantibanez/livewire-charts": "^2.3",
         "beyondcode/laravel-websockets": "^1.12",
         "elibyy/tcpdf-laravel": "^8.0",
         "fideloper/proxy": "^4.4",

@@ -10,7 +10,7 @@
             }
         </style>
         
-        <div class="col-lg-9 col-md-12">
+        <div class="col-lg-12 col-md-12">
             <div class="card card-small mb-2">
                 <div class="card-header border-bottom">
                     <h6 class="m-0">Actions</h6>

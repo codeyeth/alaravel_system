@@ -196,8 +196,8 @@
                             @if ( $searchMode == true )
                             <div class="d-flex">
                                 <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
-                                    <label class="btn btn-white {{ $keywordMode == true ? 'active' : ''}}" wire:click="$set('keywordMode', true)"><input type="radio" name="options" id="option1"> Search by Keyword </label>
-                                    <label class="btn btn-white {{ $keywordMode == true ? '' : 'active'}}" wire:click="$set('keywordMode', false)"><input type="radio" name="options" id="option2"> Search by Date</label>
+                                    <label class="btn btn-white {{ $keywordMode == true ? 'active' : ''}}" wire:click="$set('keywordMode', true)"><input type="radio" name="options" id="option1" {{ $keywordMode == true ? 'checked' : ''}}> Search by Keyword </label>
+                                    <label class="btn btn-white {{ $keywordMode == true ? '' : 'active'}}" wire:click="$set('keywordMode', false)"><input type="radio" name="options" id="option2" {{ $keywordMode == true ? '' : 'checked'}}> Search by Date</label>
                                 </div>
                                 <div class="p-2"></div>
                                 <div class="ml-auto p-2">
