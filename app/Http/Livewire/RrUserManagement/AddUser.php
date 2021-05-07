@@ -55,6 +55,9 @@ class AddUser extends Component
         $this->isMotorpool = '';
         $this->comelecRole = '';
         $this->barcodedReceiver = '';
+
+        $this->divisionsList = Division::all();
+        $this->sectionsList = [];
     }
     
     public function spitBarcodedReceiverList($comelecRole){

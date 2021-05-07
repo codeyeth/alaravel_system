@@ -43,18 +43,15 @@ class StatusView extends Component
     public $npoSmd;
     public $releasedNoOwner;
     
-    public $refresh = false;
     protected $listeners = ['refreshContent'];
     
     //ADD LOG TO THE logList ARRAY
     public function refreshContent($logMessage, $userName){
-        $this->refresh = false;
         $now = Carbon::now();
         $this->logList [] = ['logMessage' => $logMessage, 'userName' => $userName, 'now' => $now->toDateTimeString()];
         $logsCount = count($this->logList) - 1;
         $this->emit('scrollToTop', $logsCount);
         $this->countMetrics();
-        $this->refresh = true;
     }
     
     public function countMetrics(){
@@ -62,14 +59,12 @@ class StatusView extends Component
         $this->printedBallots = Ballots::where('current_status', '!=', 'PRINTER')->sum('cluster_total');
         $this->remainingBallots = $this->totalBallots - $this->printedBallots;
         
+        //REPRINTS
         $this->rePrints = BadBallots::all()->count();
         $this->printedRePrintsSuccessful = BadBallots::where('is_reprint_done_successful', true)->count();
         $this->printedRePrintsFailed = BadBallots::where('is_reprint_done_successful', false)->where('is_reprint_done_successful_by_id', '!=', null)->count();
-        
         $this->printedRePrintsPending = BadBallots::where('reprint_batch', null)->orWhere('is_reprint_batch_start', false)->count();
-        
         $this->printedRePrintsPrinting = BadBallots::where('is_reprint_batch_start', true)->where('is_reprint_done', false)->count();
-        
         $this->printedRePrintsToVerify = BadBallots::where('is_reprint_done', true)->where('is_reprint_done_successful_by_id', null)->count();
         
         $this->outForDeliveryBallots = Ballots::where('is_out_for_delivery', true)->where('is_delivered', false)->sum('cluster_total');
@@ -87,42 +82,25 @@ class StatusView extends Component
     
     public function mount(){
         $this->countMetrics();
-        $this->refresh = true;
     }
     
     public function render()
     {
-        $columnChartModel = 
-        (new ColumnChartModel())
-        ->setTitle('BALLOTS PER DIVISION')
-        ->setAnimated(true)
-        ->addColumn('Re-Prints', $this->rePrints, '#f6ad55')
-        ->addColumn('Good', $this->printedRePrintsSuccessful, '#f6ad55')
-        ->addColumn('Bad', $this->printedRePrintsFailed, '#f6ad55')
-        ->addColumn('Printing', $this->printedRePrintsPending, '#fc8181')
-        ->addColumn('Pending', $this->printedRePrintsPrinting, '#90cdf4')
-        ->addColumn('To Verify', $this->printedRePrintsToVerify, '#90cdf4')
-        ;
+        return view('livewire.rr-ballot-tracking.status-view', [
+            'pieChartModel' => (new PieChartModel())
+            ->setTitle('Ballots Possession')
+            ->setAnimated(true)
+            ->setOpacity(100)
+            ->addSlice('Sheeter', $this->sheeter, '#868e96')
+            ->addSlice('Temporary Storage', $this->temporaryStorage, '#343a40')
+            ->addSlice('Verification', $this->verification, '#17c671')
+            ->addSlice('Quarantine', $this->quarantine, '#c4183c')
+            ->addSlice('Comelec Delivery', $this->comelecDelivery, '#17a2b8')
+            ->addSlice('NPO SMD', $this->npoSmd, '#007bff')
+            ->addSlice('No Owner', $this->releasedNoOwner, '#f6ad55'),
+            ]
+        );
         
-        $ppieChartModel = (new PieChartModel())
-        ->setTitle('Ballots Possession')
-        ->setAnimated(true)
-        ->setOpacity(100)
-        ->addSlice('Sheeter', $this->sheeter, '#868e96')
-        ->addSlice('Temporary Storage', $this->temporaryStorage, '#343a40')
-        ->addSlice('Verification', $this->verification, '#17c671')
-        ->addSlice('Quarantine', $this->quarantine, '#c4183c')
-        ->addSlice('Comelec Delivery', $this->comelecDelivery, '#17a2b8')
-        ->addSlice('NPO SMD', $this->npoSmd, '#007bff')
-        ->addSlice('No Owner', $this->releasedNoOwner, '#f6ad55');
         
-        return view('livewire.rr-ballot-tracking.status-view')->with
-        (
-            [
-                'columnChartModel' => $columnChartModel,
-                'pieChartModel' => $ppieChartModel,
-                ]
-            );
-        }
     }
-    
+}

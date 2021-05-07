@@ -189,7 +189,7 @@
                     <h6 class="m-0">Ballot/s List</h6>
                 </div>
                 
-                <div class="card-body pt-0 pb-3 text-center">
+                <div class="card-body pt-0 pb-3 text-center" style="overflow-x:auto;">
                     <div class="row border-bottom py-2 mb-0 bg-light">
                         {{-- IF SEARCH MODE ON SEARCH BY KEYWORD OR DATE --}}
                         <div class="col-12 col-sm-12">
@@ -235,7 +235,7 @@
                 </p>   
                 
                 {{-- TABLE --}}
-                <ul class="list-group list-group-flush" wire:loading.remove wire:target="search">
+                <ul class="list-group list-group-flush" wire:loading.remove wire:target="search" style="overflow-x:auto;">
                     <li class="list-group-item p-0 pb-3 text-center">
                         @if (count($ballotList) > 0)
                         <table class="table table-hover mb-0">

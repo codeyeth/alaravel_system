@@ -1,5 +1,5 @@
 <div>
-    <div class="row">
+    <div class="row" style="overflow-x:auto;">
         <div class="col-12 col-sm-12">
             <div class="d-flex">
                 <div class="ml-auto p-2">

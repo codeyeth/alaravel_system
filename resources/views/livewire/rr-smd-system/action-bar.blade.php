@@ -16,7 +16,7 @@
                     <h6 class="m-0">Actions</h6>
                 </div>
                 
-                <div class="card-body p-0">
+                <div class="card-body p-0" style="overflow-x:auto;">
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item p-3">
                             
