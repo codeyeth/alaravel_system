@@ -543,8 +543,8 @@ class DeliveryManagement extends Component
         $nameList = DB::table('delivery_configs')->where('personnel','<>','')->get();
         $config_query = DB::table('delivery_configs')->get();
 
-        $ob_query = DB::table('deliveries')->Where('BALLOT_ID', 'not like', '%F_%')->where('BALLOT_ID','!=','');
-        $fts_query = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','!=','');
+        $ob_query = DB::table('deliveries')->Where('BALLOT_ID', 'not like', '%F_%')->where('BALLOT_ID','<>','');
+        $fts_query = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','<>','');
 
         if ($this->wire_search_dr_home == ''){
             if($this->wire_dr_types_identifier == 1){
@@ -552,8 +552,8 @@ class DeliveryManagement extends Component
                 $ballotListCount = (clone $ob_query)->count();
                 $ballotListCountTitle = 'Total Official Ballots in Delivery';
             }elseif($this->wire_dr_types_identifier == 0){
-                $ballotList = DB::table('deliveries')->paginate(10);
-                $ballotListCount = DB::table('deliveries')->count();
+                $ballotList = DB::table('deliveries')->where('BALLOT_ID','<>','')->paginate(10);
+                $ballotListCount = DB::table('deliveries')->where('BALLOT_ID','<>','')->count();
                 $ballotListCountTitle = 'All Ballots in Delivery';
             }else{
                 $ballotList = (clone $fts_query)->paginate(10);
@@ -566,8 +566,8 @@ class DeliveryManagement extends Component
         $ballotListCount = Delivery::where(function ($query) {
             $query->where('BALLOT_ID', 'not like', '%F_%');})->where(function ($query) {$query->where('BALLOT_ID', $this->wire_search_dr_home)->orWhere('DR_NO', $this->wire_search_dr_home);})->count();
         }elseif($this->wire_dr_types_identifier == 0){
-            $ballotList = Delivery::where('BALLOT_ID', $this->wire_search_dr_home)->orWhere('DR_NO', $this->wire_search_dr_home)->paginate(10);
-            $ballotListCount = Delivery::where('BALLOT_ID', $this->wire_search_dr_home)->orWhere('DR_NO', $this->wire_search_dr_home)->count();
+            $ballotList = Delivery::where('BALLOT_ID', $this->wire_search_dr_home)->where('BALLOT_ID','<>','')->orWhere('DR_NO', $this->wire_search_dr_home)->paginate(10);
+            $ballotListCount = Delivery::where('BALLOT_ID', $this->wire_search_dr_home)->where('BALLOT_ID','<>','')->orWhere('DR_NO', $this->wire_search_dr_home)->count();
         }
         else{
             $ballotList = Delivery::where(function ($query) { $query->where('BALLOT_ID', 'like', '%F_%'); })->where(function ($query) {$query->where('BALLOT_ID', $this->wire_search_dr_home)->orWhere('DR_NO', $this->wire_search_dr_home);})->paginate(10);

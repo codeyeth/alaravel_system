@@ -13,130 +13,230 @@
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>SALES and MARKETING DIVISION </b><br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:6px;"><b>DAILY SALES REPORT - GENERIC</b></label><br>
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:6px;"><b>ACCOUNTABLE AND NON-ACCOUNTABLE FORMS</b></label><br>
-        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:6px;"><b>{{ \Carbon\Carbon::parse($generic_daily_date)->format('F, Y') }}</b></label><br>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label style="font-size:6px;"><b>{{ \Carbon\Carbon::parse($generic_daily_date)->format('F, d Y') }}</b></label><br>
         </th>
     </tr>
-    @foreach($daily_query as $items)
-    <tr>
-    <th width="100%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>CLIENT</b></th>
-    </tr>
-    <tr>
-        <th width="7%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>DATE</b></th>
-        <th width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>SI NO.</b></th> 
-        <th width="7%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>P.O./P.R #</b></th>
-        <th width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>STOCK NO.</b></th>   
-        <th width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>REGION</b></th>  
-        <th width="7%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>WALKIN EMAIL</b></th>
-        <th width="7%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>CODE</b></th>
-        <th width="11%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>REQUISITIONER</b></th> 
-        <th width="12%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>ADDRESS</b></th>   
-        <th width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>CONTACT NO. EMAIL</b></th>  
-        <th width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>OR NO</b></th>   
-        <th width="7%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>DR NO.</b></th>
-        <th width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>REMARKS</b></th>    
-    </tr>
-    <tr>
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{ \Carbon\Carbon::parse($items->created_at)->toDateString() }}</td>
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->sales_invoice_code}}</td>
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->pr_no}}</td> 
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->stock_no}}</td>
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->region}}</td>
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->transaction_type}}</td> 
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->code}}</td>
-        <td width="11%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->agency_name}}</td>
-        <td width="12%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->agency_address}}</td>
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->contact_no}} {{$items->email}}</td> 
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->or_no}}</td>
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->dr_no}}</td> 
-        <td width="7%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">remarks here</td>
-    </tr>
-    <tr>
-    <th width="100%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>TRANSACTION</b></th>
-    </tr>
-    <tr>
-    <th width="10%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>Quantity</b></th>
-    <th width="10%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>Unit</b></th>
-    <th width="17%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>Item Description</b></th>
-    <th width="17%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>Details</b></th>
-    <th width="18%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;">
-    <table style="border-collapse:collapse;">
+ </table>
+
+ <table>
+ <tr>
+ <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Date</th>
+ <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">P.O./P.R. #</th>
+ <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Stock #</th>
+ <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">S.I. #</th>
+ <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">REGION</th>
+ <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Transanction Type</th>
+ <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Code</th>
+ <th width="6%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Requisitioner</th>
+ <th width="6%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Address</th>
+ <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Contact/Email</th>
+ <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Unit</th>
+ <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Qty</th>
+ <th width="6%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Description</th>
+ <th width="6%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">
+ <table style="border-collapse:collapse;">
             <tr>
-              <th colspan="2">
+              <th style="font-size:7px;" colspan="2">
               <b>AF</b>
               </th>
             </tr>
             <tr>
-            <td><b>UP</b></td>
-            <td><b>AMOUNT</b></td>
+            <td style="font-size:6px; text-align:left;"><b>UP</b></td>
+            <td style="font-size:6px; text-align:right;"><b>Amount</b></td>
             </tr>
           </table>
-        </th> 
-        <th width="18%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;">
-        <table>
+  </th>
+  <th width="6%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">
+ <table style="border-collapse:collapse;">
             <tr>
-              <th colspan="2">
+              <th style="font-size:7px;" colspan="2">
               <b>NAF</b>
               </th>
             </tr>
             <tr>
-            <td><b>UP</b></td>
-            <td><b>AMOUNT</b></td>
+            <td style="font-size:6px; text-align:left;"><b>UP</b></td>
+            <td style="font-size:6px; text-align:right;"><b>Amount</b></td>
             </tr>
           </table>
-    </th>
-    <th width="10%"  style="border:0.1px solid #000000; font-size:7px; text-align:center;"><b>TOTAL</b></th>
-    </tr>
-    @foreach($items->sales_invoice_items as $asd) 
-    <tr>
-        <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$asd->quantity}}</td> 
-        <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$asd->unit}}</td> 
-        <td width="17%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$asd->item_description}}</td> 
-        <td width="17%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$asd->additional_description}}</td> 
-        @if($asd->form_type == 'AF')
-        <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$asd->price}}</td> 
-        <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$asd->total}}</td> 
-        <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">---</td> 
-        <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">---</td> 
-        @else
-        <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">---</td> 
-        <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">---</td> 
-        <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$asd->price}}</td> 
-        <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$asd->total}}</td> 
-        @endif
-        <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">---</td> 
-    </tr>
-    @endforeach
-    <tr>
-      <td width="63%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"></td>
-      <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">
-      @php
-      $total_af = App\Models\SalesInvoiceItem::where('sales_invoice_code',$asd->sales_invoice_code)->where('form_type','AF')->get()
-      @endphp
-        {{ $total_af->sum('total')}}
-      </td>
-      <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;"></td>
-      <td width="9%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">
-      @php
-      $total_naf = App\Models\SalesInvoiceItem::where('sales_invoice_code',$asd->sales_invoice_code)->where('form_type','NAF')->get()
-      @endphp
-      {{ $total_naf->sum('total')}}
-      </td>
-      <td width="10%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">{{$items->sales_invoice_items->sum('total')}}</td>
-    </tr>
-    <br>
-    @endforeach
-    <tr>
-    <th width="63%" style="border:0.1px solid #000000; font-size:9px; text-align:center;"></th>
-    <th width="9%" style="border:0.1px solid #000000; font-size:9px; text-align:center;">Total Accountable Form Amount</th>
-    <th width="9%" style="border:0.1px solid #000000; font-size:9px; text-align:center;"></th>
-    <th width="9%" style="border:0.1px solid #000000; font-size:9px; text-align:center;">Total Non-Accountable Form Amount</th>
-    <th width="10%" style="border:0.1px solid #000000; font-size:9px; text-align:center;">Total Amount for this Day</th>
-    </tr>
-    <tr>
-    <td width="63%" style="border:0.1px solid #000000; font-size:9px; text-align:center;"></td>
-    <td width="9%" style="border:0.1px solid #000000; font-size:9px; text-align:center;">{{(clone $data)->where('form_type','AF')->sum('total')}}</td>
-    <td width="9%" style="border:0.1px solid #000000; font-size:9px; text-align:center;"></td>
-    <td width="9%" style="border:0.1px solid #000000; font-size:9px; text-align:center;">{{(clone $data)->where('form_type','NAF')->sum('total')}}</td>
-    <td width="10%" style="border:0.1px solid #000000; font-size:9px; text-align:center;">{{(clone $data)->sum('total')}}</td>
+  </th>
+  <th width="6%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Total</th>
+  <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Serial #</th>
+  <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">OR #</th>
+  <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Date</th>
+  <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Amount</th>
+  <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">DR #</th>
+  <th width="4%" style="border:0.1px solid #000000; text-align:center; font-size:6px;">Remarks</th>
  </tr>
-</table>
+ @foreach($data as $asd)
+ <tr>
+ <td width="4%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->date}}</td>
+ <td width="4%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->pr_no}}</td>
+ <td width="4%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->stock_no}}</td>
+ <td width="4%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->sales_invoice_code}}</td>
+ <td width="4%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->region}}</td>
+ <td width="4%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->transaction_type}}</td>
+ <td width="4%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->code}}</td>
+ <td width="6%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->agency_name}}</td>
+ <td width="6%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->agency_address}}</td>
+ <td width="4%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->contact_no}} {{$asd->email}}</td>
+ <td width="4%" style="height:25px; height:100%; border:0.1px solid #000000; text-align:center; font-size:6px; ">
+      <table style="border-collapse:collapse;">
+            @foreach($asd->sales_invoice_items as $items) 
+                  <tr>
+               <td style="height:25px; border-top: 0.1px solid #000000; border-bottom: none;  font-size:6px; text-align: center;">{{$items->unit}}</td>
+                  </tr>
+            @endforeach
+      </table>
+</td>
+<td width="4%" style="height:25px; height:100%; border:0.1px solid #000000; text-align:center; font-size:6px; ">
+      <table style="border-collapse:collapse;">
+            @foreach($asd->sales_invoice_items as $items) 
+                  <tr>
+               <td style="height:25px; border-top: 0.1px solid #000000; border-bottom: none;  font-size:6px; text-align: center;">{{$items->quantity}}</td>
+                  </tr>
+            @endforeach
+      </table>
+</td>
+<td width="6%" style="height:25px; height:100%; border:0.1px solid #000000; text-align:center; font-size:6px; ">
+      <table style="border-collapse:collapse;">
+            @foreach($asd->sales_invoice_items as $items) 
+                  <tr>
+               <td style="height:25px; border-top: 0.1px solid #000000; border-bottom: none;  font-size:6px; text-align: center;">{{$items->item_description}}</td>
+                  </tr>
+            @endforeach
+      </table>
+</td>
+
+
+<td width="3%" style="height:25px; height:100%; border:0.1px solid #000000; text-align:center; font-size:6px; ">
+      <table style="border-collapse:collapse;">
+      @foreach($asd->sales_invoice_items as $items) 
+                  <tr>
+                      <td style="height:25px; border-top: 0.1px solid #000000; border-bottom: none;  font-size:6px; text-align: center;">
+                   
+                        @if($items->form_type == 'AF')
+                          {{$items->price}}
+                        @endif
+                    
+                      </td>
+                  </tr>
+                  @endforeach
+         
+      </table>
+</td>
+<td width="3%" style="height:25px; height:100%; border:0.1px solid #000000; text-align:center; font-size:6px; ">
+      <table style="border-collapse:collapse;">
+      @foreach($asd->sales_invoice_items as $items) 
+                  <tr>
+                      <td style="height:25px; border-top: 0.1px solid #000000; border-bottom: none;  font-size:6px; text-align: center;">
+                      
+                        @if($items->form_type == 'AF')
+                          {{$items->total}}
+                        @endif
+                 
+                      </td>
+                  </tr>
+                  @endforeach
+        
+      </table>
+</td>
+
+
+<td width="3%" style="height:25px; height:100%; border:0.1px solid #000000; text-align:center; font-size:6px; ">
+      <table style="border-collapse:collapse;">
+      @foreach($asd->sales_invoice_items as $items) 
+                  <tr>
+                  <td style="height:25px; border-top: 0.1px solid #000000; border-bottom: none;  font-size:6px; text-align: center;">
+              
+                        @if($items->form_type == 'NAF')
+                          {{$items->price}}
+                        @endif
+                 
+                      </td>
+                  </tr>
+                  @endforeach
+      
+      </table>
+</td>
+<td width="3%" style="height:25px; height:100%; border:0.1px solid #000000; text-align:center; font-size:6px; ">
+      <table style="border-collapse:collapse;">
+      @foreach($asd->sales_invoice_items as $items) 
+                  <tr>
+                  <td style="height:25px; border-top: 0.1px solid #000000; border-bottom: none;  font-size:6px; text-align: center;">
+                 
+                        @if($items->form_type == 'NAF')
+                          {{$items->total}}
+                        @endif
+                     
+                      </td>
+                  </tr>
+                  @endforeach
+      </table>
+</td>
+
+<td width="6%" style="border:0.1px solid #000000; font-size:7px; text-align:center;">                 
+                        @php
+                        $total_af = App\Models\SalesInvoiceItem::where('sales_invoice_code',$asd->sales_invoice_code)->get()
+                        @endphp
+                          {{ $total_af->sum('total')}}
+     
+</td>
+<td width="4%" style="height:25px; border:0.1px solid #000000; font-size:7px; text-align:center;"> 
+{{$asd->sales_invoice_code}}
+</td>
+<td width="4%" style="height:25px; border:0.1px solid #000000; font-size:7px; text-align:center;">  
+{{$asd->or_no}}
+</td>
+<td width="4%" style="height:25px; border:0.1px solid #000000; text-align:center; font-size:6px; ">{{$asd->date}}</td>
+<td width="4%" style="height:25px; border:0.1px solid #000000; font-size:7px; text-align:center;"> 
+@php
+                        $total_af = App\Models\SalesInvoiceItem::where('sales_invoice_code',$asd->sales_invoice_code)->get()
+                        @endphp
+                          {{ $total_af->sum('total')}}
+</td>
+<td width="4%" style="height:25px; border:0.1px solid #000000; font-size:7px; text-align:center;">  
+{{$asd->dr_no}} 
+</td>
+<td width="4%" style="height:25px; border:0.1px solid #000000; font-size:7px; text-align:center;">  
+{{$asd->additional_description}} 
+</td>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ </tr>
+@endforeach
+
+ </table>
