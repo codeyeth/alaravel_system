@@ -6,7 +6,7 @@
                     <h6 class="m-0">Purchase Order Table</h6>
                 </div>
                 
-                <div class="card-body pt-0 pb-3 text-center">
+                <div class="card-body pt-0 pb-3 text-center" style="overflow-x:auto;">
                     <div class="row border-bottom py-2 mb-0 bg-light">
                         <div class="col-12 col-sm-12">
                             <div class="d-flex">
@@ -43,7 +43,7 @@
                     </div>
                 </div>
                 
-                <ul class="list-group list-group-flush">
+                <ul class="list-group list-group-flush" style="overflow-x:auto;">
                     <li class="list-group-item p-0 pb-3 text-center" id="purchase_order_list">
                         @if (count($purchaseOrderList) > 0)
                         <table class="table table-hover mb-0">

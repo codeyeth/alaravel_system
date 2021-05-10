@@ -108,13 +108,10 @@ class SmdjController extends Controller
     public function daily_sales_generic(){
         $data_daily_generic = request()->get('input_daily_generic');
         $generic_daily_date = Carbon::parse($data_daily_generic)->toDateString();
-        $daily_query  = SalesInvoice::where('created_at','like','%'.$generic_daily_date.'%')->where('goods_type','GENERIC')->get();
-        $data  = DB::table('sales_invoices')
-            ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
-            ->where('sales_invoices.created_at','like','%'.$generic_daily_date.'%')
-            ->where('sales_invoices.goods_type','GENERIC');
+        $data  = SalesInvoice::where('created_at','like','%'.$generic_daily_date.'%')->where('goods_type','GENERIC')->get();
+
         $imagepath = public_path();
-        $view = \View::make('j-views.smd.daily_sales_invoice_generic_pdf',compact('data','imagepath','daily_query','generic_daily_date'));
+        $view = \View::make('j-views.smd.daily_sales_invoice_generic_pdf',compact('data','imagepath','generic_daily_date'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom
@@ -134,13 +131,10 @@ class SmdjController extends Controller
     public function daily_sales_specialized(){
         $data_daily_specialized = request()->get('input_daily_specialized');
         $specialized_daily_date = Carbon::parse($data_daily_specialized)->toDateString();
-        $daily_query  = SalesInvoice::where('created_at','like','%'.$specialized_daily_date.'%')->where('goods_type','SPECIALIZED')->get();
-        $data  = DB::table('sales_invoices')
-        ->join('sales_invoice_items', 'sales_invoices.sales_invoice_code', '=', 'sales_invoice_items.sales_invoice_code')
-        ->where('sales_invoices.created_at','like','%'.$specialized_daily_date.'%')
-        ->where('sales_invoices.goods_type','SPECIALIZED');
+        $data  = SalesInvoice::where('created_at','like','%'.$specialized_daily_date.'%')->where('goods_type','SPECIALIZED')->get();
+        
         $imagepath = public_path();
-        $view = \View::make('j-views.smd.daily_sales_invoice_specialized_pdf',compact('data','imagepath','daily_query','specialized_daily_date'));
+        $view = \View::make('j-views.smd.daily_sales_invoice_specialized_pdf',compact('data','imagepath','specialized_daily_date'));
         $html_content = $view->render();
         PDF::setFooterCallback(function($pdf) {
             // Position at 15 mm from bottom

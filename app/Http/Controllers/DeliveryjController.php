@@ -133,6 +133,8 @@ class DeliveryjController extends Controller
 
      public function save_dr_pdf()
      {
+        ini_set('memory_limit', '-1');
+        set_time_limit(43200);
         $var_copies = Request::all();
         $var_imagepath = public_path();
         $var_monthly_dr_from = request()->get('modal_input_monthly_datefrom');

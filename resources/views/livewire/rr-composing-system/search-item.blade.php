@@ -3,7 +3,7 @@
     <h3 style="text-align: center"><strong> PUBLICATION SOFTCOPY </strong></h3>
     <br>
     
-    <div class="d-flex">
+    <div class="d-flex" style="overflow-x:auto;">
         <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
             <label class="btn btn-white {{ $searchingMode == "keywordMode" ? 'active' : ''}}" wire:click="$set('searchingMode', 'keywordMode')"><input type="radio" name="options" id="option1"> Search by Keyword </label>
             <label class="btn btn-white {{ $searchingMode == "dateMode" ? 'active' : ''}}" wire:click="$set('searchingMode', 'dateMode')"><input type="radio" name="options" id="option2"> Search by Date Published</label>
@@ -73,8 +73,8 @@
     </div>
     @endif
     
-    <div class="row">
-        <div class="col-12 col-sm-12">
+    <div class="row" style="overflow-x:auto;">
+        <div class="col-12 col-sm-12" >
             @if (count($ogList) > 0)
             <table class="table table-hover mb-0">
                 <thead class="bg-light">

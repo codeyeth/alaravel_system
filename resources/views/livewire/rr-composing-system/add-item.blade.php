@@ -157,7 +157,7 @@
                             </div>
                             @endif
                             
-                            <div class="modal-body">
+                            <div class="modal-body" style="overflow-x:auto;">
                                 
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12">
@@ -245,7 +245,7 @@
                                 @endif
                                 
                             </div>
-                            <div class="modal-footer">
+                            <div class="modal-footer" style="overflow-x:auto;">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="refreshTrick">Close</button>
                                 <button type="button" class="btn btn-warning" wire:click="refreshTrick">Reset Form</button>
                                 
@@ -275,7 +275,7 @@
                     </div>
                     @endif
                     
-                    <div class="card-body p-0">
+                    <div class="card-body p-0" style="overflow-x:auto;">
                         <ul class="list-group list-group-flush">
                             <li class="list-group-item p-3">
                                 <span class="d-flex mb-2">
