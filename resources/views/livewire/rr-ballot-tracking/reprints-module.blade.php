@@ -79,8 +79,8 @@
                         <hr class="hr_dashed">
                         
                         <div class="btn-group btn-group-toggle mb-3" data-toggle="buttons">
-                            <label class="btn btn-white {{ $batchListMode == true ? '' : 'active'}}" wire:click="$set('batchListMode', false)"><input type="radio" name="options" id="option1"> Bad Ballots for Re-Print </label>
-                            <label class="btn btn-white {{ $batchListMode == true ? 'active' : ''}}" wire:click="$set('batchListMode', true)"><input type="radio" name="options" id="option2"> Re-Print Batch View</label>
+                            <label class="btn btn-white {{ $batchListMode == true ? '' : 'active'}}" wire:click="$set('batchListMode', false)"><input type="radio" name="options" id="option1" {{ $batchListMode == true ? '' : 'checked'}}> Bad Ballots for Re-Print </label>
+                            <label class="btn btn-white {{ $batchListMode == true ? 'active' : ''}}" wire:click="$set('batchListMode', true)"><input type="radio" name="options" id="option2" {{ $batchListMode == true ? 'checked' : ''}}> Re-Print Batch View</label>
                         </div>
                         
                         {{-- SEARCH INPUT --}}
