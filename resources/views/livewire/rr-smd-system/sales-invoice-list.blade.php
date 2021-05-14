@@ -76,9 +76,9 @@
                                     <th scope="col" class="border-0" style="text-align: left;">MOP</th>
                                     <th scope="col" class="border-0" style="text-align: left;">GOODS TYPE</th>
                                     <th scope="col" class="border-0"  style="text-align: right;">CREATED BY</th>
-                                    <th scope="col" class="border-0" width="2%"></th>
-                                    <th scope="col" class="border-0" width="2%">C.L POSTING</th>
-                                    <th scope="col" class="border-0">D.R POSTING</th>
+                                    <th scope="col" class="border-0" style="text-align: right;"></th>
+                                    <th scope="col" class="border-0" style="text-align: right;">C.L POSTING</th>
+                                    <th scope="col" class="border-0" style="text-align: left;">D.R POSTING</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -107,8 +107,9 @@
                                         @endif
                                     </td>
                                     
-                                    <td  style="text-align: right;">{{ $sales_invoice_list->created_by_name }} <br> at {{ \Carbon\Carbon::parse($sales_invoice_list->created_at)->toDayDateTimeString() }}</td>
-                                    <td>
+                                    <td style="text-align: right;">{{ $sales_invoice_list->created_by_name }} <br> at {{ \Carbon\Carbon::parse($sales_invoice_list->created_at)->toDayDateTimeString() }}</td>
+                                    
+                                    <td style="text-align: right;">
                                         <!--J CODES START -->
                                         {{Form::open(['route' => 'catch', 'method' => 'GET', 'target' => '__blank' , 'autocomplete'=>'off'])}} 
                                         <input type="hidden" value="{{ $sales_invoice_list->sales_invoice_code }}" name="si_id">
@@ -118,7 +119,7 @@
                                     </td>
                                     
                                     {{-- CLIENT LEDGER POSTING --}}
-                                    <td width="2%">
+                                    <td style="text-align: right;">
                                         @if ( $sales_invoice_list->or_no != null )
                                         @if ($sales_invoice_list->is_posted == false)
                                         <button class="btn btn-accent btn-sm" data-toggle="modal" data-target="#modalConfirmCl" wire:click="confirmPostCl({{ $sales_invoice_list->id }})"> <i class="material-icons">text_snippet</i> Post to C.L</button>
@@ -127,12 +128,12 @@
                                         @endif
                                         @else
                                         <span class="badge badge-danger">PENDING OR NO.</span>
-
+                                        
                                         @endif
                                     </td>
                                     
                                     {{-- DELIVERY RECEIPT POSTING --}}
-                                    <td>
+                                    <td style="text-align: left;">
                                         @if ( $sales_invoice_list->or_no != null )
                                         @if ( $sales_invoice_list->is_posted_to_dr == false )
                                         <button class="btn btn-accent btn-sm" data-toggle="modal" data-target="#modalConfirmDr" wire:click="confirmPostDr({{ $sales_invoice_list->id }})"> <i class="material-icons">text_snippet</i> Post to D.R</button>
@@ -268,8 +269,9 @@
                     
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
-                            <div class="d-flex">
-                                <div class="col-sm-12 col-md-8">
+                            <div class="row">
+                                
+                                <div class="col-sm-8 col-md-8">
                                     <h6 class="mb-1"><b>AGENCY NAME:</b> {{ $parentSalesInvoiceDetails->agency_name }}</h6>
                                     <h6 class="mb-1"><b>COMPLETE ADDRESS:</b> {{ $parentSalesInvoiceDetails->agency_address }}</h6>
                                     <h6 class="mb-1"><b>REGION:</b> {{ $parentSalesInvoiceDetails->region }}</h6>
@@ -277,15 +279,14 @@
                                     <h6 class="mb-1"><b>E-MAIL ADDRESS:</b> {{ $parentSalesInvoiceDetails->email }}</h6>
                                 </div>
                                 
-                                <div class="col-sm-12 col-md-4">
-                                    <h6 class="mb-1"><b>PR#</b> {{ $parentSalesInvoiceDetails->pr_no }}</h6>
-                                    <h6 class="mb-1"><b>DR#</b> {{ $parentSalesInvoiceDetails->dr_no }}</h6>
-                                    <h6 class="mb-1"><b>OR#</b> {{ $parentSalesInvoiceDetails->or_no }} at {{ \Carbon\Carbon::parse($parentSalesInvoiceDetails->or_no_date)->toFormattedDateString() }}</h6>
-                                    {{-- <h6 class="mb-1"><b>Transaction Type</b> {{ $parentSalesInvoiceDetails->transaction_type }}</h6>
-                                    <h6 class="mb-1"><b>Payment Type </b> {{ $parentSalesInvoiceDetails->payment_type }}</h6> --}}
-                                    <h6 class="mb-1"><b>W.O#</b> {{ $parentSalesInvoiceDetails->work_order_no }}</h6>
-                                    <h6 class="mb-1"><b>STOCK#</b> {{ $parentSalesInvoiceDetails->stock_no }}</h6>
+                                <div class="col-sm-4 col-md-4">
+                                    <h6 class="mb-1"><b>P.R NO:</b> {{ $parentSalesInvoiceDetails->pr_no }}</h6>
+                                    <h6 class="mb-1"><b>D.R NO:</b> {{ $parentSalesInvoiceDetails->dr_no }}</h6>
+                                    <h6 class="mb-1"><b>O.R NO:</b> {{ $parentSalesInvoiceDetails->or_no }} - {{ \Carbon\Carbon::parse($parentSalesInvoiceDetails->or_no_date)->toFormattedDateString() }}</h6>
+                                    <h6 class="mb-1"><b>W.O NO:</b> {{ $parentSalesInvoiceDetails->work_order_no }}</h6>
+                                    <h6 class="mb-1"><b>STOCK NO:</b> {{ $parentSalesInvoiceDetails->stock_no }}</h6>
                                 </div>  
+                                
                             </div>
                         </div>
                     </div>
@@ -332,7 +333,7 @@
                     
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
-                            <div class="d-flex">
+                            <div class="row">
                                 <div class="col-sm-12 col-md-8">
                                     <h6 class="mb-1"><b>PAYMENT MODE/PACKAGE TYPE:</b> {{ $parentSalesInvoiceDetails->payment_mode }}/{{ $parentSalesInvoiceDetails->package_type }}</h6>
                                     <h6 class="mb-1"><b>ISSUED BY:</b> {{ $parentSalesInvoiceDetails->issued_by }}</h6>
@@ -364,29 +365,25 @@
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
                                     <div class="form-group col-md-3">
-                                        <strong class="text-muted d-block mb-2">PR#/PO# </strong>
-                                        <input type="text" class="form-control" id="prNo" name="prNo" placeholder="PR#" autocomplete="off" wire:model="prNo" >
+                                        <strong class="text-muted d-block mb-2">P.R NO / P.O NO </strong>
+                                        <input type="text" class="form-control" id="prNo" name="prNo" placeholder="12345" autocomplete="off" wire:model="prNo" >
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <strong class="text-muted d-block mb-2">DR# </strong>
-                                        <input type="text" class="form-control" id="drNo" name="drNo" placeholder="DR#" autocomplete="off" wire:model="drNo" >
+                                        <strong class="text-muted d-block mb-2">D.R NO </strong>
+                                        <input type="text" class="form-control" id="drNo" name="drNo" placeholder="123456" autocomplete="off" wire:model="drNo" >
                                     </div>
                                     <div class="form-group col-md-3">
-                                        <strong class="text-muted d-block mb-2">OR# </strong>
-                                        <input type="text" class="form-control" id="orNo" name="orNo" placeholder="OR#" autocomplete="off" wire:model="orNo" >
+                                        <strong class="text-muted d-block mb-2">O.R NO </strong>
+                                        <input type="text" class="form-control" id="orNo" name="orNo" placeholder="1234567" autocomplete="off" wire:model="orNo" >
                                     </div>
                                     @if ($orNo != null)
-                                    <div class="form-group col-md-2">
-                                        <strong class="text-muted d-block mb-2">OR# DATE </strong>
+                                    <div class="form-group col-md-3">
+                                        <strong class="text-muted d-block mb-2">DATE </strong>
                                         <input type="date" class="form-control" id="orNoDate" name="orNoDate" autocomplete="off" wire:model="orNoDate" >
                                     </div>
                                     @endif
-                                    <div class="form-group col-md-1">
-                                        <strong class="text-muted d-block mb-2"></strong>
-                                        <br>
-                                        <button type="submit" class="btn btn-accent btn-block">Update</button>
-                                    </div>
                                 </div>
+                                <button type="submit" class="btn btn-accent btn-block"><i class="material-icons">save</i> Update</button>
                             </div>
                         </div>
                         
@@ -401,4 +398,5 @@
             </div>
         </div>
     </div>
+    
 </div>

@@ -15,7 +15,7 @@ use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use Carbon\Carbon;
 use DB;
 
-class ExportExcelMonthlyPublication implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
+class ExportExcelDatePublication implements FromQuery, WithHeadings, WithMapping, ShouldAutoSize
 {
     public $dateFrom;
     public $dateTo;
@@ -30,9 +30,9 @@ class ExportExcelMonthlyPublication implements FromQuery, WithHeadings, WithMapp
     {
         $dateFrom = $this->dateFrom;
         $dateTo = $this->dateTo;
-        $monthly_report = OgSoftcopy::query()->whereRaw('created_at >= ? AND created_at <= ?', array($dateFrom, $dateTo))->orderBy('id', 'ASC');
+        $publicationDate = OgSoftcopy::query()->whereRaw('date >= ? AND date <= ?', array($dateFrom, $dateTo))->orderBy('id', 'ASC');
         
-        return $monthly_report;
+        return $publicationDate;
     }
     
     public function headings(): array

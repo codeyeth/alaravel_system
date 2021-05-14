@@ -129,7 +129,7 @@
                     
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
-                            <div class="d-flex">
+                            <div class="row">
                                 <div class="col-sm-12 col-md-8">
                                     <h6 class="mb-1"><b>AGENCY NAME:</b> {{ $parentPurchaseOrderDetails->agency_name }}</h6>
                                     <h6 class="mb-1"><b>COMPLETE ADDRESS:</b> {{ $parentPurchaseOrderDetails->agency_address }}</h6>
@@ -137,10 +137,6 @@
                                     <h6 class="mb-1"><b>CONTACT NO/PERSON:</b> {{ $parentPurchaseOrderDetails->contact_no }} - {{ $parentPurchaseOrderDetails->contact_person }}</h6>
                                     <h6 class="mb-1"><b>E-MAIL ADDRESS:</b> {{ $parentPurchaseOrderDetails->email }}</h6>
                                 </div>
-                                
-                                <div class="col-sm-12 col-md-4">
-                                    
-                                </div>  
                             </div>
                         </div>
                     </div>
