@@ -39,6 +39,8 @@ class CreateOgSoftcopiesTable extends Migration
             $table->boolean('is_downloadable')->nullable()->default(false);
             $table->boolean('is_searchable')->nullable()->default(false);
             
+            $table->string('date');
+            
             // $table->boolean('is_printed')->nullable()->default(false);
             $table->timestamps();
         });

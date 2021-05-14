@@ -226,7 +226,7 @@ class UserList extends Component
             'mname' => Str::upper($this->Editmname),
             'lname' => Str::upper($this->Editlname),
             'name' => Str::upper($name),
-            'position' => $this->Editposition,
+            'position' => Str::upper($this->Editposition),
             'division' => $this->Editdivision,
             'section' => $this->Editsection,
             

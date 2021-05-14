@@ -34,9 +34,11 @@ class OgList extends Component
     public $edit_amountPaid;
     public $edit_datePaid;
     public $edit_isPaymentComplete;
+    public $viewPetitionerId;
     
-    public $edit_publicationType = "";
-    public $edit_publicationSubType = "";
+    public $edit_publicationType = '';
+    public $edit_publicationSubType = '';
+    public $showPublicationSubType;
     
     public $edit_datePublished;
     public $edit_isDownloadable;
@@ -56,6 +58,11 @@ class OgList extends Component
     
     protected $listeners = ['refreshTable'];
     
+    public function updatingSearch()
+    {
+        $this->resetPage();
+    }
+
     public function refreshTable(){
         $this->resetPage();
         
@@ -71,7 +78,6 @@ class OgList extends Component
         $this->edit_Id = $ogId;
         $postEdit = OgSoftcopy::find($ogId);
         $postEditFile = OgFile::where('belongs_to', $postEdit->file_id)->get();
-        // dd($postEditFile);
         $this->ogForEdit = $postEdit;
         $this->edit_currentFileUpload = $postEditFile;
         
@@ -83,6 +89,9 @@ class OgList extends Component
         $this->edit_datePublished = $postEdit->date_published;
         $this->edit_isDownloadable = $postEdit->is_downloadable;
         $this->edit_isSearchable = $postEdit->is_searchable;
+        
+        $this->showPublicationSubType = PublicationTypeChildren::where('publication_parent_id', $this->edit_publicationType)->count();
+        
     }
     
     public function encodePetitioner($ogId){
@@ -110,25 +119,28 @@ class OgList extends Component
         $viewOgSoftcopy = OgSoftcopy::find($ogId);
         $this->viewOgSoftcopyFile = OgFile::where('belongs_to', $viewOgSoftcopy->file_id)->get();
         
+        $this->viewPetitionerId = $viewOgSoftcopy->petitioner_id;
+        
         $publicationType = PublicationType::where('id', $viewOgSoftcopy->publication_type)->value('publication_type');
         $publicationSubType = PublicationTypeChildren::where('id', $viewOgSoftcopy->publication_sub_type)->value('publication_type_child');
         
         $this->viewOgParent = [
             'article_title' => $viewOgSoftcopy->article_title,
             'publication_type' => $publicationType . ' - ' . $publicationSubType,
-            'date_published' => $viewOgSoftcopy->date_published,
+            'date_published' => Carbon::create($viewOgSoftcopy->date_published)->toFormattedDateString(),
             'is_downloadable' => $viewOgSoftcopy->is_downloadable,
             'is_searchable' => $viewOgSoftcopy->is_searchable,
             'petitioner_name' => $viewOgSoftcopy->petitioner_name,
             'petitioner_address' => $viewOgSoftcopy->petitioner_address,
             'amount_paid' => $viewOgSoftcopy->amount_paid,
-            'date_paid' => $viewOgSoftcopy->date_paid,
+            'date_paid' =>  Carbon::create($viewOgSoftcopy->date_paid)->toFormattedDateString(),
             'is_payment_complete' => $viewOgSoftcopy->is_payment_complete,
         ];
     }
     
     public function spitMatchedSubPublicType($pubId){
         $this->pubSelectSubTypeList = PublicationTypeChildren::where('publication_parent_id', $pubId)->get();
+        $this->showPublicationSubType = count($this->pubSelectSubTypeList);
         $this->edit_publicationSubType = "";
     }
     
@@ -144,7 +156,7 @@ class OgList extends Component
         
         $updateOgSoftcopy = OgSoftcopy::find($ogId);
         $updateOgSoftcopy->update([
-            'article_title' =>  $this->edit_articleTitle,
+            'article_title' => Str::upper($this->edit_articleTitle),
             'publication_type' => $this->edit_publicationType,
             'publication_sub_type' => $this->edit_publicationSubType,
             'date_published' => $this->edit_datePublished,
@@ -164,7 +176,7 @@ class OgList extends Component
             $addOgFiles = OgFile::create([
                 'belongs_to' => $updateOgSoftcopy->file_id,
                 'original_filename' => $this->edit_fileUpload->getClientOriginalName(),
-                'converted_filename' => Str::snake($updateOgSoftcopy->article_title) . '_' . $updateOgSoftcopy->file_id  . '.pdf',
+                'converted_filename' => Str::upper($updateOgSoftcopy->article_title) . '_' . $updateOgSoftcopy->file_id  . '.pdf',
                 'filetype' => $this->edit_fileUpload->getClientOriginalExtension(),
                 'filesize' => $this->edit_fileUpload->getSize(),
                 ]
@@ -177,61 +189,70 @@ class OgList extends Component
     }
     
     public function updateOgPetitioner($ogId){
+        
         $now = Carbon::now();
         
         $updateOgSoftcopy = OgSoftcopy::find($ogId);
-        $updateOgSoftcopy->update(
-            [
-                'petitioner_id' => Str::uuid(),
-                'petitioner_name' => $this->edit_petitionerName,
-                'petitioner_address' => $this->edit_petitionerAddress,
-                'amount_paid' => $this->edit_amountPaid,
-                'date_paid' => $this->edit_datePaid,
-                'is_payment_complete' => $this->edit_isPaymentComplete,
-                'petitioner_encoded_by_id' => Auth::user()->id,
-                'petitioner_encoded_by_name' => Auth::user()->name,
-                'petitioner_encoded_at' => $now,
+        $updateOgSoftcopy->update([
+            'petitioner_id' => Str::uuid(),
+            'petitioner_name' => Str::upper($this->edit_petitionerName),
+            'petitioner_address' => Str::upper($this->edit_petitionerAddress),
+            'amount_paid' => $this->edit_amountPaid,
+            'date_paid' => $this->edit_datePaid,
+            'is_payment_complete' => $this->edit_isPaymentComplete,
+            'petitioner_encoded_by_id' => Auth::user()->id,
+            'petitioner_encoded_by_name' => Auth::user()->name,
+            'petitioner_encoded_at' => $now,
+            ]
+        );
+        
+        session()->flash('messageUpdateOgPetitioner', 'Petitioner Saved Successfully!');
+        
+    }
+    
+    public function updatedEditFileUpload(){
+        $validated = $this->validate([
+            'edit_fileUpload' => 'mimes:pdf|max:51200', // 50MB Max 1024 * 50 = 51200
+            ]
+        );
+    }
+    
+    public function mount(){
+        $this->pubSelectTypeList = PublicationType::all();
+        $this->pubSelectSubTypeList = PublicationTypeChildren::all();
+        
+        $this->pubTypeLoop = PublicationType::all();
+        $this->pubSubTypeLoop = PublicationTypeChildren::all();
+    }
+    
+    public function render()
+    {
+        if($this->keywordMode == true){
+            return view('livewire.rr-composing-system.og-list', [
+                'ogList' => OgSoftcopy::where('id', 'like', '%'.$this->search.'%')
+                ->orWhere('article_title', 'like', '%'.$this->search.'%')
+                ->orWhere('petitioner_name', 'like', '%'.$this->search.'%')
+                ->orderBy('created_at', 'DESC')
+                ->paginate(10),
+                'ogListCount' => OgSoftcopy::where('id', 'like', '%'.$this->search.'%')
+                ->orWhere('article_title', 'like', '%'.$this->search.'%')
+                ->orWhere('petitioner_name', 'like', '%'.$this->search.'%')
+                ->orderBy('created_at', 'DESC')
+                ->count(),
                 ]
             );
-            
-            session()->flash('messageUpdateOgPetitioner', 'Petitioner Saved Successfully!');
-        }
-        
-        public function updatedEditFileUpload(){
-            $validated = $this->validate([
-                'edit_fileUpload' => 'mimes:pdf|max:51200', // 50MB Max 1024 * 50 = 51200
+        }else{
+            return view('livewire.rr-composing-system.og-list', [
+                'ogList' => OgSoftcopy::where('date_published', 'like', '%'.$this->search.'%')
+                ->orWhere('created_at', 'like', '%'.$this->search.'%')
+                ->orderBy('created_at', 'DESC')
+                ->paginate(10),
+                'ogListCount' => OgSoftcopy::where('date_published', 'like', '%'.$this->search.'%')
+                ->orWhere('created_at', 'like', '%'.$this->search.'%')
+                ->orderBy('created_at', 'DESC')
+                ->count(),
                 ]
             );
-        }
-        
-        public function mount(){
-            $this->pubSelectTypeList = PublicationType::all();
-            $this->pubSelectSubTypeList = PublicationTypeChildren::all();
-            
-            $this->pubTypeLoop = PublicationType::all();
-            $this->pubSubTypeLoop = PublicationTypeChildren::all();
-        }
-        
-        public function render()
-        {
-            if($this->keywordMode == true){
-                return view('livewire.rr-composing-system.og-list', [
-                    'ogList' => OgSoftcopy::where('id', 'like', '%'.$this->search.'%')
-                    ->orWhere('article_title', 'like', '%'.$this->search.'%')
-                    ->orWhere('publication_type', 'like', '%'.$this->search.'%')
-                    ->orWhere('petitioner_name', 'like', '%'.$this->search.'%')
-                    ->orderBy('created_at', 'DESC')
-                    ->paginate(10),
-                    ]
-                );
-            }else{
-                return view('livewire.rr-composing-system.og-list', [
-                    'ogList' => OgSoftcopy::where('date_published', 'like', '%'.$this->search.'%')
-                    ->orWhere('created_at', 'like', '%'.$this->search.'%')
-                    ->orderBy('created_at', 'DESC')
-                    ->paginate(10),
-                    ]
-                );
-            }
         }
     }
+}

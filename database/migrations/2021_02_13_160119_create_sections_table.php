@@ -18,6 +18,8 @@ class CreateSectionsTable extends Migration
             $table->string('division_id');
             $table->string('division');
             $table->string('section');
+            $table->string('created_by_id')->nullable();
+            $table->string('created_by')->nullable();
             $table->timestamps();
         });
     }

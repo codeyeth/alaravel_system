@@ -28,15 +28,20 @@
                                 <strong class="mr-1"> <i class="material-icons mr-1">sentiment_satisfied_alt</i> Total Active Users:</strong>
                                 <strong class="text-success">{{ $allUserCount }}</strong>
                             </span>
-                            <span class="d-flex mb-2">
+                            {{-- <span class="d-flex mb-2">
                                 <strong class="mr-1"> <i class="material-icons mr-1">disabled_by_default</i> Total Freezed Users:</strong>
                                 <strong class="text-success">{{ $allUserCount }}</strong>
-                            </span>
+                            </span> --}}
                             
                         </li>
-                        <li class="list-group-item d-flex px-3">
+                        <li class="list-group-item d-flex px-3" style="overflow-x:auto;">
                             <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalAddUser">
                                 <i class="material-icons">add</i> Add New User
+                            </button>
+                            <div style="margin-left: 10px;"></div>
+
+                            <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modalAddDivision">
+                                <i class="material-icons">add</i> Division/Section
                             </button>
                             <div style="margin-left: 10px;"></div>
                         </li>
@@ -47,6 +52,9 @@
         
         {{-- ADD USER MODULE --}}
         @livewire('rr-user-management.add-user')
+
+        {{-- ADD USER MODULE --}}
+        @livewire('rr-user-management.division-section-module')
         
     </div>
 </div>

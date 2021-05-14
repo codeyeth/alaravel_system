@@ -26,7 +26,7 @@
                                 </div>
                                 <div class="p-2"></div>
                                 <div class="ml-auto p-2">
-                                    Total of <b class="text-success" style="font-size: 120%;"> {{ count($ogList) }} </b> Result/s Found
+                                    Total of <b class="text-success" style="font-size: 120%;"> {{ $ogListCount }} </b> Result/s Found
                                 </div>
                             </div>
                         </div>
@@ -54,6 +54,7 @@
                     </div>
                 </div>
                 
+                {{-- TABLE --}}
                 <ul class="list-group list-group-flush" style="overflow-x:auto;">
                     <li class="list-group-item p-0 pb-3 text-center">
                         @if (count($ogList) > 0)
@@ -61,14 +62,11 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col" class="border-0">#</th>
-                                    <th scope="col" class="border-0">Article Title</th>
-                                    <th scope="col" class="border-0">Publication Type</th>
-                                    <th scope="col" class="border-0">Date Published</th>
-                                    <th scope="col" class="border-0">Searchable Status</th>
-                                    <th scope="col" class="border-0">Publication Status</th>
-                                    <th scope="col" class="border-0">Petitioner Name</th>
-                                    <th scope="col" class="border-0">Added at</th>
-                                    <th scope="col" class="border-0">Last Updated at</th>
+                                    <th scope="col" class="border-0" style="text-align: left;">Article Title</th>
+                                    <th scope="col" class="border-0" style="text-align: right;">Date Published</th>
+                                    <th scope="col" class="border-0" style="text-align: left;">Added by</th>
+                                    <th scope="col" class="border-0"></th>
+                                    <th scope="col" class="border-0"></th>
                                     <th scope="col" class="border-0"></th>
                                     <th scope="col" class="border-0"></th>
                                     <th scope="col" class="border-0"></th>
@@ -79,51 +77,49 @@
                                 @foreach ($ogList as $item)
                                 <tr>
                                     <td>{{ $item->id }}</td>
-                                    <td>{{ $item->article_title }}</td>
-                                    <td>
-                                        @foreach ($this->pubTypeLoop as $publicationTypeItem)
-                                        @if ( $publicationTypeItem->id ==  $item->publication_type)
-                                        {{ $publicationTypeItem->publication_type }}
-                                        @endif
-                                        @endforeach
-                                        -
-                                        @foreach ($this->pubSubTypeLoop as $publicationSubTypeItem)
-                                        @if ( $publicationSubTypeItem->id ==  $item->publication_sub_type)
-                                        {{ $publicationSubTypeItem->publication_type_child }}
-                                        @endif
-                                        @endforeach
+                                    <td style="text-align: left;"><b> {{ $item->article_title }} </b>
+                                        <br>
+                                        <small>
+                                            <i>
+                                                @foreach ($this->pubTypeLoop as $publicationTypeItem)
+                                                @if ( $publicationTypeItem->id ==  $item->publication_type)
+                                                {{ $publicationTypeItem->publication_type }}
+                                                @endif
+                                                @endforeach
+                                                -
+                                                @foreach ($this->pubSubTypeLoop as $publicationSubTypeItem)
+                                                @if ( $publicationSubTypeItem->id ==  $item->publication_sub_type)
+                                                {{ $publicationSubTypeItem->publication_type_child }}
+                                                @endif
+                                                @endforeach
+                                            </i>
+                                        </small>
                                     </td>
-                                    <td>{{ \Carbon\Carbon::parse($item->date_published)->toFormattedDateString() }} </td>
+                                    
+                                    <td style="text-align: right;">{{ \Carbon\Carbon::parse($item->date_published)->toFormattedDateString() }} </td>
+                                    <td style="text-align: left;"> <b> {{ Str::upper($item->encoded_by_name) }} </b>  <br> {{ \Carbon\Carbon::parse($item->created_at)->toDayDateTimeString() }} </td>
                                     <td>
                                         @if ( $item->is_searchable == true)
-                                        <span class="text-success"> Visible </span>
+                                        <span class="text-success"><i class="material-icons">visibility</i> </span>
                                         @else
-                                        <span class="text-danger"> Invisible </span>
+                                        <span class="text-danger"><i class="material-icons">disabled_visible</i> </span>
                                         @endif
                                     </td>
                                     <td>
                                         @if ( $item->is_downloadable == true)
-                                        <span class="text-success"> Downloadable </span>
+                                        <span class="text-success"><i class="material-icons">download</i></span>
                                         @else
-                                        <span class="text-danger"> Restricted </span>
+                                        <span class="text-danger"><i class="material-icons">file_download_off</i></span>
                                         @endif
                                     </td>
-                                    <td>{{ $item->petitioner_name }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($item->created_at)->toDayDateTimeString() }} </td>
-                                    <td>{{ \Carbon\Carbon::parse($item->updated_at)->toDayDateTimeString() }} </td>
-                                    
-                                    
-                                    <td><button type="button" class="btn btn-accent" wire:click.preventDefault="viewOgSoftcopy({{ $item->id }})" data-toggle="modal" data-target="#modalViewOg"> <i class="material-icons">search</i> View</button></td>
-                                    <td>
-                                        <button type="button" class="btn btn-accent" wire:click="editOgSoftcopy({{ $item->id }})" data-toggle="modal" data-target="#modalEditOg"> <i class="material-icons">mode_edit</i> Edit Softcopy</button>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-accent" wire:click="encodePetitioner({{ $item->id }})" data-toggle="modal" data-target="#modalEncode"> <i class="material-icons">mode_edit</i> Encode Petitioner</button>
-                                    </td>
                                     
                                     <td>
-                                        <button type="button" class="btn btn-danger" wire:click="deleteOgSoftcopy({{ $item->id }})"> <i class="material-icons">delete</i> Delete</button>
+                                        <button type="button" class="{{ $item->petitioner_id == null ? 'btn btn-accent' : 'btn btn-success' }}" wire:click="encodePetitioner({{ $item->id }})" data-toggle="modal" data-target="#modalEncode"> <i class="material-icons">person</i></button>
                                     </td>
+                                    
+                                    <td><button type="button" class="btn btn-secondary" wire:click.preventDefault="viewOgSoftcopy({{ $item->id }})" data-toggle="modal" data-target="#modalViewOg"> <i class="material-icons">search</i></button></td>
+                                    <td><button type="button" class="btn btn-accent" wire:click="editOgSoftcopy({{ $item->id }})" data-toggle="modal" data-target="#modalEditOg"> <i class="material-icons">mode_edit</i></button></td>
+                                    <td><button type="button" class="btn btn-danger" wire:click="deleteOgSoftcopy({{ $item->id }})"> <i class="material-icons">delete</i></button></td>
                                 </tr>
                                 @endforeach
                             </tbody>
@@ -143,7 +139,7 @@
         
         {{-- MODAL EDIT SOFTCOPY --}}
         <div class="modal fade" id="modalEditOg" tabindex="-1" role="dialog" aria-labelledby="modalEditOg" aria-hidden="true" wire:ignore.self>
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Edit OG Softcopy</h5>
@@ -197,6 +193,7 @@
                                             </select>
                                         </div>
                                         
+                                        @if ( $showPublicationSubType > 0)
                                         @if (count($pubSelectSubTypeList) > 0)
                                         <div class="form-group col-md-6">
                                             <strong class="text-muted d-block mb-2">Publication Sub Type </strong>
@@ -209,6 +206,7 @@
                                                 @endforeach
                                             </select>
                                         </div>
+                                        @endif
                                         @endif
                                     </div>
                                 </div>
@@ -288,7 +286,7 @@
         
         {{-- MODAL ENCODE PETITIONER DETAILS --}}
         <div class="modal fade" id="modalEncode" tabindex="-1" role="dialog" aria-labelledby="modalEncode" aria-hidden="true" wire:ignore.self>
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">Encode/Edit Petitioner Details</h5>
@@ -317,11 +315,11 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <strong class="text-muted d-block mb-2">Petitioner Name </strong>
-                                            <input type="text" class="form-control" id="edit_petitionerName" name="edit_petitionerName" placeholder="Petitioner Name" autocomplete="off" wire:model="edit_petitionerName">
+                                            <input type="text" class="form-control" id="edit_petitionerName" name="edit_petitionerName" placeholder="Petitioner Name" autocomplete="off" wire:model="edit_petitionerName" required>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <strong class="text-muted d-block mb-2">Petitioner Address </strong>
-                                            <input type="text" class="form-control" id="edit_petitionerAddress" name="edit_petitionerAddress" placeholder="Petitioner Address" autocomplete="off" wire:model="edit_petitionerAddress" >
+                                            <input type="text" class="form-control" id="edit_petitionerAddress" name="edit_petitionerAddress" placeholder="Petitioner Address" autocomplete="off" wire:model="edit_petitionerAddress" required>
                                         </div>
                                     </div>
                                 </div>
@@ -332,11 +330,11 @@
                                     <div class="form-row">
                                         <div class="form-group col-md-6">
                                             <strong class="text-muted d-block mb-2">Amount Paid</strong>
-                                            <input type="text" class="form-control" id="edit_amountPaid" name="edit_amountPaid" placeholder="Amount Paid" autocomplete="off" wire:model="edit_amountPaid" >
+                                            <input type="number" class="form-control" id="edit_amountPaid" name="edit_amountPaid" placeholder="Amount Paid" autocomplete="off" wire:model="edit_amountPaid" required>
                                         </div>
                                         <div class="form-group col-md-6">
                                             <strong class="text-muted d-block mb-2">Date Paid </strong>
-                                            <input type="date" class="form-control" id="edit_datePaid" name="edit_datePaid" placeholder="Date Paid" autocomplete="off" wire:model="edit_datePaid">
+                                            <input type="date" class="form-control" id="edit_datePaid" name="edit_datePaid" placeholder="Date Paid" autocomplete="off" wire:model="edit_datePaid" required>
                                         </div>
                                     </div>
                                 </div>
@@ -376,7 +374,7 @@
         
         {{-- MODAL VIEW DETAILS --}}
         <div class="modal fade" id="modalViewOg" tabindex="-1" role="dialog" aria-labelledby="modalViewOg" aria-hidden="true" wire:ignore.self>
-            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">View Publication Details</h5>
@@ -454,7 +452,9 @@
                             </div>
                         </div>
                         
-                        <hr>
+                        <hr class="hr_dashed">
+                        
+                        @if( $viewPetitionerId != null )
                         
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
@@ -501,6 +501,10 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        @else
+                        <h5 class="p-3" style="text-align: center;"> No Petitioner Details Encoded. </h5>
+                        @endif
                         
                     </div>
                     <div class="modal-footer">

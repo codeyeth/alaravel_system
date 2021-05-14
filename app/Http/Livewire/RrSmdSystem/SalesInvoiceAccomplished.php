@@ -38,7 +38,21 @@ class SalesInvoiceAccomplished extends Component
         $dateTo = Carbon::parse($this->monthSelected)->endOfMonth();
         
         $this->endOfMonth = $dateTo->day;
-        $year_month = Carbon::parse($this->monthSelected)->year . '-0' . Carbon::parse($this->monthSelected)->month;
+
+
+        $monthCount = Carbon::parse($this->monthSelected)->month;
+
+        if($monthCount <= 9){
+            $monthCount = '-0' . $monthCount;
+        }else{
+            $monthCount = '-' . $monthCount;
+        }
+
+        $year_month = Carbon::parse($this->monthSelected)->year . $monthCount;
+
+        // $year_month = Carbon::parse($this->monthSelected)->year . '-0' . Carbon::parse($this->monthSelected)->month;
+
+
         //GET THE NAMES OF THE SI CREATORS
         $this->getNames = SalesInvoice::where('created_at', '>=', $dateFrom)->where('created_at', '<=', $dateTo)->groupBy('created_by_name')->get();
         
