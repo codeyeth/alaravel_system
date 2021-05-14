@@ -56,7 +56,7 @@ class SmdjController extends Controller
     {
         //
     }
-    public function si(){
+    public function sales_invoice(){
         $copies = ['FMD Copy','SMD - Sales Sec. Copy','Requisitioner\'s Copy','Cashier Copy'];
         $count = count($copies);
         $time_generate = Carbon::now();
