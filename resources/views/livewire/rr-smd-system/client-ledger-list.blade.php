@@ -60,41 +60,29 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col" class="border-0">#</th>
-                                    <th scope="col" class="border-0">AGENCY NAME</th>
-                                    <th scope="col" class="border-0">PO/PR NO</th>
-                                    <th scope="col" class="border-0">STOCK NO</th>
-                                    <th scope="col" class="border-0">S.I DATE</th>
-                                    <th scope="col" class="border-0">S.I NO</th>
-                                    <th scope="col" class="border-0">OR NO.</th>
-                                    <th scope="col" class="border-0">AMOUNT</th>
-                                    <th scope="col" class="border-0">DATE POSTED</th>
-                                    <th scope="col" class="border-0">POSTED BY</th>
+                                    <th scope="col" class="border-0" style="text-align: left">AGENCY NAME</th>
+                                    <th scope="col" class="border-0" style="text-align: right">SALES INVOICE NO</th>
+                                    <th scope="col" class="border-0" style="text-align: left">SALES INVOICE DATE</th>
+                                    <th scope="col" class="border-0" style="text-align: left">POSTED BY</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($clientLedgerList as $client_ledger_list)
                                 <tr>
                                     <td>{{ $client_ledger_list->id }}</td>
-                                    
                                     @foreach ($clientDatabase as $client_database)
                                     @if ( $client_ledger_list->agency_id ==  $client_database->id )
-                                    <td><a href="{{ asset ('/client_ledger') }}/{{ $client_database->id }} " target="_blank" title="View Client Ledger">
-                                        {{-- <i class="material-icons">search</i> --}}
+                                    <td style="text-align: left"><a href="{{ asset ('/client_ledger') }}/{{ $client_database->id }} " target="_blank" title="View Client Ledger">
                                         <b>{{ $client_database->agency_name }}</b></a>
                                     </td>
                                     @break
                                     @endif
                                     @endforeach
-                                    <td><b>{{ $client_ledger_list->pr_no }}</b></td>
-                                    <td><b>{{ $client_ledger_list->stock_no }}</b></td>
-                                    <td>{{ \Carbon\Carbon::parse($client_ledger_list->sales_invoice_created_at)->toDayDateTimeString() }}</td>
-                                    <td><b>{{ $client_ledger_list->sales_invoice_code }}</b></td>
-                                    <td>{{ $client_ledger_list->or_no }}</td>
-                                    <td>{{ $client_ledger_list->or_no }}</td>
-                                    <td>{{ \Carbon\Carbon::parse($client_ledger_list->created_at)->toDayDateTimeString() }}</td>
-                                    <td><b> {{ $client_ledger_list->created_by_name }} </b></td>
+                                    <td style="text-align: right"><span class="badge badge-accent">{{ $client_ledger_list->sales_invoice_code }}</span></td>
+                                    <td style="text-align: left"><span class="badge badge-accent"> {{ \Carbon\Carbon::parse($client_ledger_list->sales_invoice_created_at)->toDayDateTimeString() }} </span></td>
+                                    <td style="text-align: left"><b> {{ $client_ledger_list->created_by_name }} </b> at {{ \Carbon\Carbon::parse($client_ledger_list->created_at)->toDayDateTimeString() }}</td>
                                 </tr>      
-                                @endforeach
+                                @endforeach 
                             </tbody>
                         </table>    
                         @else

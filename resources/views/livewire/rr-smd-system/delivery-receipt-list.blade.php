@@ -60,37 +60,33 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col" class="border-0">#</th>
-                                    <th scope="col" class="border-0">DR NO</th>
-                                    <th scope="col" class="border-0">SI NO</th>
-                                    <th scope="col" class="border-0">STOCK NO</th>
-                                    <th scope="col" class="border-0">OR NO</th>
-                                    <th scope="col" class="border-0">AGENCY NAME</th>
-                                    <th scope="col" class="border-0">DR STATUS</th>
-                                    <th scope="col" class="border-0">POSTED BY</th>
-                                    <th scope="col" class="border-0">POSTED AT</th>
-                                    <th scope="col" class="border-0"></th>
-                                    <th scope="col" class="border-0"></th>
+                                    <th scope="col" class="border-0" style="text-align: left">DR NO</th>
+                                    <th scope="col" class="border-0" style="text-align: right">SALES INVOICE NO</th>
+                              
+                                    <th scope="col" class="border-0" style="text-align: left">AGENCY NAME</th>
+                                    <th scope="col" class="border-0" style="text-align: right">DR STATUS</th>
+                                    <th scope="col" class="border-0" style="text-align: left">POSTED BY</th>
+                                    <th scope="col" class="border-0" style="text-align: right"></th>
+                                    <th scope="col" class="border-0" style="text-align: left"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($drList as $dr_list)
                                 <tr>
                                     <td>{{ $dr_list->id }}</td>
-                                    <td>
+                                    <td style="text-align: left">
                                         <a href="#" title="View Delivery Receipt" data-toggle="modal" data-target="#modalViewDr" wire:click="getDr({{ $dr_list->id }})">
-                                            {{-- <i class="material-icons">search</i>  --}}
                                             <b>{{ $dr_list->dr_no }}</b>
                                         </a>
                                     </td>
-                                    <td><b class="text-success"> {{ $dr_list->sales_invoice_code }} </b></td>
-                                    <td>{{ $dr_list->stock_no }}</td>
-                                    <td>{{ $dr_list->or_no }}</td>
-                                    <td>{{ $dr_list->agency_name }}</td>
-                                    <td>
+                                    <td style="text-align: right"><span class="badge badge-accent"> {{ $dr_list->sales_invoice_code }} </span></td>
+                                  
+                                    <td style="text-align: left"> <span class="badge badge-accent"> {{ $dr_list->agency_name }} </span> </td>
+                                    <td style="text-align: right">
                                         @if ( $dr_list->is_delivered == true)
-                                        <p class="text-success mb-0"><b> DELIVERED </b></p>
+                                        <span class="badge badge-danger"> DELIVERED </span>
                                         @else
-                                        <p class="text-danger mb-0"><b> PENDING </b></p>
+                                        <span class="badge badge-danger"> PENDING </span>
                                         @endif
                                     </td>
                                     <td>{{ $dr_list->created_by_name }}</td>
@@ -102,16 +98,18 @@
                                         {{ Form::button('<i class="material-icons">text_snippet</i> PDF',['type' => 'submit','class'=>'btn btn-accent btn-sm']) }}
                                         {{ Form::close() }}
                                         <!--J CODES END -->
+                                    <td style="text-align: left">{{ $dr_list->created_by_name }} at {{ \Carbon\Carbon::parse($dr_list->created_at)->toDayDateTimeString() }}</td>
+                                    <td style="text-align: right">
+                                        <button type="button" class="btn btn-accent btn-sm"><i class="material-icons">text_snippet</i> PDF</button>
                                     </td>
-                                    <td>
+                                    <td style="text-align: left">
                                         @if ( $dr_list->issued_by != null && $dr_list->received_by != null )
                                         @if ( $dr_list->is_delivered == false)
                                         <button type="button" class="btn btn-success btn-sm" wire:click="markAsDelivered({{ $dr_list->id }})"><i class="material-icons">check</i> SET AS DELIVERED</button>
                                         @endif
                                         @else
-                                        <p class="text-danger mb-0">Pending Details</p>
+                                        <span class="badge badge-danger"> PENDING DETAILS </span>
                                         @endif
-                                        
                                     </td>
                                     
                                 </tr>      

@@ -13,6 +13,8 @@ use App\Models\ComelecRoles;
 use App\Models\Division;
 use App\Models\Section;
 use Illuminate\Support\Str;
+use Carbon\Carbon;
+use Auth;
 
 class UserList extends Component
 {
@@ -54,6 +56,7 @@ class UserList extends Component
     public $EditbarcodedReceiverList = [];
     
     //VIEW USER PROPERTIES
+    public $viewId;
     public $viewEmail;
     public $viewFname;
     public $viewMname;
@@ -116,18 +119,53 @@ class UserList extends Component
         $this->resetPage();
     }
     
+    //COMELEC ROLES -> BARCODED RECEIVER
     public function spitBarcodedReceiverList($comelecRole){
         $this->EditbarcodedReceiverList = ComelecRoles::where('comelec_role', '!=', $comelecRole)->get();
         $this->EditbarcodedReceiver = '';
     }
-
-    //DIVISION - SECTION
+    
+    //DIVISION -> SECTION
     public function spitMatchedSection($selectedDivision){
         $this->EditsectionsList = Section::where('division_id', $selectedDivision)->get();
         $this->Editsection = '';
     }
     
+    //FREEZE USER
+    public function freezeUser($id){
+        $now = Carbon::now();
+        
+        $freezeUser = User::find($id);
+        $freezeUser->update([
+            'is_freezed' => true,
+            'is_freezed_by_id' => Auth::user()->id,
+            'is_freezed_by' => Auth::user()->name,
+            'is_freezed_at' =>$now,
+            ]
+        );
+        
+        session()->flash('messageFreezeUser', 'User Account Disabled Successfully!');
+    }
+    
+    //UNFREEZE USER
+    public function unFreezeUser($id){
+        $now = Carbon::now();
+        
+        $freezeUser = User::find($id);
+        $freezeUser->update([
+            'is_freezed' => false,
+            'is_freezed_by_id' => '',
+            'is_freezed_by' => '',
+            'is_freezed_at' => '',
+            ]
+        );
+        
+        session()->flash('messageUnFreezeUser', 'User Account Activated Successfully!');
+    }
+    
+    //VIEW USER
     public function viewUser($userID){
+        $this->viewId = $userID;
         $viewUser = User::find($userID);
         
         $division = Division::where('id', $viewUser->division)->value('division');

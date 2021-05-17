@@ -26,7 +26,7 @@
                             </span>
                             <span class="d-flex mb-2">
                                 <strong class="mr-1"> <i class="material-icons mr-1">sentiment_satisfied_alt</i> Total Active Users:</strong>
-                                <strong class="text-success">{{ $allUserCount }}</strong>
+                                <strong class="text-success">{{ $activeCount }}</strong>
                             </span>
                             {{-- <span class="d-flex mb-2">
                                 <strong class="mr-1"> <i class="material-icons mr-1">disabled_by_default</i> Total Freezed Users:</strong>
