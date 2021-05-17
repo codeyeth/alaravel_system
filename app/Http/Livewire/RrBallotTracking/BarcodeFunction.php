@@ -149,6 +149,33 @@ class BarcodeFunction extends Component
     // VIEW FULL BALLOT DETAILS
     public function getBallotDetails($ballotId){
         $getBallotDetails = Ballots::find($ballotId);
+        
+        
+        $detailsCurrentStatus = '';
+        if( $getBallotDetails->current_status == 'SHEETER' ){
+            $detailsCurrentStatus = 'PAPER CUTTER SECTION';
+        }
+        
+        if( $getBallotDetails->current_status == 'TEMPORARY STORAGE' ){
+            $detailsCurrentStatus = 'STORAGE SECTION';
+        }
+        
+        if( $getBallotDetails->current_status == 'VERIFICATION' ){
+            $detailsCurrentStatus = 'VALIDITY VERIFICATION SECTION';
+        }
+        
+        if( $getBallotDetails->current_status == 'QUARANTINE' ){
+            $detailsCurrentStatus = 'REJECTED SECTION';
+        }
+        
+        if( $getBallotDetails->current_status == 'COMELEC DELIVERY' ){
+            $detailsCurrentStatus = 'DELIVERY SECTION';
+        }
+        
+        if( $getBallotDetails->current_status == 'NPO SMD' ){
+            $detailsCurrentStatus = 'BILLING SECTION';
+        }
+        
         $this->viewBallotParent = [
             'prov_name' => $getBallotDetails->prov_name,
             'mun_name' => $getBallotDetails->mun_name,
@@ -157,7 +184,8 @@ class BarcodeFunction extends Component
             'clustered_prec' => $getBallotDetails->clustered_prec,
             'cluster_total' => $getBallotDetails->cluster_total,
             'ballot_id' => $getBallotDetails->ballot_id,
-            'current_status' => $getBallotDetails->current_status,
+            // 'current_status' => $getBallotDetails->current_status,
+            'current_status' => $detailsCurrentStatus,
             'status_updated_by' => $getBallotDetails->status_updated_by,
             'status_updated_at' => Carbon::parse($getBallotDetails->status_updated_at)->toDayDateTimeString(),
             
@@ -548,10 +576,12 @@ class BarcodeFunction extends Component
     //CLEAR SEARCH
     public function clearSearch(){
         $this->search = '';
+        $this->dispatchBrowserEvent('clearSearch');
     }
     
     public function updatedKeywordMode(){
         $this->search = '';
+        $this->dispatchBrowserEvent('clearSearch');
     }
     
     //GET BALLOT HISTORY

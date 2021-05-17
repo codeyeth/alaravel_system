@@ -22,7 +22,7 @@
                             <span class="badge badge-accent mb-1">ALL MODULES</span>
                             @endif
                             
-                            @if( $userRole == 'ADMINISTRATOR')
+                            @if( $userRole == 'ADMINISTRATOR' || $userRole == 'USER')
                             
                             @if( $userDetails->is_user_mgt == true )
                             <span class="badge badge-accent mb-1">USER MANAGEMENT</span>

@@ -189,6 +189,7 @@
                     <h6 class="m-0">Ballot/s List</h6>
                 </div>
                 
+                {{-- SEARCH INPUT --}}
                 <div class="card-body pt-0 pb-3 text-center" style="overflow-x:auto;">
                     <div class="row border-bottom py-2 mb-0 bg-light">
                         {{-- IF SEARCH MODE ON SEARCH BY KEYWORD OR DATE --}}
@@ -213,16 +214,16 @@
                                 @if ( $searchMode == true )
                                 
                                 @if ( $keywordMode == true )
-                                <input type="text" class="form-control form-control-lg" placeholder="Search here..." wire:model="search" autofocus>
+                                <input type="text" class="form-control form-control-lg" placeholder="Search here..." id="search_input" wire:model="search" autofocus wire:keydown.escape="clearSearch">
                                 @else
-                                <input type="date" class="form-control form-control-lg" placeholder="Search here..." wire:model="search" autofocus>
+                                <input type="date" class="form-control form-control-lg" placeholder="Search here..." id="search_input" wire:model="search" autofocus wire:keydown.escape="clearSearch">
                                 @endif
                                 
                                 @else
-                                <input class="form-control form-control-lg mb-0" type="text" placeholder="Ballot ID | Barcode Value here..." wire:model="search" wire:keyup="updateBallotStatus" autofocus>
+                                <input class="form-control form-control-lg mb-0" type="text" placeholder="Ballot ID | Barcode Value here..." id="search_input" wire:model="search" wire:keyup="updateBallotStatus" autofocus wire:keydown.escape="clearSearch">
                                 @endif
                                 <div class="input-group-append">
-                                    <button class="btn btn-warning" type="button" wire:click="clearSearch">Clear Search</button>
+                                    <button class="btn btn-warning" type="button" wire:click="clearSearch">Clear Search / or Press Escape</button>
                                 </div>
                             </div>
                         </div>
@@ -242,9 +243,12 @@
                             <thead class="bg-light">
                                 <tr>
                                     <th scope="col" class="border-0">#</th>
-                                    <th scope="col" class="border-0" style="text-align: right">Ballot ID</th>
-                                    <th scope="col" class="border-0" style="text-align: right">Ballot Location</th>
-                                    <th scope="col" class="border-0" style="text-align: left">Ballot Pollplace</th>
+                                    {{-- <th scope="col" class="border-0" style="text-align: right">Ballot ID</th> --}}
+                                    <th scope="col" class="border-0" style="text-align: right">Ballot Control #</th>
+                                    {{-- <th scope="col" class="border-0" style="text-align: right">Ballot Location</th> --}}
+                                    <th scope="col" class="border-0" style="text-align: right">Ballot Delivery Location</th>
+                                    {{-- <th scope="col" class="border-0" style="text-align: left">Ballot Pollplace</th> --}}
+                                    <th scope="col" class="border-0" style="text-align: left">Ballot Poll Location</th>
                                     <th scope="col" class="border-0" style="text-align: right">Current Status/Location</th>
                                     <th scope="col" class="border-0" style="text-align: left">Status BY</th>
                                     <th scope="col" class="border-0" style="text-align: left"></th>
@@ -267,10 +271,73 @@
                                         @if ($item->current_status == 'PRINTER')
                                         <span class="text-danger"><b> BALLOT NOT YET PRINTED </b></span> 
                                         @else
+                                        
                                         @if ( $item->new_status_type == "OUT")
-                                        FOR {{ $item->current_status }}
+                                        FOR 
+                                        {{-- {{ $item->current_status }} --}}
+                                        
+                                        {{-- //////////////////////////////////////////////////////////// --}}
+                                        
+                                        @if( $item->current_status == 'SHEETER')
+                                        PAPER CUTTER SECTION
+                                        @endif
+                                        
+                                        @if( $item->current_status == 'TEMPORARY STORAGE')
+                                        STORAGE SECTION
+                                        @endif
+                                        
+                                        @if( $item->current_status == 'VERIFICATION')
+                                        VALIDITY VERIFICATION SECTION
+                                        @endif
+                                        
+                                        @if( $item->current_status == 'QUARANTINE')
+                                        REJECTED SECTION
+                                        @endif
+                                        
+                                        @if( $item->current_status == 'COMELEC DELIVERY')
+                                        DELIVERY SECTION
+                                        @endif
+                                        
+                                        @if( $item->current_status == 'NPO SMD')
+                                        BILLING SECTION
+                                        @endif
+                                        {{-- //////////////////////////////////////////////////////////// --}}
+                                        
+                                        
                                         @else
-                                        {{ $item->current_status }}
+                                        
+                                        {{-- //////////////////////////////////////////////////////////// --}}
+                                        {{-- {{ $item->current_status }} --}}
+                                        {{-- //////////////////////////////////////////////////////////// --}}
+                                        
+                                        
+                                        {{-- //////////////////////////////////////////////////////////// --}}
+                                        @if( $item->current_status == 'SHEETER')
+                                        PAPER CUTTER SECTION
+                                        @endif
+                                        
+                                        @if( $item->current_status == 'TEMPORARY STORAGE')
+                                        STORAGE SECTION
+                                        @endif
+                                        
+                                        @if( $item->current_status == 'VERIFICATION')
+                                        VALIDITY VERIFICATION SECTION
+                                        @endif
+                                        
+                                        @if( $item->current_status == 'QUARANTINE')
+                                        REJECTED SECTION
+                                        @endif
+                                        
+                                        @if( $item->current_status == 'COMELEC DELIVERY')
+                                        DELIVERY SECTION
+                                        @endif
+                                        
+                                        @if( $item->current_status == 'NPO SMD')
+                                        BILLING SECTION
+                                        @endif
+                                        {{-- //////////////////////////////////////////////////////////// --}}
+                                        
+                                        
                                         @endif
                                         @endif
                                     </td>
@@ -359,7 +426,7 @@
     
     {{-- MODAL HISTORY --}}
     <div class="modal fade" id="modalBallotHistory" tabindex="-1" role="dialog" aria-labelledby="modalBallotHistory" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLongTitle">Ballot History</h5>
@@ -399,9 +466,35 @@
                                 <td align="left">
                                     <b>
                                         @if ( $history_item->old_status == 'PRINTER' )
-                                        SHEETER
+                                        {{-- SHEETER --}}
+                                        PAPER CUTTER SECTION
                                         @else
-                                        {{ $history_item->old_status }}
+                                        {{-- {{ $history_item->old_status }} --}}
+                                        
+                                        @if( $history_item->old_status == 'SHEETER' )
+                                        PAPER CUTTER SECTION
+                                        @endif
+                                        
+                                        @if( $history_item->old_status == 'TEMPORARY STORAGE' )
+                                        STORAGE SECTION
+                                        @endif
+                                        
+                                        @if( $history_item->old_status == 'VERIFICATION' )
+                                        VALIDITY VERIFICATION SECTION
+                                        @endif
+                                        
+                                        @if( $history_item->old_status == 'QUARANTINE' )
+                                        REJECTED SECTION
+                                        @endif
+                                        
+                                        @if( $history_item->old_status == 'COMELEC DELIVERY' )
+                                        DELIVERY SECTION
+                                        @endif
+                                        
+                                        @if( $history_item->old_status == 'NPO SMD' )
+                                        BILLING SECTION
+                                        @endif
+                                        
                                         @endif
                                         @if ( $history_item->for == '')
                                         - <span class="text-info"> {{ $history_item->new_status_type }} </span>

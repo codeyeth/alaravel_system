@@ -115,7 +115,7 @@ class AddUser extends Component
             'barcoded_receiver' =>  Str::upper($this->barcodedReceiver),
             
             'created_by_id' => Auth::user()->id,
-            'created_by_name' => Auth::user()->name,
+            'created_by_name' => Str::upper(Auth::user()->name),
             
             'password' => Hash::make('12345678'),
             'password_string' => '12345678',
