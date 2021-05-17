@@ -6,12 +6,14 @@ use Illuminate\Http\Request;
 use PDF;
 use App\Models\SalesInvoice;
 use App\Models\SalesInvoiceItem;
+use App\Models\SmdDeliveryReceipt;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
 use File;
 use ZipArchive;
 use Illuminate\Filesystem\Filesystem;
 use Carbon\Carbon;
+
 
 class SmdjController extends Controller
 {
@@ -56,6 +58,56 @@ class SmdjController extends Controller
     {
         //
     }
+    public function delivery_receipt(){
+        $copies = ['FMD Copy','SMD - Sales Sec. Copy','Requisitioner\'s Copy','NPO Gate Guard Copy'];
+        $count = count($copies);
+        $time_generate = Carbon::now();
+        for ($i = 0; $i < $count; $i++) {
+            foreach($copies as $i => $value){
+                $imagepath = public_path();
+                $delivery_id = request()->get('si_id_in_dr');
+                $dr_query = SmdDeliveryReceipt::where('sales_invoice_code',$delivery_id)->first();
+               
+                $dr_item_count = $dr_query->sales_invoice_items->count();
+                if ($dr_item_count > 16){
+                    $totaladdrow = 8;
+                }else{
+                    $itemcount = $dr_item_count * 2;
+                    $totalrowcount = 32;
+                    $totaladdrow = $totalrowcount - $itemcount;
+                }
+                $view = \View::make('j-views.smd.delivery_receipt_pdf',compact('totaladdrow','value','imagepath','dr_query','count'));
+                $html_content = $view->render();
+                PDF::setFooterCallback(function($pdf) {
+                    // Position at 15 mm from bottom
+                    $pdf->SetY(-15);
+                    // Set font
+                    $pdf->SetFont('helvetica', 'I', 8);
+                    // Page number
+                    $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+                });
+                PDF::SetTitle("Delivery Receipt");
+                PDF::AddPage();
+                PDF::writeHTML($html_content, true, false, true, false, '');
+                PDF::Output(public_path('DeliveryReceipt/Delivery Receipt '.$delivery_id.' for ' .  $value . ' ' . $time_generate->toDateString() . '.pdf'), 'F');
+                PDF::reset(); 
+            }
+        }
+        $zip = new ZipArchive;
+        $fileName = 'Delivery Receipt '.$dr_query->dr_no .' ' . $time_generate->toDateString() . '.zip';
+        if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE){
+            $files = File::files(public_path('DeliveryReceipt'));
+            foreach ($files as $key => $value) {
+                $relativeNameInZipFile = basename($value);
+                $zip->addFile($value, $relativeNameInZipFile);
+            }
+            $zip->close();
+        }
+        File::cleanDirectory(public_path('DeliveryReceipt'));
+        return response()->download(public_path($fileName))->deleteFileAfterSend(true);
+    }
+
+
     public function sales_invoice(){
         $copies = ['FMD Copy','SMD - Sales Sec. Copy','Requisitioner\'s Copy','Cashier Copy'];
         $count = count($copies);

@@ -77,6 +77,8 @@ Route::get('/download_motorpool_letter', ['as' => 'brought', 'uses' => 'Motorpoo
 Route::get('/download_pdf_dr', ['as' => 'look', 'uses' => 'DeliveryjController@save_dr_pdf']);
 
 Route::get('/view_sales_invoice', ['as' => 'catch', 'uses' => 'SmdjController@sales_invoice']);
+Route::get('/view_delivery_receipt', ['as' => 'caught', 'uses' => 'SmdjController@delivery_receipt']);
+
 Route::get('/view_daily_sales_generic', ['as' => 'generic', 'uses' => 'SmdjController@daily_sales_generic']);
 Route::get('/view_daily_sales_specialized', ['as' => 'specialized', 'uses' => 'SmdjController@daily_sales_specialized']);
 Route::get('/view_monthly_sales', ['as' => 'monthly', 'uses' => 'SmdjController@monthly_sales_invoice']);

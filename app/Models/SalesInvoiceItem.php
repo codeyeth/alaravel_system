@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\SalesInvoice;
+use App\Models\SmdDeliveryReceipt;
 
 class SalesInvoiceItem extends Model
 {
@@ -24,5 +25,8 @@ class SalesInvoiceItem extends Model
     ];
     public function sales_invoices(){
         return $this->belongsTo(SalesInvoice::class,'sales_invoice_code','sales_invoice_code');
+    }
+    public function smd_delivery_receipts(){
+        return $this->belongsTo(SmdDeliveryReceipt::class,'sales_invoice_code','sales_invoice_code');
     }
 }

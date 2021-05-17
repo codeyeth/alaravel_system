@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\SalesInvoiceItem;
 
 class SmdDeliveryReceipt extends Model
 {
@@ -34,5 +35,8 @@ class SmdDeliveryReceipt extends Model
         'created_by_id',
         'created_by_name',
     ];
+    public function sales_invoice_items(){
+        return $this->hasMany(SalesInvoiceItem::class,'sales_invoice_code');
+    }
     
 }

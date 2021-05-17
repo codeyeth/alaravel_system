@@ -96,7 +96,12 @@
                                     <td>{{ $dr_list->created_by_name }}</td>
                                     <td>{{ \Carbon\Carbon::parse($dr_list->created_at)->toDayDateTimeString() }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-accent btn-sm"><i class="material-icons">text_snippet</i> PDF</button>
+                                        <!--J CODES START -->
+                                        {{Form::open(['route' => 'caught', 'method' => 'GET', 'target' => '__blank' , 'autocomplete'=>'off'])}} 
+                                        <input type="hidden" value="{{ $dr_list->sales_invoice_code }}" name="si_id_in_dr">
+                                        {{ Form::button('<i class="material-icons">text_snippet</i> PDF',['type' => 'submit','class'=>'btn btn-accent btn-sm']) }}
+                                        {{ Form::close() }}
+                                        <!--J CODES END -->
                                     </td>
                                     <td>
                                         @if ( $dr_list->issued_by != null && $dr_list->received_by != null )
@@ -108,6 +113,7 @@
                                         @endif
                                         
                                     </td>
+                                    
                                 </tr>      
                                 @endforeach
                             </tbody>
