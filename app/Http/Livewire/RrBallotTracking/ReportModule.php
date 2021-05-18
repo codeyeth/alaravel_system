@@ -36,14 +36,6 @@ class ReportModule extends Component
     public $dateTo;
     ///////////////////////////////REPORTS
     
-    //EXPORT SINGLE BALLOT HISTORY
-    public function exportSingleBallotHistory($exportSingleId){
-        $ballotSingleExportResult = Ballots::find($exportSingleId);   
-        $ballotIdToExcel = $ballotSingleExportResult->ballot_id;
-        $export = new ExportExcelSingleBallotHistory($ballotIdToExcel);
-        return Excel::download($export, $ballotIdToExcel . '_single_ballot_history.xlsx');
-    }
-    
     //EXPORT ALL BALLOT HISTORY
     public function exportAllBallotHistory(){
         return Excel::download(new ExportExcelAllHistory, 'all_ballot_history.xlsx');
@@ -64,7 +56,8 @@ class ReportModule extends Component
         $statusSelected = $this->statusSelected;
         $statusType = $this->statusType;
         $export = new ExportExcelStatusBallotHistory($statusSelected, $statusType);
-        return Excel::download($export, $statusSelected . '_status_ballot_history.xlsx');
+        // return Excel::download($export, $statusSelected . '_status_ballot_history.xlsx');
+        return Excel::download($export, 'StatusBallotHistory.xlsx');
     }
     
     //EXPORT REPRINTS (BALLOT ID)

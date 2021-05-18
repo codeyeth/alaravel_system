@@ -495,6 +495,14 @@
                                         BILLING SECTION
                                         @endif
                                         
+                                        @if( $history_item->old_status == 'OUT FOR DELIVERY' )
+                                        OUT FOR DELIVERY
+                                        @endif
+                                        
+                                        @if( $history_item->old_status == 'DELIVERED' )
+                                        DELIVERED
+                                        @endif
+                                        
                                         @endif
                                         @if ( $history_item->for == '')
                                         - <span class="text-info"> {{ $history_item->new_status_type }} </span>
@@ -526,11 +534,9 @@
                         </tbody>
                     </table>
                     
+                    <hr class="hr_dashed">
                     
-                    @if ( Auth::user()->is_admin == true )
-                    
-                    <hr>
-                    
+                    @if ( Auth::user()->is_admin == true && $cantAlter == false )
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
                             <div class="form-row">
@@ -540,7 +546,19 @@
                                         <option disabled selected value="">Select Status here</option>
                                         @if(count($alterBallotHistoryList) > 0)
                                         @foreach($alterBallotHistoryList as $alterHistoryStatus)
-                                        <option value="{{$alterHistoryStatus->old_status}} - {{$alterHistoryStatus->new_status_type}}">{{ $alterHistoryStatus->old_status }} - {{$alterHistoryStatus->new_status_type}}</option>
+                                        <option value="{{$alterHistoryStatus->old_status}} - {{$alterHistoryStatus->new_status_type}}">
+                                            {{-- {{ $alterHistoryStatus->old_status }} - {{$alterHistoryStatus->new_status_type}} --}}
+                                            
+                                            {{-- FOR DEMO  --}}
+                                            @foreach( $comelecRolesList as $demo_role )
+                                            @if( $demo_role->comelec_role == $alterHistoryStatus->old_status)
+                                            {{ $demo_role->demo_role }}
+                                            @endif
+                                            @endforeach
+                                            - {{$alterHistoryStatus->new_status_type}}
+                                            {{-- FOR DEMO  --}}
+                                            
+                                        </option>
                                         @endforeach
                                         @else
                                         <option disabled selected>No Status available</option>
@@ -584,11 +602,18 @@
                 </div>
                 <div class="modal-body">
                     
+                    @if( $viewBallotParent != null )
+                    @if( $viewBallotParent['is_re_print'] == true )
+                    <h5 class="text-danger" style="text-align: right;">Subjected for RE-PRINT</h5>
+                    @endif
+                    @endif
+                    
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
                             <div class="form-row">
                                 <div class="form-group col-md-4">
-                                    <strong class="text-muted d-block mb-2">Ballot ID </strong>
+                                    {{-- <strong class="text-muted d-block mb-2">Ballot ID </strong> --}}
+                                    <strong class="text-muted d-block mb-2">Ballot Control # </strong>
                                     <input type="text" class="form-control" wire:model="viewBallotParent.ballot_id" >
                                 </div>
                             </div>
@@ -618,7 +643,8 @@
                         <div class="col-sm-12 col-md-12">
                             <div class="form-row">
                                 <div class="form-group col-md-12">
-                                    <strong class="text-muted d-block mb-2">Pollplace </strong>
+                                    {{-- <strong class="text-muted d-block mb-2">Pollplace </strong> --}}
+                                    <strong class="text-muted d-block mb-2">Ballot Poll Location </strong>
                                     <input type="text" class="form-control" wire:model="viewBallotParent.pollplace" >
                                 </div>
                             </div>
@@ -629,11 +655,13 @@
                         <div class="col-sm-12 col-md-12">
                             <div class="form-row">
                                 <div class="form-group col-md-10">
-                                    <strong class="text-muted d-block mb-2">Clustered Precinct </strong>
+                                    {{-- <strong class="text-muted d-block mb-2">Clustered Precinct </strong> --}}
+                                    <strong class="text-muted d-block mb-2">Poll Location Serial Number </strong>
                                     <input type="text" class="form-control" wire:model="viewBallotParent.clustered_prec" >
                                 </div>
                                 <div class="form-group col-md-2">
-                                    <strong class="text-muted d-block mb-2">Cluster Total </strong>
+                                    {{-- <strong class="text-muted d-block mb-2">Cluster Total </strong> --}}
+                                    <strong class="text-muted d-block mb-2">Ballot Total </strong>
                                     <input type="text" class="form-control" wire:model="viewBallotParent.cluster_total" >
                                 </div>
                             </div>
@@ -812,7 +840,6 @@
                                 </div>
                                 <div class="p-2">
                                     <button type="button" class="btn btn-warning" wire:click="resetBadBallots">Reset Form</button>
-                                    
                                 </div>
                                 <div class="p-2">
                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -821,6 +848,7 @@
                             
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div>

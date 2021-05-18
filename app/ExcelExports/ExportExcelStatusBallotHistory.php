@@ -38,7 +38,8 @@ class ExportExcelStatusBallotHistory implements FromQuery, WithHeadings, WithMap
     public function headings(): array
     {
         return [
-            ['ID', 'BALLOT ID', 'OLD_STATUS', 'TYPE', 'STATUS BY ID', 'STATUS BY NAME', 'STATUS BY AT'],
+              // ['ID', 'BALLOT ID', 'ACTION', 'OLD STATUS', 'TYPE', 'STATUS BY ID', 'STATUS BY NAME', 'STATUS BY AT' ],
+              ['ID', 'BALLOT CONTROL #', 'ACTION', 'OLD STATUS', 'TYPE', 'STATUS BY ID', 'STATUS BY NAME', 'STATUS BY AT' ],
         ];
     }
     
@@ -47,14 +48,44 @@ class ExportExcelStatusBallotHistory implements FromQuery, WithHeadings, WithMap
         $status_by_at = Carbon::create($status_history->status_by_at);
         
         if( $status_history->old_status == 'PRINTER' ){
-            $old_status = 'SHEETER';
+            // $old_status = 'SHEETER';
+
+            $old_status = 'PAPER CUTTER SECTION';           
         }else{
-            $old_status = $status_history->old_status;
+            // $old_status = $status_history->old_status;
+
+            $old_status = '';
+            
+            if( $status_history->old_status == 'SHEETER' ){
+                $old_status = 'PAPER CUTTER SECTION';           
+            }
+            
+            if( $status_history->old_status == 'TEMPORARY STORAGE' ){
+                $old_status = 'STORAGE SECTION';           
+            }
+            
+            if(  $status_history->old_status == 'VERIFICATION' ){
+                $old_status = 'VALIDITY VERIFICATION SECTION';           
+            }
+            
+            if( $status_history->old_status == 'QUARANTINE' ){
+                $old_status = 'REJECTED SECTION';           
+            }
+            
+            if( $status_history->old_status == 'COMELEC DELIVERY' ){
+                $old_status = 'DELIVERY SECTION';           
+            }
+            
+            if( $status_history->old_status == 'NPO SMD' ){
+                $old_status = 'BILLING SECTION';           
+            }
+
         }
         
         return [
             $status_history->id,
             $status_history->ballot_id,
+            $status_history->action,
             $old_status,
             $status_history->new_status_type,
             $status_history->status_by_id,

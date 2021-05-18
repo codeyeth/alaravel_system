@@ -86,21 +86,37 @@ class StatusView extends Component
     
     public function render()
     {
-        return view('livewire.rr-ballot-tracking.status-view', [
-            'pieChartModel' => (new PieChartModel())
-            ->setTitle('Ballots Possession')
-            ->setAnimated(true)
-            ->setOpacity(100)
-            ->addSlice('Sheeter', $this->sheeter, '#868e96')
-            ->addSlice('Temporary Storage', $this->temporaryStorage, '#343a40')
-            ->addSlice('Verification', $this->verification, '#17c671')
-            ->addSlice('Quarantine', $this->quarantine, '#c4183c')
-            ->addSlice('Comelec Delivery', $this->comelecDelivery, '#17a2b8')
-            ->addSlice('NPO SMD', $this->npoSmd, '#007bff')
-            ->addSlice('No Owner', $this->releasedNoOwner, '#f6ad55'),
-            ]
-        );
-        
-        
+        // return view('livewire.rr-ballot-tracking.status-view', [
+            //     'pieChartModel' => (new PieChartModel())
+            //     ->setTitle('Ballots Possession')
+            //     ->setAnimated(true)
+            //     ->setOpacity(100)
+            //     ->addSlice('Sheeter', $this->sheeter, '#868e96')
+            //     ->addSlice('Temporary Storage', $this->temporaryStorage, '#343a40')
+            //     ->addSlice('Verification', $this->verification, '#17c671')
+            //     ->addSlice('Quarantine', $this->quarantine, '#c4183c')
+            //     ->addSlice('Comelec Delivery', $this->comelecDelivery, '#17a2b8')
+            //     ->addSlice('NPO SMD', $this->npoSmd, '#007bff')
+            //     ->addSlice('No Owner', $this->releasedNoOwner, '#f6ad55'),
+            //     ]
+            // );
+            
+            return view('livewire.rr-ballot-tracking.status-view', [
+                'pieChartModel' => (new PieChartModel())
+                ->setTitle('Ballots Possession')
+                ->setAnimated(true)
+                ->setOpacity(100)
+                ->addSlice('PAPER CUTTER SECTION', $this->sheeter, '#868e96')
+                ->addSlice('STORAGE SECTION', $this->temporaryStorage, '#343a40')
+                ->addSlice('VALIDITY VERIFICATION SECTION', $this->verification, '#17c671')
+                ->addSlice('REJECTED SECTION', $this->quarantine, '#c4183c')
+                ->addSlice('DELIVERY SECTION', $this->comelecDelivery, '#17a2b8')
+                ->addSlice('BILLING SECTION', $this->npoSmd, '#007bff')
+                ->addSlice('No Owner', $this->releasedNoOwner, '#f6ad55'),
+                ]
+            );
+            
+            
+        }
     }
-}
+    

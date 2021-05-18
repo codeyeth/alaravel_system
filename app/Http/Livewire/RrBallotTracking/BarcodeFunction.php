@@ -56,9 +56,10 @@ class BarcodeFunction extends Component
     public $keywordMode = true;
     
     //VIEW THE FULL BALLOT DETAILS
-    public $viewBallotParent = [];
+    public $viewBallotParent;
     
     //ALTER BALLOT STATUS
+    public $cantAlter = false; //CANT ALTER THE BALLOT IF IT IS OUT FOR DELIVERY OR DELIVERED OR HAS AN DR
     public $alterBallotStatus = '';
     public $alterBallotHistoryList = [];
     
@@ -150,7 +151,6 @@ class BarcodeFunction extends Component
     public function getBallotDetails($ballotId){
         $getBallotDetails = Ballots::find($ballotId);
         
-        
         $detailsCurrentStatus = '';
         if( $getBallotDetails->current_status == 'SHEETER' ){
             $detailsCurrentStatus = 'PAPER CUTTER SECTION';
@@ -176,7 +176,7 @@ class BarcodeFunction extends Component
             $detailsCurrentStatus = 'BILLING SECTION';
         }
         
-        $this->viewBallotParent = [
+        $this->viewBallotParent = collect([
             'prov_name' => $getBallotDetails->prov_name,
             'mun_name' => $getBallotDetails->mun_name,
             'bgy_name' => $getBallotDetails->bgy_name,
@@ -189,10 +189,11 @@ class BarcodeFunction extends Component
             'status_updated_by' => $getBallotDetails->status_updated_by,
             'status_updated_at' => Carbon::parse($getBallotDetails->status_updated_at)->toDayDateTimeString(),
             
-            
             'is_re_print' => $getBallotDetails->is_re_print,
-        ];
-        // dd($this->viewBallotParent);
+            ]
+        );
+        
+        // dd($this->viewBallotParent , $getBallotDetails);
     }
     
     //UPDATE TOGGLE SEARCH MODE
@@ -399,22 +400,26 @@ class BarcodeFunction extends Component
         if($splittedValue[1] == "IN"){
             $currentStatus = $splittedValue[0];
         }
-        
-        if($this->alterBallotStatus == "SHEETER - OUT"){
-            $currentStatus = "TEMPORARY STORAGE";
+
+        if($splittedValue[1] == "OUT"){
+            $currentStatus = $splittedValue[0];
         }
         
-        if($this->alterBallotStatus == "TEMPORARY STORAGE - OUT"){
-            $currentStatus = "VERIFICATION";
-        }
+        // if($this->alterBallotStatus == "SHEETER - OUT"){
+        //     $currentStatus = "TEMPORARY STORAGE";
+        // }
         
-        if($this->alterBallotStatus == "VERIFICATION - OUT"){
-            $currentStatus = "COMELEC DELIVERY";
-        }
+        // if($this->alterBallotStatus == "TEMPORARY STORAGE - OUT"){
+        //     $currentStatus = "VERIFICATION";
+        // }
         
-        if($this->alterBallotStatus == "COMELEC DELIVERY - OUT"){
-            $currentStatus = "NPO SMD";
-        }
+        // if($this->alterBallotStatus == "VERIFICATION - OUT"){
+        //     $currentStatus = "COMELEC DELIVERY";
+        // }
+        
+        // if($this->alterBallotStatus == "COMELEC DELIVERY - OUT"){
+        //     $currentStatus = "NPO SMD";
+        // }
         
         $alterBallotStatus->update([
             'current_status' => $currentStatus,
@@ -522,47 +527,121 @@ class BarcodeFunction extends Component
                 $userName = Auth::user()->name;
                 $ballot_id = $this->search;
                 
+                ///// BEEN OVER-WRITED FOR DEMO PURPOSES
+                
                 if($statusType == 'IN'){
                     $comelec_role = Auth::user()->comelec_role;
                     
                     if($comelec_role == 'SHEETER'){
+                        // $barcoded_receiver = 'PRINTER';
+                        
+                        $comelec_role = 'PAPER CUTTER SECTION';
                         $barcoded_receiver = 'PRINTER';
                     }
                     
                     if($comelec_role == 'TEMPORARY STORAGE'){
-                        $barcoded_receiver = 'SHEETER';
+                        // $barcoded_receiver = 'SHEETER';
+                        
+                        $comelec_role = 'STORAGE SECTION';
+                        $barcoded_receiver = 'PAPER CUTTER SECTION';
                     }
                     
                     if($comelec_role == 'VERIFICATION'){
-                        $barcoded_receiver = 'TEMPORARY STORAGE';
+                        // $barcoded_receiver = 'TEMPORARY STORAGE';
+                        
+                        $comelec_role = 'VALIDITY VERIFICATION SECTION';
+                        $barcoded_receiver = 'STORAGE SECTION';
                     }
                     
                     if($comelec_role == 'COMELEC DELIVERY'){
                         if($updateBallotStatus->is_re_print == true){
-                            $barcoded_receiver = 'QUARANTINE';
+                            // $barcoded_receiver = 'QUARANTINE';
+                            
+                            $comelec_role = 'DELIVERY SECTION';
+                            $barcoded_receiver = 'REJECTED SECTION';
+                            
                         }else{
-                            $barcoded_receiver = 'VERIFICATION';
+                            // $barcoded_receiver = 'VERIFICATION';
+                            
+                            $comelec_role = 'DELIVERY SECTION';
+                            $barcoded_receiver = 'VALIDITY VERIFICATION SECTION';
                         }
                     }
                     
                     if($comelec_role == 'QUARANTINE'){
-                        $barcoded_receiver = 'VERIFICATION';
+                        // $barcoded_receiver = 'VERIFICATION';
+                        
+                        $comelec_role = 'REJECTED SECTION';
+                        $barcoded_receiver = 'VALIDITY VERIFICATION SECTION';
                     }
                     
                     if($comelec_role == 'NPO SMD'){
-                        $barcoded_receiver = 'COMELEC DELIVERY';
+                        // $barcoded_receiver = 'COMELEC DELIVERY';
+                        
+                        $comelec_role = 'BILLING SECTION';
+                        $barcoded_receiver = 'DELIVERY SECTION';
                     }
                     
                     broadcast(new RefreshBallotList($comelec_role, $ballot_id, $barcoded_receiver, $statusType, $userName));
                 }
                 
                 if($statusType == 'OUT'){
-                    $comelec_role = Auth::user()->comelec_role;
+                    // $comelec_role = Auth::user()->comelec_role;
+                    
+                    if( Auth::user()->comelec_role == 'SHEETER' ){
+                        $comelec_role = 'PAPER CUTTER SECTION';
+                    }
+                    
+                    if( Auth::user()->comelec_role == 'TEMPORARY STORAGE' ){
+                        $comelec_role = 'STORAGE SECTION';
+                    }
+                    
+                    if( Auth::user()->comelec_role == 'VERIFICATION' ){
+                        $comelec_role = 'VALIDITY VERIFICATION SECTION';
+                    }
+                    
+                    if( Auth::user()->comelec_role == 'QUARANTINE' ){
+                        $comelec_role = 'REJECTED SECTION';
+                    }
+                    
+                    if( Auth::user()->comelec_role == 'COMELEC DELIVERY' ){
+                        $comelec_role = 'DELIVERY SECTION';
+                    }
+                    
+                    if( Auth::user()->comelec_role == 'NPO SMD' ){
+                        $comelec_role = 'BILLING SECTION';
+                    }
                     
                     if($comelec_role == 'VERIFICATION' && $this->verificationBadMode == true ){
-                        $barcoded_receiver = 'QUARANTINE';
+                        // $barcoded_receiver = 'QUARANTINE';
+                        $barcoded_receiver = 'REJECTED SECTION';
                     }else{
-                        $barcoded_receiver = Auth::user()->barcoded_receiver;
+                        // $barcoded_receiver = Auth::user()->barcoded_receiver;
+                        
+                        if( Auth::user()->barcoded_receiver == 'SHEETER' ){
+                            $barcoded_receiver = 'PAPER CUTTER SECTION';
+                        }
+                        
+                        if( Auth::user()->barcoded_receiver == 'TEMPORARY STORAGE' ){
+                            $barcoded_receiver = 'STORAGE SECTION';
+                        }
+                        
+                        if( Auth::user()->barcoded_receiver == 'VERIFICATION' ){
+                            $barcoded_receiver = 'VALIDITY VERIFICATION SECTION';
+                        }
+                        
+                        if( Auth::user()->barcoded_receiver == 'QUARANTINE' ){
+                            $barcoded_receiver = 'REJECTED SECTION';
+                        }
+                        
+                        if( Auth::user()->barcoded_receiver == 'COMELEC DELIVERY' ){
+                            $barcoded_receiver = 'DELIVERY SECTION';
+                        }
+                        
+                        if( Auth::user()->barcoded_receiver == 'NPO SMD' ){
+                            $barcoded_receiver = 'BILLING SECTION';
+                        }
+                        
                     }
                     
                     broadcast(new RefreshBallotList($comelec_role, $ballot_id, $barcoded_receiver, $statusType, $userName));
@@ -586,7 +665,14 @@ class BarcodeFunction extends Component
     
     //GET BALLOT HISTORY
     public function getBallotHistory($ballotId){
-        $ballotResult = Ballots::find($ballotId);   
+        $ballotResult = Ballots::find($ballotId);  
+
+        if( $ballotResult->is_dr_done == true || $ballotResult->is_out_for_delivery == true || $ballotResult->is_delivered == true){
+            $this->cantAlter = true;
+        }else{
+            $this->cantAlter = false;
+        }
+
         $this->exportSingleId = $ballotId;
         $this->modalBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->get();  
         $this->alterBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->groupBy('old_status', 'new_status_type')->get();  
@@ -594,6 +680,13 @@ class BarcodeFunction extends Component
     }
     
     //////////////////////////////////////////////REPORTSSSS
+    //EXPORT SINGLE BALLOT HISTORY
+    public function exportSingleBallotHistory($exportSingleId){
+        $ballotSingleExportResult = Ballots::find($exportSingleId);   
+        $ballotIdToExcel = $ballotSingleExportResult->ballot_id;
+        $export = new ExportExcelSingleBallotHistory($ballotIdToExcel);
+        return Excel::download($export, $ballotIdToExcel . '_single_ballot_history.xlsx');
+    }
     //////////////////////////////////////////////REPORTSSSS
     
     //MOUNT FUNCTION

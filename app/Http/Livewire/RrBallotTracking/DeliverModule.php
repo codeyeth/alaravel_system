@@ -116,9 +116,67 @@ class DeliverModule extends Component
                 
                 $userName = Auth::user()->name;
                 $ballot_id = $this->search;
-                $comelec_role = Auth::user()->comelec_role;
-                $barcoded_receiver = Auth::user()->barcoded_receiver;
                 
+                // $comelec_role = Auth::user()->comelec_role;
+                // $barcoded_receiver = Auth::user()->barcoded_receiver;
+                
+                ///DEMO
+
+                if( Auth::user()->comelec_role == 'SHEETER' ){
+                    $comelec_role = 'PAPER CUTTER SECTION';
+                }
+                
+                if( Auth::user()->comelec_role == 'TEMPORARY STORAGE' ){
+                    $comelec_role = 'STORAGE SECTION';
+                }
+                
+                if( Auth::user()->comelec_role == 'VERIFICATION' ){
+                    $comelec_role = 'VALIDITY VERIFICATION SECTION';
+                }
+                
+                if( Auth::user()->comelec_role == 'QUARANTINE' ){
+                    $comelec_role = 'REJECTED SECTION';
+                }
+                
+                if( Auth::user()->comelec_role == 'COMELEC DELIVERY' ){
+                    $comelec_role = 'DELIVERY SECTION';
+                }
+                
+                if( Auth::user()->comelec_role == 'NPO SMD' ){
+                    $comelec_role = 'BILLING SECTION';
+                }
+
+
+                //////
+
+
+                if( Auth::user()->barcoded_receiver == 'SHEETER' ){
+                    $barcoded_receiver = 'PAPER CUTTER SECTION';
+                }
+                
+                if( Auth::user()->barcoded_receiver == 'TEMPORARY STORAGE' ){
+                    $barcoded_receiver = 'STORAGE SECTION';
+                }
+                
+                if( Auth::user()->barcoded_receiver == 'VERIFICATION' ){
+                    $barcoded_receiver = 'VALIDITY VERIFICATION SECTION';
+                }
+                
+                if( Auth::user()->barcoded_receiver == 'QUARANTINE' ){
+                    $barcoded_receiver = 'REJECTED SECTION';
+                }
+                
+                if( Auth::user()->barcoded_receiver == 'COMELEC DELIVERY' ){
+                    $barcoded_receiver = 'DELIVERY SECTION';
+                }
+                
+                if( Auth::user()->barcoded_receiver == 'NPO SMD' ){
+                    $barcoded_receiver = 'BILLING SECTION';
+                }
+
+                //////
+
+
                 broadcast(new RefreshBallotList($comelec_role, $ballot_id, $barcoded_receiver, $statusType, $userName));
                 
                 if( $this->isOutForDeliveryMode == true ){

@@ -36,7 +36,8 @@ class ExportExcelBallotDate implements FromQuery, WithHeadings, WithMapping, Sho
     public function headings(): array
     {
         return [
-            ['ID', 'BALLOT ID', 'OLD_STATUS', 'TYPE', 'STATUS BY ID', 'STATUS BY NAME', 'STATUS BY AT' ],
+            // ['ID', 'BALLOT ID', 'OLD_STATUS', 'TYPE', 'STATUS BY ID', 'STATUS BY NAME', 'STATUS BY AT' ],
+            ['ID', 'BALLOT CONTROL #', 'OLD_STATUS', 'TYPE', 'STATUS BY ID', 'STATUS BY NAME', 'STATUS BY AT' ],
         ];
     }
     
@@ -45,9 +46,38 @@ class ExportExcelBallotDate implements FromQuery, WithHeadings, WithMapping, Sho
         $status_by_at = Carbon::create($date_history->status_by_at);
         
         if( $date_history->old_status == 'PRINTER' ){
-            $old_status = 'SHEETER';
+            // $old_status = 'SHEETER';
+            
+            $old_status = 'PAPER CUTTER SECTION';           
         }else{
-            $old_status = $date_history->old_status;
+            // $old_status = $date_history->old_status;
+            
+            $old_status = '';
+            
+            if( $date_history->old_status == 'SHEETER' ){
+                $old_status = 'PAPER CUTTER SECTION';           
+            }
+            
+            if( $date_history->old_status == 'TEMPORARY STORAGE' ){
+                $old_status = 'STORAGE SECTION';           
+            }
+            
+            if(  $date_history->old_status == 'VERIFICATION' ){
+                $old_status = 'VALIDITY VERIFICATION SECTION';           
+            }
+            
+            if( $date_history->old_status == 'QUARANTINE' ){
+                $old_status = 'REJECTED SECTION';           
+            }
+            
+            if( $date_history->old_status == 'COMELEC DELIVERY' ){
+                $old_status = 'DELIVERY SECTION';           
+            }
+            
+            if( $date_history->old_status == 'NPO SMD' ){
+                $old_status = 'BILLING SECTION';           
+            }
+            
         }
         
         return [

@@ -23,7 +23,8 @@ class ExportExcelRePrintsHistory implements FromQuery, WithHeadings, WithMapping
     public function headings(): array
     {
         return [
-            [ 'ID', 'BALLOT ID', 'UNIQUE NUMBER', 'DESCRIPTION', 'ACTION', 'BY ID', 'BY NAME', 'CREATED AT', ],
+            // [ 'ID', 'BALLOT ID', 'UNIQUE NUMBER', 'DESCRIPTION', 'ACTION', 'BY ID', 'BY NAME', 'CREATED AT', ],
+            [ 'ID', 'BALLOT CONTROL #', 'UNIQUE NUMBER', 'DESCRIPTION', 'ACTION', 'BY ID', 'BY NAME', 'CREATED AT', ],
         ];
     }
     

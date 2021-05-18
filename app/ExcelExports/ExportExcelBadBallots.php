@@ -24,8 +24,15 @@ class ExportExcelBadBallots implements FromQuery, WithHeadings, WithMapping, Sho
     public function headings(): array
     {
         return [
+            // [ 
+            //     'ID', 'BALLOT ID', 'UNIQUE NUMBER', 'DESCRIPTION', 'CREATOR ID', 'CREATOR NAME', 'CREATED AT',
+            //     'BATCH#', 'BY ID', 'BY NAME', 'AT',
+            //     'IS REPRINT STARTED', 'BY ID', 'BY NAME', 'STARTED AT',
+            //     'IS REPRINT DONE', 'BY ID', 'BY NAME', 'DONE AT',
+            //     'IS REPRINT SUCCESSFUL', 'BY ID', 'BY NAME', 'AT',
+            // ],
             [ 
-                'ID', 'BALLOT ID', 'UNIQUE NUMBER', 'DESCRIPTION', 'CREATOR ID', 'CREATOR NAME', 'CREATED AT',
+                'ID', 'BALLOT CONTROL #', 'UNIQUE NUMBER', 'DESCRIPTION', 'CREATOR ID', 'CREATOR NAME', 'CREATED AT',
                 'BATCH#', 'BY ID', 'BY NAME', 'AT',
                 'IS REPRINT STARTED', 'BY ID', 'BY NAME', 'STARTED AT',
                 'IS REPRINT DONE', 'BY ID', 'BY NAME', 'DONE AT',

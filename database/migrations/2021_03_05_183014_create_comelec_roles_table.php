@@ -17,6 +17,7 @@ class CreateComelecRolesTable extends Migration
             $table->id();
             $table->string('role_id');
             $table->string('comelec_role');
+            $table->string('demo_role');
             $table->string('added_by_id');
             $table->string('added_by_name');
             $table->timestamps();

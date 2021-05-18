@@ -16,19 +16,17 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
                             <div class="form-row">
-                                <div class="form-group col-md-5">
+                                <div class="form-group col-md-6">
                                     <strong class="text-muted d-block mb-2">Date From </strong>
                                     <input type="datetime-local" name="dfrom" id="dfrom"  wire:model="dateFrom" class="form-control" placeholder="Date From" value="<?php echo date('Y-m-d\TH:i'); ?>"/>
                                 </div>
-                                <div class="form-group col-md-5">
+                                <div class="form-group col-md-6">
                                     <strong class="text-muted d-block mb-2">Date To </strong>
                                     <input type="datetime-local" wire:model="dateTo" name="dto" id="dto" class="form-control" placeholder="Date To" value="<?php echo date('Y-m-d\TH:i'); ?>">
                                 </div>
-                                <div class="col-sm-12 col-md-2">
-                                    <strong class="text-muted d-block mb-2">.</strong>
-                                    <button type="button" class="btn btn-primary btn-block" wire:click="exportDateBallot"><i class="material-icons">text_snippet</i> Generate</button>
-                                </div>
                             </div>
+                            <button type="button" class="btn btn-primary btn-block" wire:click="exportDateBallot"><i class="material-icons">text_snippet</i> Generate</button>
+                            
                         </div>
                     </div>
                     
@@ -38,20 +36,21 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-12">
                             <div class="form-row">
-                                <div class="form-group col-md-5">
+                                <div class="form-group col-md-6">
                                     <strong class="text-muted d-block mb-2">Status </strong>
                                     <select id="statusReport" name="statusReport" class="form-control" wire:model="statusSelected">
                                         <option disabled selected value="">Select Status here</option>
                                         @if(count($comelecRolesList) > 0)
                                         @foreach($comelecRolesList as $comrole)
-                                        <option value="{{$comrole->comelec_role}}">{{ Str::title($comrole->comelec_role) }}</option>
+                                        {{-- <option value="{{$comrole->comelec_role}}">{{ Str::title($comrole->comelec_role) }}</option> --}}
+                                        <option value="{{$comrole->comelec_role}}">{{ Str::title($comrole->demo_role) }}</option>
                                         @endforeach
                                         @else
                                         <option disabled selected>No Status available</option>
                                         @endif                
                                     </select>
                                 </div>
-                                <div class="form-group col-md-5">
+                                <div class="form-group col-md-6">
                                     <strong class="text-muted d-block mb-2">Status Type </strong>
                                     <select id="statusType" name="statusType" class="form-control" wire:model="statusType">
                                         <option disabled selected value="">Select Status Type here</option>
@@ -60,11 +59,8 @@
                                         <option value="ALL">IN AND OUT</option>               
                                     </select>
                                 </div>
-                                <div class="col-sm-12 col-md-2">
-                                    <strong class="text-muted d-block mb-2">. </strong>
-                                    <button type="button" class="btn btn-block btn-secondary" wire:click="exportStatusBallotHistory"><i class="material-icons">text_snippet</i> Generate</button>   
-                                </div>
                             </div>
+                            <button type="button" class="btn btn-block btn-accent" wire:click="exportStatusBallotHistory"><i class="material-icons">text_snippet</i> Generate</button>   
                         </div>
                     </div>
                     
@@ -91,7 +87,8 @@
                         <div class="col-sm-12 col-md-12">
                             <div class="form-row">
                                 <div class="col-sm-12 col-md-4">
-                                    <button type="button" class="btn btn-block btn-danger" wire:click="exportRePrints"><i class="material-icons">text_snippet</i> Generate All Re-prints ( Ballot ID )</button>
+                                    {{-- <button type="button" class="btn btn-block btn-danger" wire:click="exportRePrints"><i class="material-icons">text_snippet</i> Generate All Re-prints ( Ballot ID )</button> --}}
+                                    <button type="button" class="btn btn-block btn-danger" wire:click="exportRePrints"><i class="material-icons">text_snippet</i> Generate All Re-prints ( Ballot C.# )</button>
                                 </div>
                                 <div class="col-sm-12 col-md-4">
                                     <button type="button" class="btn btn-block btn-danger" wire:click="exportBadBallots"><i class="material-icons">text_snippet</i> Generate All Re-prints ( Ballot/s )</button>

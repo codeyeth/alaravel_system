@@ -23,8 +23,12 @@ class ExportExcelRePrints implements FromQuery, WithHeadings, WithMapping, Shoul
     public function headings(): array
     {
         return [
+            // [
+            //     'ID', 'BALLOT ID', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'POLLPLACE', 'POLLSTREET', 'CLUSTER NO', 'CLUSTERED PREC', 'CLUSTER TOTAL', 'GROUP NO', 'REPRINT STATUS BY', 'REPRINT STATUS AT', 
+            //     'REPRINT DONE BY', 'REPRINT DONE AT', 
+            // ],
             [
-                'ID', 'BALLOT ID', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'POLLPLACE', 'POLLSTREET', 'CLUSTER NO', 'CLUSTERED PREC', 'CLUSTER TOTAL', 'GROUP NO', 'REPRINT STATUS BY', 'REPRINT STATUS AT', 
+                'ID', 'BALLOT CONTROL #', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'BALLOT POLL LOCATION', 'POLLING STREET', 'LOCATION CLUSTER NO', 'POLL LOCATION SERIAL NO.', 'BALLOT TOTAL', 'GROUP NO', 'REPRINT STATUS BY', 'REPRINT STATUS AT', 
                 'REPRINT DONE BY', 'REPRINT DONE AT', 
             ],
         ];

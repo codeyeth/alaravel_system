@@ -157,12 +157,20 @@
                         <table class="table table-hover table-bordered">
                             <thead class="bg-light">
                                 <tr>
-                                    <th style="text-align: center">SHEETER</th>
+                                    {{-- <th style="text-align: center">SHEETER</th>
                                     <th style="text-align: center">TEMPORARY STORAGE</th>
                                     <th style="text-align: center">VERIFICATION</th>
                                     <th style="text-align: center" class="text-danger">QUARANTINE</th>
                                     <th style="text-align: center">COMELEC DELIVERY</th>
                                     <th style="text-align: center">NPO SMD</th>
+                                    <th style="text-align: center" class="text-warning">RELEASED BALLOTS PENDING TO RECEIVE</th> --}}
+
+                                    <th style="text-align: center">PAPER CUTTER SECTION</th>
+                                    <th style="text-align: center">STORAGE SECTION</th>
+                                    <th style="text-align: center">VALIDITY VERIFICATION SECTION</th>
+                                    <th style="text-align: center" class="text-danger">REJECTED SECTION</th>
+                                    <th style="text-align: center">DELIVERY SECTION</th>
+                                    <th style="text-align: center">BILLING SECTION</th>
                                     <th style="text-align: center" class="text-warning">RELEASED BALLOTS PENDING TO RECEIVE</th>
                                 </tr>
                             </thead>
