@@ -435,10 +435,10 @@ class DeliveryManagement extends Component
                     ]);
                     $update_selected = DB::table('ballots')
                     ->where('ballot_id', $ballotlist['ballot_id'])
-                    ->update(['is_dr_done' => 1,
+                    ->update(['is_dr_done' => true,
                               'is_dr_done_by_id' => Auth::user()->id,
-                              'status_updated_by' => Auth::user()->name,
-                              'status_updated_at' => Carbon::now()
+                              'is_dr_done_by' => Auth::user()->name,
+                              'is_dr_done_at' => Carbon::now(),
                               ]);
                     session()->flash('message', 'DR Number Created!');
                 }

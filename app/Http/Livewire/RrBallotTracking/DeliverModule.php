@@ -121,7 +121,7 @@ class DeliverModule extends Component
                 // $barcoded_receiver = Auth::user()->barcoded_receiver;
                 
                 ///DEMO
-
+                
                 if( Auth::user()->comelec_role == 'SHEETER' ){
                     $comelec_role = 'PAPER CUTTER SECTION';
                 }
@@ -145,11 +145,11 @@ class DeliverModule extends Component
                 if( Auth::user()->comelec_role == 'NPO SMD' ){
                     $comelec_role = 'BILLING SECTION';
                 }
-
-
+                
+                
                 //////
-
-
+                
+                
                 if( Auth::user()->barcoded_receiver == 'SHEETER' ){
                     $barcoded_receiver = 'PAPER CUTTER SECTION';
                 }
@@ -173,10 +173,10 @@ class DeliverModule extends Component
                 if( Auth::user()->barcoded_receiver == 'NPO SMD' ){
                     $barcoded_receiver = 'BILLING SECTION';
                 }
-
+                
                 //////
-
-
+                
+                
                 broadcast(new RefreshBallotList($comelec_role, $ballot_id, $barcoded_receiver, $statusType, $userName));
                 
                 if( $this->isOutForDeliveryMode == true ){
@@ -196,7 +196,7 @@ class DeliverModule extends Component
     {
         if($this->isOutForDeliveryMode == true){
             return view('livewire.rr-ballot-tracking.deliver-module', [
-                'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('is_out_for_delivery', false )->where('is_dr_done', true )->paginate(20),
+                'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', 'FOR DELIVERY')->where('is_out_for_delivery', false )->where('is_dr_done', true )->paginate(20),
                 'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('is_dr_done', true )->count(),
                 ]
             );
