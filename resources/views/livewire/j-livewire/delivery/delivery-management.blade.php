@@ -50,7 +50,9 @@
                                     @include('livewire.j-livewire.delivery.delivery-home')
                                 </div>
                                 <div class="tab-pane fade show" id="create_dr" role="tabpanel" aria-labelledby="create_dr-tab" wire:ignore.self>  
+                                    @if($wire_dr_types_identifier == 1)
                                     @include('livewire.j-livewire.delivery.delivery-create-dr')
+                                    @endif
                                 </div>
                                 <div class="tab-pane fade show" id="dr_number_report" role="tabpanel" aria-labelledby="dr_number_repor-tab" wire:ignore.self>  
                                     <div class="card-header border-bottom">
