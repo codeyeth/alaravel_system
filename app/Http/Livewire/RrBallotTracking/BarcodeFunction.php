@@ -397,29 +397,29 @@ class BarcodeFunction extends Component
             ]
         );
         
-        if($splittedValue[1] == "IN"){
-            $currentStatus = $splittedValue[0];
-        }
-
-        if($splittedValue[1] == "OUT"){
+        if( $splittedValue[1] == 'IN' ){
             $currentStatus = $splittedValue[0];
         }
         
-        // if($this->alterBallotStatus == "SHEETER - OUT"){
-        //     $currentStatus = "TEMPORARY STORAGE";
-        // }
+        //OUT
         
-        // if($this->alterBallotStatus == "TEMPORARY STORAGE - OUT"){
-        //     $currentStatus = "VERIFICATION";
-        // }
+        if( $splittedValue[0] == 'SHEETER' && $splittedValue[1] == 'OUT' ){
+            $currentStatus = "TEMPORARY STORAGE";
+        }   
         
-        // if($this->alterBallotStatus == "VERIFICATION - OUT"){
-        //     $currentStatus = "COMELEC DELIVERY";
-        // }
+        if( $splittedValue[0] == 'TEMPORARY STORAGE' && $splittedValue[1] == 'OUT' ){
+            $currentStatus = "VERIFICATION";
+        }  
         
-        // if($this->alterBallotStatus == "COMELEC DELIVERY - OUT"){
-        //     $currentStatus = "NPO SMD";
-        // }
+        if( $splittedValue[0] == 'VERIFICATION' && $splittedValue[1] == 'OUT' ){
+            $currentStatus = "COMELEC DELIVERY";
+        } 
+        
+        if( $splittedValue[0] == 'COMELEC DELIVERY' && $splittedValue[1] == 'OUT' ){
+            $currentStatus = "NPO SMD";
+        }
+        
+        // dd( $currentStatus , $splittedValue[1]);
         
         $alterBallotStatus->update([
             'current_status' => $currentStatus,
@@ -437,7 +437,6 @@ class BarcodeFunction extends Component
     }
     
     //UPDATE BALLOT STATUS
-    //UPDATE BALLOT STATUS
     public function updateBallotStatus(){
         $now = Carbon::now();
         // dd($now);
@@ -451,7 +450,7 @@ class BarcodeFunction extends Component
             }
             
             if($updateBallotStatus != null){
-                if( $this->verificationBadMode == true ){
+                if( $this->ballotIn == false && $this->verificationBadMode == true ){
                     $newStatus = 'QUARANTINE';
                     $for = 'BAD BALLOTS';
                     $rePrint = true;
@@ -462,6 +461,9 @@ class BarcodeFunction extends Component
                 }else{
                     if( Auth::user()->comelec_role == 'SHEETER' && $this->ballotIn == true ){
                         $newStatus = Auth::user()->comelec_role;
+                        $for = '';
+                    }elseif( Auth::user()->comelec_role == 'NPO SMD' && $this->ballotIn == false ){
+                        $newStatus = 'FOR DELIVERY';
                         $for = '';
                     }elseif($this->ballotIn == true){
                         $newStatus = $updateBallotStatus->current_status;
@@ -477,7 +479,7 @@ class BarcodeFunction extends Component
                     $rePrintId = $updateBallotStatus->re_print_id;
                 }
                 
-                if( $this->ballotIn == true){
+                if( $this->ballotIn == true ){
                     $statusType = 'IN';
                 }else{
                     $statusType = 'OUT';
@@ -612,7 +614,7 @@ class BarcodeFunction extends Component
                         $comelec_role = 'BILLING SECTION';
                     }
                     
-                    if($comelec_role == 'VERIFICATION' && $this->verificationBadMode == true ){
+                    if( Auth::user()->comelec_role == 'VERIFICATION' && $this->verificationBadMode == true ){
                         // $barcoded_receiver = 'QUARANTINE';
                         $barcoded_receiver = 'REJECTED SECTION';
                     }else{
@@ -666,13 +668,13 @@ class BarcodeFunction extends Component
     //GET BALLOT HISTORY
     public function getBallotHistory($ballotId){
         $ballotResult = Ballots::find($ballotId);  
-
+        
         if( $ballotResult->is_dr_done == true || $ballotResult->is_out_for_delivery == true || $ballotResult->is_delivered == true){
             $this->cantAlter = true;
         }else{
             $this->cantAlter = false;
         }
-
+        
         $this->exportSingleId = $ballotId;
         $this->modalBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->get();  
         $this->alterBallotHistoryList = BallotHistory::where('ballot_id', $ballotResult->ballot_id)->groupBy('old_status', 'new_status_type')->get();  
@@ -752,12 +754,20 @@ class BarcodeFunction extends Component
                     ]
                 );
             }else{
-                return view('livewire.rr-ballot-tracking.barcode-function', [
-                    'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('new_status_type', $statusType )->paginate(20),
-                    'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('new_status_type', $statusType )->count(),
-                    // 'FOR ' .
-                    ]
-                );
+                // IF USER IS NPO SMD AND IS IN BALLOT OUT MODE THE BALLOT MUST HAVE A ASSOCIATED DR
+                if( Auth::user()->comelec_role == 'NPO SMD' && Auth::user()->is_ballot_in == false ){
+                    return view('livewire.rr-ballot-tracking.barcode-function', [
+                        'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('is_dr_done', true )->where('new_status_type', $statusType )->paginate(20),
+                        'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('is_dr_done', true )->where('new_status_type', $statusType )->count(),
+                        ]
+                    );
+                }else{
+                    return view('livewire.rr-ballot-tracking.barcode-function', [
+                        'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('new_status_type', $statusType )->paginate(20),
+                        'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('new_status_type', $statusType )->count(),
+                        ]
+                    );
+                }
             }
         }
     }

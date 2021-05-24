@@ -335,6 +335,14 @@
                                         @if( $item->current_status == 'NPO SMD')
                                         BILLING SECTION
                                         @endif
+
+                                        @if( $item->current_status == 'IS OUT FOR DELIVERY')
+                                        IS OUT FOR DELIVERY
+                                        @endif
+
+                                        @if( $item->current_status == 'DELIVERED')
+                                        DELIVERED
+                                        @endif
                                         {{-- //////////////////////////////////////////////////////////// --}}
                                         
                                         
