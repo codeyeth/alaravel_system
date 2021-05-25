@@ -26,8 +26,8 @@
       <table class="table table-hover mb-0">
         <thead class="bg-light">
           <tr>
-            <th scope="col" class="border-0">DR No.</th>
             <th scope="col" class="border-0">Ballot ID</th>
+            <th scope="col" class="border-0">DR No.</th>
             <th scope="col" class="border-0">Clustered Precint</th>
             <th scope="col" class="border-0">City / Municipality / Province</th>
             <th scope="col" class="border-0">Quanitity</th>
@@ -48,7 +48,7 @@
          </tbody>
         </table>
       @else<br>
-      <p style="text-align: center">No users found.</p>    
+      <p style="text-align: center">No Data found.</p>    
       @endif
   </li>
   <li class="list-group-item px-3">

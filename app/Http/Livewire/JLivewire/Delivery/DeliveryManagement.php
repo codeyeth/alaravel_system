@@ -9,6 +9,7 @@ use App\Models\DeliveryConfig;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
+use Request;
 use Auth;
 
 class DeliveryManagement extends Component
@@ -26,16 +27,11 @@ class DeliveryManagement extends Component
 
     
     //create dr ob
-    public $obballotlists = [];
-    public $obshowSaveBtn = false;
-    public $obcanShowData = true;
-    public $obloopCount;
+    public $ballotlists = [];
+    public $showSaveBtn = false;
+    public $canShowData = true;
+    public $loopCount;
 
-    //create dr fts
-    public $ftsballotlists = [];
-    public $ftsshowSaveBtn = false;
-    public $ftscanShowData = true;
-    public $ftsloopCount;
 
     
 
@@ -158,124 +154,37 @@ class DeliveryManagement extends Component
 ////////////////end for dr config settings
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public function addBallot()
     {
-        if($this->wire_dr_types_identifier == 1){
-        $this->obloopCount++;
-        $this->obballotlists[] =  ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => ''];
-        }else{
-            $this->ftsloopCount++;
-            $this->ftsballotlists[] =  ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => ''];
-        }
+     
+            $this->loopCount++;
+            $this->ballotlists[] =  ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => ''];
+        
     }
 
-  
+
 
     public function removeBallot($index)
     {
-        if($this->wire_dr_types_identifier == 1){
-            unset($this->obballotlists[$index]);
-            $this->obballotlists = array_values($this->obballotlists);
-            $this->obloopCount--;
+        /*  not properly working
+            unset($this->ballotlists[$index]);
+            $this->ballotlists = array_values($this->ballotlists);
+            $this->loopCount--;  
+            */
+         
+        
+           
+           
+            
+            unset($this->ballotlists[$index]);
+            $this->showSaveBtn = true;
+        
 
-        }else{
-            unset($this->ftsballotlists[$index]);
-            $this->ftsballotlists = array_values($this->ftsballotlists);
-            $this->ftsloopCount--;
 
-        }
-      
+           
+           
+
+
     }
 
 
@@ -284,135 +193,81 @@ class DeliveryManagement extends Component
     public function mount()
     {   
      
-        $this->obballotlists =  [['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '']];
-    
-        $this->ftsballotlists = [['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '']];
-        
+        $this->ballotlists =  [['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '']];
         $this->wire_dr_types_identifier = 0;
     }
     
     public function searchBallotId($ballotId, $indexKey){
-        if($this->wire_dr_types_identifier == 1){
-        if($ballotId != null){
-            $searchResult = Ballots::where('ballot_id', $ballotId)->Where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->where('ballot_id', 'not like', '%F_%')->first();
-            if($searchResult != null){
-                if( count($this->obballotlists) > 1){
-                    $duplicateCount = 0;
-                    foreach($this->obballotlists as $index => $ballot_list){
-                        if( $this->obballotlists[$index]['ballot_id'] == $ballotId ){
-                            $duplicateCount++;
-                            $this->obcanShowData = true;
-                        }
-                        if($duplicateCount > 1){
-                            $this->obcanShowData = false;
-                            session()->flash('messageOB', 'Duplicate Ballot ID');
-                        }
+       
+   
+            $search_in_ballot = Ballots::where('ballot_id', $ballotId)->Where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->where('ballot_id', 'not like', '%F_%')->first();
+            $search_in_delivery = Delivery::where('BALLOT_ID', $ballotId)->first();
+            $search_in_ballot_smd = Ballots::where('ballot_id', $ballotId)->Where('current_status','!=', 'NPO SMD')->where('ballot_id', 'not like', '%F_%')->first();
+            if($search_in_ballot_smd != null){
+                $this->showSaveBtn = false;
+                $this->canShowData = false;
+                $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
+                $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
+                $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
+                session()->flash('messageDR', 'Ballot ID not in Delivery Area. Status: '.$search_in_ballot_smd->current_status.' ');
+                $addOneField = false;
+            }elseif ($search_in_ballot == null) {
+                $this->showSaveBtn = false;
+                $this->canShowData = false;
+                $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
+                $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
+                $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
+                session()->flash('messageDR', 'Invalid Ballot ID. ');
+                $addOneField = false;
+              } elseif ($search_in_delivery != null) {
+                $line_error = $indexKey + 1;
+                $this->showSaveBtn = false;
+                $this->canShowData = false;
+                $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
+                $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
+                $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
+                session()->flash('messageDR', 'Ballot ID '.$ballotId.' in Line '.$line_error.' already have DR No. DR No.' .$search_in_delivery->DR_NO.' ');
+                $addOneField = false;
+              } else {
+                $searchResult = Ballots::where('ballot_id', $ballotId)->Where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->where('ballot_id', 'not like', '%F_%')->first();
+                $duplicateCount = 0;
+                foreach($this->ballotlists as $index => $ballot_list){
+                    if( $this->ballotlists[$index]['ballot_id'] == $ballotId ){
+                        $duplicateCount++;
+                        $this->canShowData = true;
+                    }
+                    if($duplicateCount > 1){
+                        $line_error = $indexKey + 1;
+                        $this->canShowData = false;
+                        $this->showSaveBtn = false;
+                        $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
+                        $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
+                        $this->ballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
+                        session()->flash('messageDR', 'Ballot ID '.$ballotId.' Duplicate Entry at Line '.$line_error.'' );
                     }
                 }
-                if( $this->obcanShowData == true ){
-                    $this->obshowSaveBtn = true;
-                    $this->obballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
-                    $this->obballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
-                    $this->obballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
-                    $addOneField = true;
-                    
-                    //IF SEARCH SUCCESS
-                    $idFocus = $indexKey + 1;
-                    $this->dispatchBrowserEvent('obsearchSucceed', ['idFocus' => $idFocus]);
-                    $this->addBallot();
-                }
-            }else{
-                $this->obshowSaveBtn = false;
-                $this->obcanShowData = false;
-                // $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
-                // $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
-                // $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
-                session()->flash('messageOB', 'Invalid Ballot ID');
-                $addOneField = false;
-            }
-        }
-
-    }else{
-
-
-        if($ballotId != null){
-            $searchResult = Ballots::where('ballot_id', $ballotId)->Where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->where('ballot_id', 'like', '%F_%')->first();
-            if($searchResult != null){
-                if( count($this->ftsballotlists) > 1){
-                    $duplicateCount = 0;
-                    foreach($this->ftsballotlists as $index => $ballot_list){
-                        if( $this->ftsballotlists[$index]['ballot_id'] == $ballotId ){
-                            $duplicateCount++;
-                            $this->ftscanShowData = true;
-                        }
-                        if($duplicateCount > 1){
-                            $this->ftscanShowData = false;
-                            session()->flash('messageFTS', 'Duplicate Ballot ID');
-                        }
+                
+                    if( $this->canShowData == true ){
+                        $this->showSaveBtn = true;
+                        $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
+                        $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
+                        $this->ballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
+                        $addOneField = true;
+                        
+                        //IF SEARCH SUCCESS
+                        $idFocus = $indexKey + 1;
+                        $this->dispatchBrowserEvent('searchSucceed', ['idFocus' => $idFocus]);
+                        $this->addBallot();
                     }
-                }
-                if( $this->ftscanShowData == true ){
-                    $this->ftsshowSaveBtn = true;
-                    $this->ftsballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
-                    $this->ftsballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
-                    $this->ftsballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
-                    $addOneField = true;
-                    
-                    //IF SEARCH SUCCESS
-                    $idFocus = $indexKey + 1;
-                    $this->dispatchBrowserEvent('searchSucceed', ['idFocus' => $idFocus]);
-                    $this->addBallot();
-                }
-            }else{
-                $this->ftsshowSaveBtn = false;
-                $this->ftscanShowData = false;
-                // $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
-                // $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
-                // $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
-                session()->flash('messageFTS', 'Invalid Ballot ID');
-                $addOneField = false;
-            }
-        }
-
-
-    }
+              }
 
 
     }
 
   
     public function save(){
-        if($this->wire_dr_types_identifier == 1){
-        foreach ($this->obballotlists as $index => $ballotlist){
-            $ifExisting = Delivery::where('BALLOT_ID', $this->obballotlists[$index]['ballot_id'])->count();
-            if( $this->obballotlists[$index]['clustered_precint'] != '' && $ifExisting == 0){
-                $endingCount = $index + 1;
-                if(count($this->obballotlists) == $endingCount){
-                    $this->obcanShowData = true;
-                }
-            }else{
-                $this->obcanShowData = false;
-            }
-        }
-
-    }else{
-
-        foreach ($this->ftsballotlists as $index => $ballotlist){
-            $ifExisting = Delivery::where('BALLOT_ID', $this->ftsballotlists[$index]['ballot_id'])->count();
-            if( $this->ftsballotlists[$index]['clustered_precint'] != '' && $ifExisting == 0){
-                $endingCount = $index + 1;
-                if(count($this->ftsballotlists) == $endingCount){
-                    $this->ftscanShowData = true;
-                }
-            }else{
-                $this->ftscanShowData = false;
-            }
-        }
-
-
-    }
-
-
+      
+      // --start-- for creation of dr number
         $drno = DB::table('deliveries')
         ->groupBy('DR_NO')
         ->get();
@@ -422,35 +277,27 @@ class DeliveryManagement extends Component
             $c = $drno->count() + 1;
         }
         $total_row = str_pad($c, 7, '0', STR_PAD_LEFT);
+    //--end-- for creation of dr number
 
-        if($this->wire_dr_types_identifier == 1){
-        if($this->obcanShowData == true){
-            foreach ($this->obballotlists as $index => $ballotlist){
-                Delivery::create([
-                    'DR_NO' => $total_row,
-                    'BALLOT_ID' => $ballotlist['ballot_id'],
-                    'CLUSTERED_PREC' => $ballotlist['clustered_precint'],
-                    'CITY_MUN_PROV' => $ballotlist['city_mun_prov'],
-                    'CLUSTER_TOTAL' => $ballotlist['quantity']
-                    ]);
-                    $update_selected = DB::table('ballots')
-                    ->where('ballot_id', $ballotlist['ballot_id'])
-                    ->update(['is_dr_done' => true,
-                              'is_dr_done_by_id' => Auth::user()->id,
-                              'is_dr_done_by' => Auth::user()->name,
-                              'is_dr_done_at' => Carbon::now(),
-                              ]);
-                    session()->flash('message', 'DR Number Created!');
-                }
+       
 
-                $this->obballotlists = [ ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => ''] ];
-            }else{
-                session()->flash('messageOB', 'There are Invalid Values!');
-            }
-        }else{
+    foreach ($this->ballotlists as $ballotlist){
+    $this->validate(
+        [
+            'ballotlists.*.ballot_id' => 'unique:deliveries,BALLOT_ID',
+          
+        ],
+        [
+          
+            'ballotlists.*.*.unique' => 'exist in delivery'.$ballotlist['ballot_id'].'',   
+        ]
+    );
+}
+  
+    foreach ($this->ballotlists as $index => $ballotlist){
+   
 
-            if($this->ftscanShowData == true){
-                foreach ($this->ftsballotlists as $index => $ballotlist){
+
                     Delivery::create([
                         'DR_NO' => $total_row,
                         'BALLOT_ID' => $ballotlist['ballot_id'],
@@ -467,18 +314,14 @@ class DeliveryManagement extends Component
                                   ]);
                         session()->flash('message', 'DR Number Created!');
                     }
-    
-                    $this->ftsballotlists = [ ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => ''] ];
-                }else{
-                    session()->flash('messageFTS', 'There are Invalid Values!');
-                }
-
-
-        }
+                
+    }
+                
+  
 
 
 
-        }
+        
 
   
     
