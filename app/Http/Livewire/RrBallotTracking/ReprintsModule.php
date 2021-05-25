@@ -255,6 +255,34 @@ class ReprintsModule extends Component
         session()->flash('error', 'Re-Printing of ' . $updateSingleBadBallots->unique_number . ' Not Successful.');
     }
     
+    public function reEncode($id){
+        $getReEncodeBadBallot = BadBallots::find($id);
+        $getReEncodeBadBallot->update([
+            'is_re_encoded' => true,
+            ]
+        );
+        $reEncodeCount = $getReEncodeBadBallot->re_encoded_count + 1;
+        
+        if( $getReEncodeBadBallot->re_encoded_count == null){
+            $description = $getReEncodeBadBallot->description . ' - ' . 'RE-ENCODED';
+        }else{
+            $description = $getReEncodeBadBallot->description;
+        }
+        
+        BadBallots::create([
+            'ballot_id' => $getReEncodeBadBallot->ballot_id,
+            'unique_number' => $getReEncodeBadBallot->unique_number,
+            'description' => $description,
+            're_encoded_count' => $reEncodeCount,
+            'created_by_id' => Auth::user()->id,
+            'created_by_name' => Auth::user()->name,
+            'created_by_comelec_role' => Auth::user()->comelec_role,
+            ]
+        );
+        
+        session()->flash('messageReprint', 'Bad Ballots Re-Encoded Successfully!');
+    }
+    
     public function mount(){
     }
     
@@ -265,9 +293,9 @@ class ReprintsModule extends Component
             if( $this->batchMode ==  true ){
                 return view('livewire.rr-ballot-tracking.reprints-module', [
                     'reprintBallotList' => BadBallots::where('reprint_batch', null)->
-                    orderBy('created_at', 'DESC')->get(),
+                    orderBy('id', 'DESC')->get(),
                     'reprintBallotListCount' =>  BadBallots::where('reprint_batch', null)->
-                    orderBy('created_at', 'DESC')->
+                    orderBy('id', 'DESC')->
                     count(),
                     ]
                 );
@@ -280,14 +308,14 @@ class ReprintsModule extends Component
                     orWhere('description', 'like', '%'.$this->search.'%')->
                     orWhere('created_by_name', 'like', '%'.$this->search.'%')->
                     orWhere('reprint_batch', 'like', '%'.$this->search.'%')->
-                    orderBy('created_at', 'DESC')->
+                    orderBy('id', 'DESC')->
                     paginate(10),
                     'reprintBallotListCount' =>  BadBallots::where('ballot_id', 'like', '%'.$this->search.'%')->
                     orWhere('unique_number', 'like', '%'.$this->search.'%')->
                     orWhere('description', 'like', '%'.$this->search.'%')->
                     orWhere('created_by_name', 'like', '%'.$this->search.'%')->
                     orWhere('reprint_batch', 'like', '%'.$this->search.'%')->
-                    orderBy('created_at', 'DESC')->
+                    orderBy('id', 'DESC')->
                     count(),
                     ]
                 );
@@ -299,11 +327,11 @@ class ReprintsModule extends Component
             return view('livewire.rr-ballot-tracking.reprints-module', [
                 'reprintBatchList' => RePrintBatch::where('batch_count', 'like', '%'.$this->search.'%')->
                 orWhere('created_by_name', 'like', '%'.$this->search.'%')->
-                orderBy('created_at', 'DESC')->
+                orderBy('id', 'DESC')->
                 paginate(10),
                 'reprintBatchListCount' => RePrintBatch::where('batch_count', 'like', '%'.$this->search.'%')->
                 orWhere('created_by_name', 'like', '%'.$this->search.'%')->
-                orderBy('created_at', 'DESC')->
+                orderBy('id', 'DESC')->
                 count(),
                 ]
             );

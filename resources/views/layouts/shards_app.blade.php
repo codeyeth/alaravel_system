@@ -69,6 +69,14 @@
                         hr.hr_thick {
                             border: 1px solid #868e96;
                         }
+                        
+                        input { 
+                            text-transform: uppercase;
+                        }
+                        ::-webkit-input-placeholder { /* WebKit browsers */
+                            text-transform: none;
+                        }
+                        
                     </style>
                     
                     @yield('content')
@@ -94,7 +102,7 @@
     {{-- BALLOT TRACKING--}}
     @include('livewire.rr-livewire-script.rr-ballot-tracking-script-reprints-module')
     @include('livewire.rr-livewire-script.rr-ballot-tracking-clear-search-script')
-
+    
     
     {{-- CDN --}}
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -118,5 +126,6 @@
     <script src="{{ asset('shards_template/scripts/extras.1.1.0.min.js') }}"></script>
     <script src="{{ asset('shards_template/scripts/shards-dashboards.1.1.0.min.js') }}"></script>
     {{-- <script src="{{ asset('shards_template/scripts/app/app-blog-overview.1.1.0.js') }}"></script> --}}
+
 </body>
 </html>

@@ -245,6 +245,7 @@
                                     <th scope="col" class="border-0">#</th>
                                     {{-- <th scope="col" class="border-0" style="text-align: right">Ballot ID</th> --}}
                                     <th scope="col" class="border-0" style="text-align: right">Ballot Control #</th>
+                                    <th scope="col" class="border-0" style="text-align: right"></th>
                                     {{-- <th scope="col" class="border-0" style="text-align: right">Ballot Location</th> --}}
                                     <th scope="col" class="border-0" style="text-align: right">Ballot Delivery Location</th>
                                     {{-- <th scope="col" class="border-0" style="text-align: left">Ballot Pollplace</th> --}}
@@ -265,6 +266,11 @@
                                 <tr>
                                     <td>{{ $item->id }}</td>
                                     <td align="right"><b> {{ $item->ballot_id }} </b> </td>
+                                    <td align="left">
+                                        @if ( $searchMode == false )
+                                        <button class="btn btn-primary btn-sm" id="quickConfirm{{ $item->id }}" name="quickConfirm{{ $item->id }}" title="Quick Update" wire:click="updateBallotStatusQuickMode({{ $item->id }})"><i class="material-icons">update</i></button> 
+                                        @endif
+                                    </td>
                                     <td align="right"><small>{{ $item->bgy_name }} - {{ $item->mun_name }} - {{ $item->prov_name }}</small> </td>
                                     <td align="left"><small> {{ $item->pollplace }}</small> </td>
                                     <td align="right">
@@ -335,11 +341,11 @@
                                         @if( $item->current_status == 'NPO SMD')
                                         BILLING SECTION
                                         @endif
-
+                                        
                                         @if( $item->current_status == 'IS OUT FOR DELIVERY')
                                         IS OUT FOR DELIVERY
                                         @endif
-
+                                        
                                         @if( $item->current_status == 'DELIVERED')
                                         DELIVERED
                                         @endif
@@ -400,8 +406,6 @@
                                         <button type="button" class="btn btn-accent btn-sm" data-toggle="modal" data-target="#modalBallotHistory" wire:click.preventDefault="getBallotHistory({{ $item->id }})"> <i class="material-icons">history</i> History</button>
                                     </td>
                                     @endif
-                                    
-                                    
                                     
                                 </tr>
                                 @endforeach
@@ -728,7 +732,7 @@
                         @csrf
                         
                         @if(session('messageBadBallots'))
-                        <div class="alert alert-accent alert-dismissible fade show mb-0" role="alert">
+                        <div class="alert alert-accent alert-dismissible fade show mb-0 bb_alert" role="alert">
                             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                 <span aria-hidden="true">×</span>
                             </button>
@@ -737,12 +741,19 @@
                         </div>
                         @endif
                         
+                        {{-- FOR SMOOTH FADE OF THE ALERT WITHOUT LOSING FOCUS ON THE INPUT --}}
+                        <script>
+                            $(".bb_alert").fadeTo(2000, 500).slideUp(500, function(){
+                                $(".bb_alert").slideUp(500);
+                            });
+                        </script>
+                        
                         <div class="modal-body">
                             
                             <table class="table table-hover mb-0">
                                 <thead class="bg-light">
                                     <tr>
-                                        <th>Unique Number</th>
+                                        <th>Unique/Serial Number</th>
                                         <th>Description</th>
                                         @if ( $updateBadBallot == false)
                                         <th></th>
@@ -753,12 +764,30 @@
                                     @foreach ($badBallotLists as $index => $bad_ballot_item)
                                     <tr>
                                         <td>
-                                            <input type="text" class="form-control" placeholder="Unique Number" wire:model="badBallotLists.{{$index}}.unique_number" required>
+                                            <input type="text" class="form-control" placeholder="Unique/Serial Number" wire:model="badBallotLists.{{$index}}.unique_number" required>
                                             @if($errors->has('unique_number'))
                                             <span class="text-danger">{{ $errors->first('unique_number') }}</span>
                                             @endif
                                         </td>
-                                        <td><textarea class="form-control" cols="50" rows="3" wire:model.lazy="badBallotLists.{{$index}}.description" required></textarea></td>
+                                        <td>
+                                            <select id="description" name="description" class="form-control" wire:model="badBallotLists.{{$index}}.description" wire:change="descriptionSelect($event.target.value)">
+                                                <option disabled selected value="">Select Description here</option>
+                                                @if(count($badBallotDescriptionList) > 0)
+                                                @foreach($badBallotDescriptionList as $bb_list)
+                                                <option value="{{ Str::upper($bb_list->description) }}">{{ Str::title($bb_list->description) }}</option>
+                                                @endforeach
+                                                @else
+                                                <option disabled selected>No Description available</option>
+                                                @endif                
+                                            </select> 
+                                            
+                                            @if( $descriptionOthers == true )
+                                            <hr>
+                                            <input type="text" name="descriptionText" id="descriptionText" class="form-control" placeholder="Description" wire:model="badBallotLists.{{$index}}.descriptionText" required>
+                                            @endif
+                                            
+                                            {{-- <textarea class="form-control" cols="50" rows="3" wire:model.lazy="badBallotLists.{{$index}}.description" required></textarea> --}}
+                                        </td>
                                         @if ( $updateBadBallot == false)
                                         <td>
                                             <button type="button" class="btn btn-danger btn-block" wire:click="removeBadBallot({{ $loop->index }})"><i class="material-icons">delete</i></button>
@@ -797,7 +826,7 @@
                                 <thead class="bg-light">
                                     <tr>
                                         <th>#</th>
-                                        <th>Unique Number</th>
+                                        <th>Unique/Serial Number</th>
                                         <th>Description</th>
                                         <th>Added at/by</th>
                                         <th></th>
@@ -808,7 +837,11 @@
                                     @foreach ($badBallotsFor as $bad_ballot_for)
                                     <tr>
                                         <td>{{ $bad_ballot_for->id }}</td>
-                                        <td>{{ $bad_ballot_for->unique_number }}</td>
+                                        <td>{{ $bad_ballot_for->unique_number }}
+                                            @if( $bad_ballot_for->re_encoded_count != null)
+                                            - {{ $bad_ballot_for->re_encoded_count }}
+                                            @endif
+                                        </td>
                                         <td>{{ $bad_ballot_for->description }}</td>
                                         <td>{{ $bad_ballot_for->created_by_name }} <br> {{ \Carbon\Carbon::parse($bad_ballot_for->created_at)->toDayDateTimeString() }}</td>
                                         <td style="text-align: right"> 
@@ -840,21 +873,11 @@
                     </form>
                     
                     <div class="modal-footer">
-                        <div class="col-12 col-sm-12">
-                            
-                            <div class="d-flex">
-                                <div class="mr-auto p-2">
-                                    <button type="button" class="btn btn-success" wire:click="rePrintDone({{ $badBallotId }})">SET RE-PRINT DONE</button>
-                                </div>
-                                <div class="p-2">
-                                    <button type="button" class="btn btn-warning" wire:click="resetBadBallots">Reset Form</button>
-                                </div>
-                                <div class="p-2">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                            
-                        </div>
+                        @if( $allRePrintDone == true )
+                        <button type="button" class="btn btn-success" wire:click="rePrintDone({{ $badBallotId }})">Re-Print Done</button>
+                        @endif
+                        <button type="button" class="btn btn-warning" wire:click="resetBadBallots">Reset Form</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" wire:click="resetBadBallots">Close</button>
                     </div>
                     
                 </div>

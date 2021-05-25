@@ -21,6 +21,8 @@ class CreateBadBallotsTable extends Migration
             $table->string('created_by_id');
             $table->string('created_by_name');
             $table->string('created_by_comelec_role');
+            $table->integer('re_encoded_count')->nullable();
+            $table->boolean('is_re_encoded')->nullable()->default(false);
             
             $table->string('reprint_batch')->nullable();       
             $table->string('reprint_batch_by_id')->nullable();       

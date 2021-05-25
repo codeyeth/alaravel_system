@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\Ballots;
 use App\Models\BallotHistory;
 use App\Models\BadBallots;
+use App\Models\BbDescriptionDatabase;
 use App\Models\User;
 use Auth;
 use Livewire\WithPagination;
@@ -13,6 +14,7 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Validator;
 use App\Models\ComelecRoles;
+use Illuminate\Support\Str;
 
 //Excel Exports
 use Maatwebsite\Excel\Facades\Excel;
@@ -71,6 +73,10 @@ class BarcodeFunction extends Component
     public $badBallotIdFor;
     public $updateBadBallot = false;
     public $updateBadBallotId;
+    public $allRePrintDone = false;
+    public $badBallotDescriptionList = [];
+    public $descriptionOthers = false;
+    // public $quickUpdateMode = false;
     
     //WEBSOCKETS
     // Special Syntax: ['echo:{channel},{event}' => '{method}']
@@ -249,7 +255,7 @@ class BarcodeFunction extends Component
     public function addBadBallot()
     {
         $this->badBallotCount++;
-        $this->badBallotLists[] =  ['unique_number' => '', 'description' => '',];
+        $this->badBallotLists[] =  ['unique_number' => '', 'description' => '', 'descriptionText' => '',];
     }
     
     //REMOVE FIELDS INTO THE BAD BALLOTS
@@ -272,6 +278,22 @@ class BarcodeFunction extends Component
         $ballotId = Ballots::find($this->badBallotId);
         $this->badBallotIdFor = $ballotId->ballot_id;
         $this->badBallotsFor = BadBallots::where('ballot_id', $ballotId->ballot_id)->orderBy('id', 'DESC')->get();
+        
+        $scanForDoneRePrint = BadBallots::where('ballot_id', $ballotId->ballot_id)->where('is_reprint_done_successful', false)->count();
+        // dd($scanForDoneRePrint);
+        if( $scanForDoneRePrint == 0 ){
+            $this->allRePrintDone = true;
+        }
+        
+        $this->badBallotDescriptionList = BbDescriptionDatabase::all();
+    }
+    
+    public function descriptionSelect($selectedValue){
+        if( $selectedValue == 'OTHERS' ){
+            $this->descriptionOthers = true;
+        }else{
+            $this->descriptionOthers = false;
+        }
     }
     
     //SAVE THE BAD BALLOTS
@@ -286,22 +308,36 @@ class BarcodeFunction extends Component
             ['required' => 'The :attribute field is required'],
             )->validate();
             
+            
+            $description = Str::upper($badballotlist['description']);
+            if( Str::upper($badballotlist['description']) == 'OTHERS' ){
+                $description = Str::upper($badballotlist['descriptionText']);
+            }
+            
             BadBallots::create([
                 'ballot_id' => $ballotId->ballot_id,
                 'unique_number' => $badballotlist['unique_number'],
-                'description' => $badballotlist['description'],
+                'description' => $description,
                 'created_by_id' => Auth::user()->id,
                 'created_by_name' => Auth::user()->name,
                 'created_by_comelec_role' => Auth::user()->comelec_role,
                 ]
             );
             
+            $scanForDescription = BbDescriptionDatabase::where( 'description', $description )->get();
+            if( count($scanForDescription) == 0 ){
+                BbDescriptionDatabase::create([
+                    'description' => $description,
+                    'created_by_id' => Auth::user()->id,
+                    'created_by_name' => Auth::user()->name,
+                    ]
+                );
+            }
+            
+            
         }
         session()->flash('messageBadBallots', 'Bad Ballots Saved Successfully!');
-        $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
-        $this->getBadBallot();
-        
-        $this->emit('refreshReprintModule');
+        $this->resetBadBallots();  
     }
     
     public function deleteBadBallots($id){
@@ -314,7 +350,7 @@ class BarcodeFunction extends Component
     public function editBadBallots($id){
         $badBallotEdit = BadBallots::find($id);
         $this->updateBadBallotId = $id;
-        $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
+        $this->badBallotLists = [ ['unique_number' => '', 'description' => '', 'descriptionText' => '',] ];
         $this->badBallotLists[0]['unique_number'] = $badBallotEdit->unique_number;
         $this->badBallotLists[0]['description'] = $badBallotEdit->description;
         $this->updateBadBallot = true;
@@ -323,7 +359,9 @@ class BarcodeFunction extends Component
     public function resetBadBallots(){
         $this->getBadBallot();
         $this->updateBadBallot = false;
-        $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
+        $this->descriptionOthers = false;
+        $this->badBallotLists = [ ['unique_number' => '', 'description' => '', 'descriptionText' => '',] ];
+        $this->emit('refreshReprintModule');
     }
     
     public function updateBadBallots($id){
@@ -332,11 +370,17 @@ class BarcodeFunction extends Component
             
             $searchForDuplicates = BadBallots::where('unique_number', $badballotlist['unique_number'])->first();
             // dd($searchForDuplicates);
+            
+            $description = Str::upper($badballotlist['description']);
+            if( Str::upper($badballotlist['description']) == 'OTHERS' ){
+                $description = Str::upper($badballotlist['descriptionText']);
+            }
+            
             if( $searchForDuplicates != null ){
                 if($searchForDuplicates->id == $id){
                     $updateBadBallots->update([
                         'unique_number' => $badballotlist['unique_number'],
-                        'description' => $badballotlist['description'],
+                        'description' => $description,
                         ]
                     );
                 }else{
@@ -349,17 +393,26 @@ class BarcodeFunction extends Component
                 }
             }else{
                 $updateBadBallots->update([
+                    
                     'unique_number' => $badballotlist['unique_number'],
-                    'description' => $badballotlist['description'],
+                    'description' => $description,
+                    ]
+                );
+            }
+            
+            $scanForDescription = BbDescriptionDatabase::where( 'description', $description )->get();
+            if( count($scanForDescription) == 0 ){
+                BbDescriptionDatabase::create([
+                    'description' => $description,
+                    'created_by_id' => Auth::user()->id,
+                    'created_by_name' => Auth::user()->name,
                     ]
                 );
             }
             
         }
         session()->flash('messageBadBallots', 'Bad Ballots Updated Successfully!');
-        $this->badBallotLists = [ ['unique_number' => '', 'description' => '',] ];
-        $this->getBadBallot();
-        $this->updateBadBallot = false;
+        $this->resetBadBallots();
     }
     
     public function rePrintDone($id){
@@ -372,7 +425,7 @@ class BarcodeFunction extends Component
             'is_re_print_done_at' => $now,
             ]
         );
-        
+        $this->allRePrintDone = false;
         session()->flash('messageBadBallots', 'Re-Printing Done Successfully!');
     }
     
@@ -436,17 +489,22 @@ class BarcodeFunction extends Component
         
     }
     
+    public function updateBallotStatusQuickMode($id){
+        // $this->quickUpdateMode = true;
+        $convertToBallotId = Ballots::find($id);
+        $this->search = $convertToBallotId->ballot_id;
+        $this->updateBallotStatus();
+    }
+    
     //UPDATE BALLOT STATUS
     public function updateBallotStatus(){
         $now = Carbon::now();
-        // dd($now);
         if($this->search != '' && $this->searchMode == false){
             
             if( Auth::user()->comelec_role == 'SHEETER' && $this->ballotIn == true ){
                 $updateBallotStatus = Ballots::where('ballot_id', $this->search)->where('current_status', 'PRINTER')->first();
             }else{
                 $updateBallotStatus = Ballots::where('ballot_id', $this->search)->where('current_status', Auth::user()->comelec_role)->first();
-                // 'FOR ' .
             }
             
             if($updateBallotStatus != null){
@@ -702,7 +760,7 @@ class BarcodeFunction extends Component
         
         //BAD BALLOTS
         $this->badBallotCount++;
-        $this->badBallotLists =  [ ['unique_number' => '', 'description' => '',] ];
+        $this->badBallotLists =  [ ['unique_number' => '', 'description' => '', 'descriptionText' => '',] ];
     }
     
     public function render()
