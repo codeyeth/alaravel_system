@@ -268,7 +268,14 @@
                                     <td align="right"><b> {{ $item->ballot_id }} </b> </td>
                                     <td align="left">
                                         @if ( $searchMode == false )
-                                        <button class="btn btn-primary btn-sm" id="quickConfirm{{ $item->id }}" name="quickConfirm{{ $item->id }}" title="Quick Update" wire:click="updateBallotStatusQuickMode({{ $item->id }})"><i class="material-icons">update</i></button> 
+                                        <div id="quickUpdateDiv_{{ $item->id }}">
+                                            <button class="btn btn-secondary btn-sm" id="quickUpdate{{ $item->id }}" name="quickUpdate{{ $item->id }}" title="Quick Update" wire:click="quickUpdate({{ $item->id }})"><i class="material-icons">update</i></button> 
+                                        </div>
+                                        
+                                        <div id="quickUpdateConfirmationDiv_{{ $item->id }}" hidden>
+                                            <button class="btn btn-primary btn-sm" id="quickConfirm{{ $item->id }}" name="quickConfirm{{ $item->id }}" title="Confirm Quick Update" wire:click="updateBallotStatusQuickMode({{ $item->id }})"><i class="material-icons">check</i></button> 
+                                            <button class="btn btn-danger btn-sm" id="quickConfirm{{ $item->id }}" name="quickConfirm{{ $item->id }}" title="Cancel Quick Update" wire:click="cancelQuickUpdate({{ $item->id }})"><i class="material-icons">close</i></button> 
+                                        </div>
                                         @endif
                                     </td>
                                     <td align="right"><small>{{ $item->bgy_name }} - {{ $item->mun_name }} - {{ $item->prov_name }}</small> </td>
@@ -770,6 +777,7 @@
                                             @endif
                                         </td>
                                         <td>
+                                            {{-- IF LIVE --}}
                                             <select id="description" name="description" class="form-control" wire:model="badBallotLists.{{$index}}.description" wire:change="descriptionSelect($event.target.value)">
                                                 <option disabled selected value="">Select Description here</option>
                                                 @if(count($badBallotDescriptionList) > 0)
@@ -786,7 +794,9 @@
                                             <input type="text" name="descriptionText" id="descriptionText" class="form-control" placeholder="Description" wire:model="badBallotLists.{{$index}}.descriptionText" required>
                                             @endif
                                             
-                                            {{-- <textarea class="form-control" cols="50" rows="3" wire:model.lazy="badBallotLists.{{$index}}.description" required></textarea> --}}
+                                            {{-- IF DEMO --}}
+                                            {{-- <input type="text" name="description" id="description" class="form-control" placeholder="Description" wire:model="badBallotLists.{{$index}}.description" required> --}}
+
                                         </td>
                                         @if ( $updateBadBallot == false)
                                         <td>

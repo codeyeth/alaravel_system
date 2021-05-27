@@ -17,6 +17,7 @@ class BadBallots extends Model
         'created_by_comelec_role',
         're_encoded_count',
         'is_re_encoded',
+        'is_all_successful',
         
         'reprint_batch',
         'reprint_batch_by_id',

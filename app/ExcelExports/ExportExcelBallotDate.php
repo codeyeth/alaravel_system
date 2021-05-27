@@ -78,6 +78,15 @@ class ExportExcelBallotDate implements FromQuery, WithHeadings, WithMapping, Sho
                 $old_status = 'BILLING SECTION';           
             }
             
+            if( $date_history->old_status == 'OUT FOR DELIVERY' ){
+                $old_status = 'OUT FOR DELIVERY';           
+            }
+            
+            if( $date_history->old_status == 'DELIVERED' ){
+                $old_status = 'DELIVERED';           
+            }
+            
+            
         }
         
         return [

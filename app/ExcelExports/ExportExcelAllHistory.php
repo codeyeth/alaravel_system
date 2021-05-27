@@ -33,13 +33,13 @@ class ExportExcelAllHistory implements FromQuery, WithHeadings, WithMapping, Sho
         
         if( $all_history->old_status == 'PRINTER' ){
             // $old_status = 'SHEETER';
-
+            
             $old_status = 'PAPER CUTTER SECTION';           
         }else{
             // $old_status = $all_history->old_status;
-
+            
             $old_status = '';
-
+            
             if( $all_history->old_status == 'SHEETER' ){
                 $old_status = 'PAPER CUTTER SECTION';           
             }
@@ -63,7 +63,15 @@ class ExportExcelAllHistory implements FromQuery, WithHeadings, WithMapping, Sho
             if( $all_history->old_status == 'NPO SMD' ){
                 $old_status = 'BILLING SECTION';           
             }
-
+            
+            if( $all_history->old_status == 'OUT FOR DELIVERY' ){
+                $old_status = 'OUT FOR DELIVERY';           
+            }
+            
+            if( $all_history->old_status == 'DELIVERED' ){
+                $old_status = 'DELIVERED';           
+            }
+            
         }
         
         return [

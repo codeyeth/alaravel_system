@@ -98,10 +98,15 @@ class ReprintsModule extends Component
                     ]
                 );
                 
+                $unique_number = $updateBadBallots->unique_number;
+                if( $updateBadBallots->re_encoded_count != null ){
+                    $unique_number = $updateBadBallots->unique_number . ' - ' . $updateBadBallots->re_encoded_count;
+                }
+                
                 //LOG TO REPRINTS HISTORY
                 $reprintsHistory = RePrintsHistory::create([
                     'ballot_id' => $updateBadBallots->ballot_id,
-                    'unique_number' => $updateBadBallots->unique_number,
+                    'unique_number' => $unique_number,
                     'description' => $updateBadBallots->description,
                     'action' => 'ADDED TO RE-PRINT BATCH NO. ' . $this->batchCount ,
                     'date' => $now->toDateString(),
@@ -143,10 +148,15 @@ class ReprintsModule extends Component
                 ]
             );
             
+            $unique_number = $updated_bad_ballots->unique_number;
+            if( $updated_bad_ballots->re_encoded_count != null ){
+                $unique_number = $updated_bad_ballots->unique_number . ' - ' . $updated_bad_ballots->re_encoded_count;
+            }
+            
             //LOG TO REPRINTS HISTORY
             $reprintsHistory = RePrintsHistory::create([
                 'ballot_id' => $updated_bad_ballots->ballot_id,
-                'unique_number' => $updated_bad_ballots->unique_number,
+                'unique_number' => $unique_number,
                 'description' => $updated_bad_ballots->description,
                 'action' => 'STARTED THE RE-PRINT BATCH NO. ' . $updated_bad_ballots->reprint_batch ,
                 'date' => $now->toDateString(),
@@ -183,10 +193,15 @@ class ReprintsModule extends Component
                 ]
             );
             
+            $unique_number = $updated_bad_ballots->unique_number;
+            if( $updated_bad_ballots->re_encoded_count != null ){
+                $unique_number = $updated_bad_ballots->unique_number . ' - ' . $updated_bad_ballots->re_encoded_count;
+            }
+            
             //LOG TO REPRINTS HISTORY
             $reprintsHistory = RePrintsHistory::create([
                 'ballot_id' => $updated_bad_ballots->ballot_id,
-                'unique_number' => $updated_bad_ballots->unique_number,
+                'unique_number' => $unique_number,
                 'description' => $updated_bad_ballots->description,
                 'action' => 'SET AS RE-PRINT DONE BATCH NO. ' . $updated_bad_ballots->reprint_batch ,
                 'date' => $now->toDateString(),
@@ -212,10 +227,27 @@ class ReprintsModule extends Component
             ]
         );
         
+        $updateAllSameUniqueNumber = BadBallots::where( 'unique_number', $updateSingleBadBallots->unique_number )->get();
+        if( count($updateAllSameUniqueNumber) > 0 ){
+            foreach( $updateAllSameUniqueNumber as $same_unique_number ){
+                $updateSingleUniqueNumber = BadBallots::find($same_unique_number->id);
+                $updateSingleUniqueNumber->update([
+                    'is_all_successful' => true,
+                    ]
+                );
+            }
+        }
+        // dd( $updateAllSameUniqueNumber );
+        
+        $unique_number = $updateSingleBadBallots->unique_number;
+        if( $updateSingleBadBallots->re_encoded_count != null ){
+            $unique_number = $updateSingleBadBallots->unique_number . ' - ' . $updateSingleBadBallots->re_encoded_count;
+        }
+        
         //LOG TO REPRINTS HISTORY
         $reprintsHistory = RePrintsHistory::create([
             'ballot_id' => $updateSingleBadBallots->ballot_id,
-            'unique_number' => $updateSingleBadBallots->unique_number,
+            'unique_number' => $unique_number,
             'description' => $updateSingleBadBallots->description,
             'action' => 'SET AS RE-PRINT OUTPUT SUCCESSFUL BATCH NO. ' . $updateSingleBadBallots->reprint_batch ,
             'date' => $now->toDateString(),
@@ -240,10 +272,16 @@ class ReprintsModule extends Component
             ]
         );
         
+
+        $unique_number = $updateSingleBadBallots->unique_number;
+        if( $updateSingleBadBallots->re_encoded_count != null ){
+            $unique_number = $updateSingleBadBallots->unique_number . ' - ' . $updateSingleBadBallots->re_encoded_count;
+        }
+
         //LOG TO REPRINTS HISTORY
         $reprintsHistory = RePrintsHistory::create([
             'ballot_id' => $updateSingleBadBallots->ballot_id,
-            'unique_number' => $updateSingleBadBallots->unique_number,
+            'unique_number' => $unique_number,
             'description' => $updateSingleBadBallots->description,
             'action' => 'SET AS RE-PRINT OUTPUT UNSUCCESSFUL BATCH NO. ' . $updateSingleBadBallots->reprint_batch ,
             'date' => $now->toDateString(),
@@ -302,6 +340,7 @@ class ReprintsModule extends Component
             }
             
             if( $this->batchMode ==  false ){
+
                 return view('livewire.rr-ballot-tracking.reprints-module', [
                     'reprintBallotList' => BadBallots::where('ballot_id', 'like', '%'.$this->search.'%')->
                     orWhere('unique_number', 'like', '%'.$this->search.'%')->
@@ -319,6 +358,7 @@ class ReprintsModule extends Component
                     count(),
                     ]
                 );
+
             }
             
         }

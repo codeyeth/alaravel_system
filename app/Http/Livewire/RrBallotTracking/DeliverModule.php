@@ -21,6 +21,8 @@ class DeliverModule extends Component
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
     
+    protected $listeners = ['refreshContent'];
+
     public $search = '';
     
     // MODE TOGGLED FROM BARCODE FUNCTION
@@ -30,6 +32,10 @@ class DeliverModule extends Component
     public function updatingSearch()
     {
         $this->resetPage();
+    }
+
+    public function refreshContent($logMessage){
+        // THIS WILL REFRESH THE PAGE CONTENTS HEHEHE CHEAT TRICK NICE LIVEWIRE AND LARAVEL ECHO
     }
     
     //CLEAR SEARCH

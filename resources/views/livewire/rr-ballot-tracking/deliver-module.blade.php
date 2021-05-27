@@ -59,7 +59,7 @@
                                         <span class="text-danger"><b> BALLOT NOT YET PRINTED </b></span> 
                                         @else
                                         @if ( $item->new_status_type == "OUT")
-                                        FOR {{ $item->current_status }}
+                                        {{ $item->current_status }}
                                         @else
                                         {{ $item->current_status }}
                                         @endif

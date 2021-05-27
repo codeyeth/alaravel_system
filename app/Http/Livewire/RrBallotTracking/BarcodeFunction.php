@@ -279,10 +279,12 @@ class BarcodeFunction extends Component
         $this->badBallotIdFor = $ballotId->ballot_id;
         $this->badBallotsFor = BadBallots::where('ballot_id', $ballotId->ballot_id)->orderBy('id', 'DESC')->get();
         
-        $scanForDoneRePrint = BadBallots::where('ballot_id', $ballotId->ballot_id)->where('is_reprint_done_successful', false)->count();
+        $scanForDoneRePrint = BadBallots::where('ballot_id', $ballotId->ballot_id)->where('is_all_successful', false)->count();
         // dd($scanForDoneRePrint);
         if( $scanForDoneRePrint == 0 ){
             $this->allRePrintDone = true;
+        }else{
+            $this->allRePrintDone = false;
         }
         
         $this->badBallotDescriptionList = BbDescriptionDatabase::all();
@@ -489,11 +491,22 @@ class BarcodeFunction extends Component
         
     }
     
+    // BALLOT QUICK UPDATE MODE
     public function updateBallotStatusQuickMode($id){
         // $this->quickUpdateMode = true;
         $convertToBallotId = Ballots::find($id);
         $this->search = $convertToBallotId->ballot_id;
         $this->updateBallotStatus();
+    }
+
+    // BALLOT QUICK UPDATE MODE SHOW CONFIRMATION BUTTONS
+    public function quickUpdate($id){
+        $this->emit('showConfirmationButtons', $id);
+    }
+
+    // BALLOT QUICK UPDATE MODE HIDE CONFIRMATION BUTTONS AND SHOW THE PARENT BUTTON WHEN TRANSACTION CANCELLED
+    public function cancelQuickUpdate($id){
+        $this->emit('hideConfirmationButtons', $id);
     }
     
     //UPDATE BALLOT STATUS
@@ -817,6 +830,12 @@ class BarcodeFunction extends Component
                     return view('livewire.rr-ballot-tracking.barcode-function', [
                         'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('is_dr_done', true )->where('new_status_type', $statusType )->paginate(20),
                         'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('is_dr_done', true )->where('new_status_type', $statusType )->count(),
+                        ]
+                    );
+                }elseif( Auth::user()->comelec_role == 'QUARANTINE' && Auth::user()->is_ballot_in == false ){
+                    return view('livewire.rr-ballot-tracking.barcode-function', [
+                        'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('is_re_print_done', true )->where('new_status_type', $statusType )->paginate(20),
+                        'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('is_re_print_done', true )->where('new_status_type', $statusType )->count(),
                         ]
                     );
                 }else{
