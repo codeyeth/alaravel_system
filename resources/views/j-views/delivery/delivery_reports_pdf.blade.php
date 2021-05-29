@@ -1,45 +1,40 @@
 <table style="page-break-inside:auto">
-  <col width="10%">
-  <col width="10%">
-  <col width="60%">
-  <col width="20%">
     <tr style="page-break-inside:avoid; page-break-after:auto" >
       <th width="10%" style="font-size:6px; text-align:left;">
-        Specialized<br>
-        Delivery<br>
-        Receipt<br>
-        August 2019
+    
       </th>
       <th width="10%" style="float:right; text-align:left; "> 
-        <img src="{{$var_imagepath}}/shards_template/images/npo.png" height="40px">
+       
       </th>
       <th width="60%" style="text-align:center; font-size:8px">
-        Republic of the Philippines<br>
-        Presidential Communications Operations Office<br>
-        NATIONAL PRINTING OFFICE<br>
-        EDSA cor. NIA Northside Road<br>
-        Diliman Quezon City<br>
-        SALES and MARKETING DIVISION<br>
-        <b>DELIVERY RECEIPT</b>
+      <h1>BALLOT TRACKING SYSTEM</h1>
+      <h2>Delivery Report<br></h2>
       </th>
       <th width="20%" style="text-align:left; font-size:6px;">
-        No. <u>(Sample)20-06-0026 Palawan</u><br>
-        @foreach($var_copy as $copies)
-        <input type="checkbox" id="copies{{$copies->id}}" name="copies{{$copies->id}}" value="copies{{$copies->id}}" checked = "checked">
-        <label for="copies{{$copies->id}}">{{$copies->copies}}</label><br>
-        @endforeach
+    
         </th>
     </tr>
-    <tr>
+
+  
+ <br><br>
+</table><br>
+
+<table style="page-break-inside:auto">
+<hr>
+</table>
+
+<table style="page-break-inside:auto">
+
+<tr>
+<br>
     <th width="100%" style="font-size:8px; text-align:right;">
       <b>{{$value->copies}} Copy</b>
       </th>
     </tr>
- 
-</table><br><br>
-<table style="page-break-inside:auto">
+
     <tr style="page-break-inside:avoid; page-break-after:auto">
       <th width="20%" style="font-size:8px; text-align:left;">
+     
         DELIVERED TO:<br>
         TITLE:<br>
         DESCRIPTION<br><br>
@@ -64,10 +59,10 @@
   <col width="40%">
   <col width="15%">
     <tr style="page-break-inside:avoid; page-break-after:auto">
-      <th width="10%" style="border:1px solid #000000;">BALLOT ID</th>
-      <th width="35%" style="border:1px solid #000000;">CLUSTERED PRECINT </th>
-      <th width="40%" style="border:1px solid #000000;">PROVINCE / MUNICIPALITY / BARANGAY</th>
-      <th width="15%" style="border:1px solid #000000;">QUANTITY</th>
+      <th width="10%" style="border:1px solid #000000;">Ballot Control No.</th>
+      <th width="35%" style="border:1px solid #000000;">Poll Location Serial Number</th>
+      <th width="40%" style="border:1px solid #000000;">Ballot Delivery Location</th>
+      <th width="15%" style="border:1px solid #000000;">Quantity</th>
     </tr>
         @foreach($cloned_query_all_deliveries as $deliver)
     <tr style="page-break-inside:avoid; page-break-after:auto">
@@ -88,9 +83,9 @@
 <col width="34%">
 <col width="33%">
 
-
+<br><br><br>
 <tr style="page-break-inside:avoid; page-break-after:auto">
-<th width="33%" style="border:1px solid #000000; font-size:8px; text-align:center;">
+<th width="33%" style=" font-size:8px; text-align:center;">
 Issued by:<br><br>
 _________________________<br>
 Signature<br>
@@ -101,7 +96,7 @@ _________________________<br>
 @if($var_approved_by->title == 'N/A')&nbsp;@else{{$var_approved_by->title}}@endif
 
 </th>
-<th width="34%" style="border:1px solid #000000; font-size:8px; text-align:center;">
+<th width="34%" style="font-size:8px; text-align:center;">
 Received by:<br><br>
 _________________________<br>
 Signature<br>
@@ -109,7 +104,7 @@ Signature<br>
 Name in Print
 
 </th>
-<th width="33%" style="border:1px solid #000000; font-size:8px; text-align:center;">
+<th width="33%" style=" font-size:8px; text-align:center;">
 Inspected by:<br><br>
 _________________________<br>
 Signature<br>

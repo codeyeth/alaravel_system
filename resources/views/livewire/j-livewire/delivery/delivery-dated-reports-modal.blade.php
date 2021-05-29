@@ -8,7 +8,7 @@
                       </button>
               </div>
               {{Form::open(['route' => 'look', 'method' => 'GET', 'autocomplete'=>'off'])}} 
-              <input type="text" wire:model="wire_dr_types_identifier" name="modal_input_dr_types_identifier" hidden>
+            
               <input type="text" wire:model="wire_dr_reports_identifier" name="modal_input_dr_reports_identifier" hidden>
            
               <div class="modal-body">
@@ -18,8 +18,8 @@
                             <div class="form-row"  @if($wire_dr_reports_identifier == 1 || $wire_dr_reports_identifier == 2) @else style="display:none;"  @endif>  
                                 <div class="form-group col-md-6">
                                     <div @if($wire_dr_reports_identifier == 1) @else style="display:none;"  @endif>
-                                        <strong class="text-muted d-block mb-2">DR NO:</strong>
-                                        <input type="text" name="modal_input_search_dr_no" id="modal_id_search_dr_no" class="input-sm form-control" placeholder="DR No." wire:model="wire_search_dr_no">
+                                        <strong class="text-muted d-block mb-2">Delivery No:</strong>
+                                        <input type="text" name="modal_input_search_dr_no" id="modal_id_search_dr_no" class="input-sm form-control" placeholder="Receipt No." wire:model="wire_search_dr_no">
                                     </div>
                                     <div @if($wire_dr_reports_identifier == 2) @else style="display:none;"  @endif>
                                         <strong class="text-muted d-block mb-2">Select Date:</strong>
@@ -42,7 +42,6 @@
                                   <input type="date" name="modal_input_monthly_dateto" id="modal_id_monthly_dateto" wire:model="wire_monthly_dateto"  class="input-sm form-control" >
                               </div>
                           </div>
-                       
                       </div>
                   </div>
                   <div class="row">

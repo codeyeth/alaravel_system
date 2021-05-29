@@ -25,7 +25,8 @@ class DeliveryManagement extends Component
     public $person_title = '';
     public $person_auth = '';
 
-    
+
+
     //create dr ob
     public $ballotlists = [];
     public $showSaveBtn = false;
@@ -45,12 +46,10 @@ class DeliveryManagement extends Component
     
     public $wire_search_dr_home;
 
-    public function function_dr_types_identifier($id){
-        $this->wire_dr_types_identifier = $id;
-    }
     
     public function function_dr_reports_identifier($id){ 
         $this->wire_dr_reports_identifier = $id;
+        $this->wire_search_dr_no = '';
     }
 
 ////////////////for dr config settings
@@ -156,10 +155,8 @@ class DeliveryManagement extends Component
 
     public function addBallot()
     {
-     
             $this->loopCount++;
             $this->ballotlists[] =  ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => ''];
-        
     }
 
 
@@ -171,45 +168,32 @@ class DeliveryManagement extends Component
             $this->ballotlists = array_values($this->ballotlists);
             $this->loopCount--;  
             */
-         
-        
-           
-           
-            
             unset($this->ballotlists[$index]);
             $this->showSaveBtn = true;
-        
-
-
-           
-           
-
-
     }
+
+
 
 
    
 
     public function mount()
     {   
-     
         $this->ballotlists =  [['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '']];
-        $this->wire_dr_types_identifier = 0;
     }
     
     public function searchBallotId($ballotId, $indexKey){
-       
-   
-            $search_in_ballot = Ballots::where('ballot_id', $ballotId)->Where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->where('ballot_id', 'not like', '%F_%')->first();
+            $search_in_ballot = Ballots::where('ballot_id', $ballotId)->Where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->first();
             $search_in_delivery = Delivery::where('BALLOT_ID', $ballotId)->first();
-            $search_in_ballot_smd = Ballots::where('ballot_id', $ballotId)->Where('current_status','!=', 'NPO SMD')->where('ballot_id', 'not like', '%F_%')->first();
+            $search_in_ballot_smd = Ballots::where('ballot_id', $ballotId)->Where('current_status','!=', 'NPO SMD')->first();
             if($search_in_ballot_smd != null){
                 $this->showSaveBtn = false;
                 $this->canShowData = false;
-                $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
-                $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
-                $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
-                session()->flash('messageDR', 'Ballot ID not in Delivery Area. Status: '.$search_in_ballot_smd->current_status.' ');
+                $this->ballotlists[$indexKey]['clustered_precint'] = $search_in_ballot_smd->clustered_prec;
+                $this->ballotlists[$indexKey]['city_mun_prov'] = $search_in_ballot_smd->prov_name . ' ' . $search_in_ballot_smd->mun_name . ' ' . $search_in_ballot_smd->bgy_name;
+                $this->ballotlists[$indexKey]['quantity'] = $search_in_ballot_smd->cluster_total;
+                $this->ballotlists[$indexKey]['curr_stat'] = $search_in_ballot_smd->current_status;
+                session()->flash('messageDR', 'Ballot Control No. not in Delivery Area. Status: '.$search_in_ballot_smd->current_status.' ');
                 $addOneField = false;
             }elseif ($search_in_ballot == null) {
                 $this->showSaveBtn = false;
@@ -217,19 +201,21 @@ class DeliveryManagement extends Component
                 $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
                 $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
                 $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
-                session()->flash('messageDR', 'Invalid Ballot ID. ');
+                $this->ballotlists[$indexKey]['curr_stat'] =  "NPO SMD";
+                session()->flash('messageDR', 'Invalid Ballot Control No. ');
                 $addOneField = false;
               } elseif ($search_in_delivery != null) {
                 $line_error = $indexKey + 1;
                 $this->showSaveBtn = false;
                 $this->canShowData = false;
-                $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
-                $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
-                $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
-                session()->flash('messageDR', 'Ballot ID '.$ballotId.' in Line '.$line_error.' already have DR No. DR No.' .$search_in_delivery->DR_NO.' ');
+                $this->ballotlists[$indexKey]['clustered_precint'] = $search_in_delivery->CLUSTERED_PREC;
+                $this->ballotlists[$indexKey]['city_mun_prov'] = $search_in_delivery->CITY_MUN_PROV;
+                $this->ballotlists[$indexKey]['quantity'] = $search_in_delivery->CLUSTER_TOTAL;
+                $this->ballotlists[$indexKey]['curr_stat'] = 'NPO SMD';
+                session()->flash('messageDR', 'Ballot Control No. '.$ballotId.' in Line '.$line_error.' already have Receipt No. Receipt No.' .$search_in_delivery->DR_NO.' ');
                 $addOneField = false;
               } else {
-                $searchResult = Ballots::where('ballot_id', $ballotId)->Where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->where('ballot_id', 'not like', '%F_%')->first();
+                $searchResult = Ballots::where('ballot_id', $ballotId)->Where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->first();
                 $duplicateCount = 0;
                 foreach($this->ballotlists as $index => $ballot_list){
                     if( $this->ballotlists[$index]['ballot_id'] == $ballotId ){
@@ -243,7 +229,8 @@ class DeliveryManagement extends Component
                         $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
                         $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
                         $this->ballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
-                        session()->flash('messageDR', 'Ballot ID '.$ballotId.' Duplicate Entry at Line '.$line_error.'' );
+                        $this->ballotlists[$indexKey]['curr_stat'] = $searchResult->current_status;
+                        session()->flash('messageDR', 'Ballot Control No. '.$ballotId.' Duplicate Entry at Line '.$line_error.'' );
                     }
                 }
                 
@@ -252,6 +239,7 @@ class DeliveryManagement extends Component
                         $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
                         $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
                         $this->ballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
+                        $this->ballotlists[$indexKey]['curr_stat'] = $searchResult->current_status;
                         $addOneField = true;
                         
                         //IF SEARCH SUCCESS
@@ -264,32 +252,39 @@ class DeliveryManagement extends Component
 
     }
 
+ 
+
   
     public function save(){
-      
-      // --start-- for creation of dr number
-        $drno = DB::table('deliveries')
-        ->groupBy('DR_NO')
-        ->get();
+     
+      /* --start-- for creation of dr number
+        
         if ($drno->isEmpty()) {
             $c = 1;
         }else{
             $c = $drno->count() + 1;
         }
         $total_row = str_pad($c, 7, '0', STR_PAD_LEFT);
-    //--end-- for creation of dr number
-
-       
-
-    foreach ($this->ballotlists as $ballotlist){
+         --end-- for creation of dr number
+    */
+    $drno = DB::table('deliveries')
+        ->groupBy('DR_NO')
+        ->get();
+    $c = $drno->count();
+    $total_row = str_pad($c, 7, '0', STR_PAD_LEFT);
+    
+    foreach ($this->ballotlists as $index => $ballotlist){
     $this->validate(
         [
-            'ballotlists.*.ballot_id' => 'unique:deliveries,BALLOT_ID',
-          
+            'ballotlists.*.ballot_id' => 'unique:deliveries,BALLOT_ID|exists:ballots,ballot_id|distinct',
+            'ballotlists.*.curr_stat' => 'exists:deliveries,curr_stat',
         ],
         [
           
-            'ballotlists.*.*.unique' => 'exist in delivery'.$ballotlist['ballot_id'].'',   
+            'ballotlists.*.ballot_id.unique' => 'Line :attribute : Ballot Control No. Already has Receipt No.    ', 
+            'ballotlists.*.ballot_id.exists' => 'Line :attribute : Ballot Control No. Not Valid.                 ', 
+            'ballotlists.*.curr_stat.exists' => 'Line :attribute : Ballot Control No. Not In Delivery Area.      ', 
+            'ballotlists.*.ballot_id.distinct' => 'Line :attribute : Ballot Control No. has Duplicate Upon Entry.  ', 
         ]
     );
 }
@@ -303,7 +298,8 @@ class DeliveryManagement extends Component
                         'BALLOT_ID' => $ballotlist['ballot_id'],
                         'CLUSTERED_PREC' => $ballotlist['clustered_precint'],
                         'CITY_MUN_PROV' => $ballotlist['city_mun_prov'],
-                        'CLUSTER_TOTAL' => $ballotlist['quantity']
+                        'CLUSTER_TOTAL' => $ballotlist['quantity'],
+                        'curr_stat' => $ballotlist['curr_stat']
                         ]);
                         $update_selected = DB::table('ballots')
                         ->where('ballot_id', $ballotlist['ballot_id'])
@@ -314,9 +310,13 @@ class DeliveryManagement extends Component
                                   ]);
                         session()->flash('message', 'DR Number Created!');
                     }
-                
-    }
-                
+                    $this->ballotlists = [ ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '', 'curr_stat' => ''] ];
+                   
+                }
+
+
+
+  
   
 
 
@@ -332,6 +332,7 @@ class DeliveryManagement extends Component
             //create model and add fillable, create clearfields and reset
         }
 
+     
   
 
        
@@ -386,89 +387,52 @@ class DeliveryManagement extends Component
         $nameList = DB::table('delivery_configs')->where('personnel','<>','')->get();
         $config_query = DB::table('delivery_configs')->get();
 
-        $ob_query = DB::table('deliveries')->Where('BALLOT_ID', 'not like', '%F_%')->where('BALLOT_ID','<>','');
-        $fts_query = DB::table('deliveries')->Where('BALLOT_ID', 'like', '%F_%')->where('BALLOT_ID','<>','');
+        $ballot_query = DB::table('deliveries')->where('BALLOT_ID','<>','');
 
         if ($this->wire_search_dr_home == ''){
-            if($this->wire_dr_types_identifier == 1){
-                $ballotList = (clone $ob_query)->paginate(10);
-                $ballotListCount = (clone $ob_query)->count();
-                $ballotListCountTitle = 'Total Official Ballots in Delivery';
-            }elseif($this->wire_dr_types_identifier == 0){
+          
                 $ballotList = DB::table('deliveries')->where('BALLOT_ID','<>','')->paginate(10);
                 $ballotListCount = DB::table('deliveries')->where('BALLOT_ID','<>','')->count();
-                $ballotListCountTitle = 'All Ballots in Delivery';
-            }else{
-                $ballotList = (clone $fts_query)->paginate(10);
-                $ballotListCount = (clone $fts_query)->count();
-                $ballotListCountTitle = 'Total FTS Ballots in Delivery';
-            }
+                $ballotListCountTitle = 'All Ballots in Delivery with Receipt No.';
+          
         }else{
-            if($this->wire_dr_types_identifier == 1){
-        $ballotList = Delivery::where(function ($query) { $query->where('BALLOT_ID', 'not like', '%F_%'); })->where(function ($query) {$query->where('BALLOT_ID', $this->wire_search_dr_home)->orWhere('DR_NO', $this->wire_search_dr_home);})->paginate(10);
-        $ballotListCount = Delivery::where(function ($query) {
-            $query->where('BALLOT_ID', 'not like', '%F_%');})->where(function ($query) {$query->where('BALLOT_ID', $this->wire_search_dr_home)->orWhere('DR_NO', $this->wire_search_dr_home);})->count();
-        }elseif($this->wire_dr_types_identifier == 0){
+    
             $ballotList = Delivery::where('BALLOT_ID', $this->wire_search_dr_home)->where('BALLOT_ID','<>','')->orWhere('DR_NO', $this->wire_search_dr_home)->paginate(10);
             $ballotListCount = Delivery::where('BALLOT_ID', $this->wire_search_dr_home)->where('BALLOT_ID','<>','')->orWhere('DR_NO', $this->wire_search_dr_home)->count();
-        }
-        else{
-            $ballotList = Delivery::where(function ($query) { $query->where('BALLOT_ID', 'like', '%F_%'); })->where(function ($query) {$query->where('BALLOT_ID', $this->wire_search_dr_home)->orWhere('DR_NO', $this->wire_search_dr_home);})->paginate(10);
-            $ballotListCount = Delivery::where(function ($query) {
-            $query->where('BALLOT_ID', 'like', '%F_%');})->where(function ($query) {$query->where('BALLOT_ID', $this->wire_search_dr_home)->orWhere('DR_NO', $this->wire_search_dr_home);})->count();
-                
-        }
             $ballotListCountTitle ='Search Result Found:';
-
         }
-
-
-
-
 
         if ($this->wire_search_dr_no == ''){
-            if($this->wire_dr_types_identifier == 1){
-                $drlist =  (clone $ob_query)->paginate(10);
-            }else{
-                $drlist =  (clone $fts_query)->paginate(10);
-            }
+            $drlist =  (clone $ballot_query)->paginate(10);
             $drlistresult = '';
         }else{
-            if($this->wire_dr_types_identifier == 1){
-                if($this->wire_dr_reports_identifier == 1){
-                    $drlist = (clone $ob_query)->where('DR_NO', $this->wire_search_dr_no)->paginate(10);
-                    $drlistresult = 'Search Result Found: '.(clone $ob_query)->where('DR_NO', $this->wire_search_dr_no)->count();
-                }else{
-                    $drlist = (clone $ob_query)->where('created_at','like','%'.$this->wire_search_dr_no.'%')->paginate(10);
-                    $drlistresult = 'Search Result Found: '.(clone $ob_query)->where('created_at','like','%'.$this->wire_search_dr_no.'%')->count();
-                }
+      
+            if($this->wire_dr_reports_identifier == 1){
+                $drlist = (clone $ballot_query)->where('DR_NO', $this->wire_search_dr_no)->paginate(10);
+                $drlistresult = 'Search Result Found: '.(clone $ballot_query)->where('DR_NO', $this->wire_search_dr_no)->count();
             }else{
-                if($this->wire_dr_reports_identifier == 1){
-                    $drlist = (clone $fts_query)->where('DR_NO', $this->wire_search_dr_no)->paginate(10);
-                    $drlistresult = 'Search Result Found: '.(clone $fts_query)->where('DR_NO', $this->wire_search_dr_no)->count();   
-                }else{
-                    $drlist = (clone $fts_query)->where('created_at','like','%'.$this->wire_search_dr_no.'%')->paginate(10);
-                    $drlistresult = 'Search Result Found: '.(clone $fts_query)->where('created_at','like','%'.$this->wire_search_dr_no.'%')->count();  
-                } 
+                $drlist = (clone $ballot_query)->where('created_at','like','%'.$this->wire_search_dr_no.'%')->paginate(10);
+                $drlistresult = 'Search Result Found: '.(clone $ballot_query)->where('created_at','like','%'.$this->wire_search_dr_no.'%')->count();
             }
         }
 
         if ($this->wire_monthly_datefrom == '' || $this->wire_monthly_dateto == '' ){
-            if($this->wire_dr_types_identifier == 1){
-                $monthlydrlist = (clone $ob_query)->paginate(10);
-            }else{
-                $monthlydrlist = (clone $fts_query)->paginate(10);
-            }
+                $monthlydrlist =  (clone $ballot_query)->paginate(10);
                 $monthlydrlistresult = '';
         }else{
-            if($this->wire_dr_types_identifier == 1){
-                $monthlydrlist = (clone $ob_query)->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->wire_monthly_datefrom.' 00:00:00', $this->wire_monthly_dateto.' 23:59:59'))->paginate(10);
-                $monthlydrlistresult = 'Search Result Found: '.(clone $ob_query)->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->wire_monthly_datefrom.' 00:00:00', $this->wire_monthly_dateto.' 23:59:59'))->count();
-            }else{
-                $monthlydrlist = (clone $fts_query)->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->wire_monthly_datefrom.' 00:00:00', $this->wire_monthly_dateto.' 23:59:59'))->paginate(10);
-                $monthlydrlistresult = 'Search Result Found: '.(clone $fts_query)->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->wire_monthly_datefrom.' 00:00:00', $this->wire_monthly_dateto.' 23:59:59'))->count();
-            }
-    }
+   
+                $monthlydrlist = (clone $ballot_query)->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->wire_monthly_datefrom.' 00:00:00', $this->wire_monthly_dateto.' 23:59:59'))->paginate(10);
+                $monthlydrlistresult = 'Search Result Found: '.(clone $ballot_query)->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->wire_monthly_datefrom.' 00:00:00', $this->wire_monthly_dateto.' 23:59:59'))->count();
+
+        }
         return view('livewire.j-livewire.delivery.delivery-management', compact('descriptionList','deliveredList','copyList','titleList','nameList','ballotList','ballotListCount','ballotListCountTitle','config_query','drlist','drlistresult','monthlydrlist','monthlydrlistresult'));
     }
 }
+ 
+
+
+
+
+
+
+

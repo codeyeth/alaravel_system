@@ -20,7 +20,7 @@ class CreateDeliveriesTable extends Migration
             $table->string('CLUSTERED_PREC')->nullable();
             $table->integer('CLUSTER_TOTAL')->default('0');
             $table->string('CITY_MUN_PROV')->nullable();
-   
+            $table->string('curr_stat')->nullable();
             $table->timestamps();
         });
     }

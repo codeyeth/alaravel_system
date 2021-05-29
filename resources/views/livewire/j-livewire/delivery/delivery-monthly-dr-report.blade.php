@@ -25,12 +25,12 @@
       <table class="table table-hover mb-0">
         <thead class="bg-light">
           <tr>
-            <th scope="col" class="border-0">Ballot ID</th>
-            <th scope="col" class="border-0">DR No.</th>
-            <th scope="col" class="border-0">Clustered Precint</th>
-            <th scope="col" class="border-0">City / Municipality / Province</th>
-            <th scope="col" class="border-0">Quanitity</th>
-            <th scope="col" class="border-0">Timestamp</th>
+          <th scope="col" class="border-0">Ballot Control No.</th>
+          <th scope="col" class="border-0">Receipt No.</th>
+          <th scope="col" class="border-0">Poll Location Serial Number</th>
+          <th scope="col" class="border-0">Ballot Delivery Location</th>
+          <th scope="col" class="border-0">Quantity</th>
+          <th scope="col" class="border-0">Timestamp</th>
           </tr>
         </thead>
         <tbody>
@@ -38,8 +38,8 @@
             <tr>
               <td>{{ $item->BALLOT_ID }}</td>
               <td>{{ $item->DR_NO }}</td>
-              <td>{{ $item->CITY_MUN_PROV }}</td>
               <td>{{ $item->CLUSTERED_PREC }}</td>
+              <td>{{ $item->CITY_MUN_PROV }}</td>
               <td>{{ $item->CLUSTER_TOTAL }}</td>
               <td>{{ $item->created_at }}</td>
             </tr>

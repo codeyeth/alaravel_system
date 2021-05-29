@@ -160,57 +160,37 @@ class DeliveryjController extends Controller
         $var_dr_identifier = request()->get('modal_input_dr_types_identifier');
         for ($i = 0; $i < $var_copy->count(); $i++) {
             foreach($var_copy as $i => $value){
-                if($var_dr_identifier == 1){
                     if($var_reports_identifier == 1){
                         $cloned_query_all_deliveries = clone $query_all_deliveries
-                        ->Where('BALLOT_ID', 'not like', '%F_%')
+                        ->where('BALLOT_ID','<>','')
                         ->Where('DR_NO',$var_search_dr_no)
                         ->get();
-                        $var_downloaded_title = 'OB Reports for DR No. '.$var_search_dr_no;
+                        $var_downloaded_title = 'Reports for Delivery No. '.$var_search_dr_no;
                         $var_date_to_display= Carbon::parse($var_dr_no_dated)->format('d F Y');
                     }elseif($var_reports_identifier == 2) {
                         $cloned_query_all_deliveries = clone $query_all_deliveries
-                        ->Where('BALLOT_ID', 'not like', '%F_%')
+                        ->where('BALLOT_ID','<>','')
                         ->where('created_at','like','%'.$var_daily_dr.'%')
                         ->get();
-                        $var_downloaded_title = 'Daily Reports for OB for ALL DR Dated '.Carbon::parse($var_daily_dr)->format('d F Y');
+                        $var_downloaded_title = 'Daily Reports Delivery Receipt Dated '.Carbon::parse($var_daily_dr)->format('d F Y');
                         $var_date_to_display= Carbon::parse($var_dr_no_dated)->format('d F Y');
                     }else{
                         $cloned_query_all_deliveries = clone $query_all_deliveries
-                        ->Where('BALLOT_ID', 'not like', '%F_%')
+                        ->where('BALLOT_ID','<>','')
                         ->whereRaw('updated_at >= ? AND updated_at <= ?', array($var_monthly_dr_from.' 00:00:00', $var_monthly_dr_to.' 23:59:59'))
                         ->get();
-                        $var_downloaded_title = 'OB Dated DR Reports';
+                        $var_downloaded_title = 'Monthly Dated Receipt Reports';
                         $var_date_to_display= 'From '.Carbon::parse($var_monthly_dr_from)->format('d F Y').' To '.Carbon::parse($var_monthly_dr_to)->format('d F Y').'';
                     }
-                }else{
-                    if($var_reports_identifier == 1){
-                        $cloned_query_all_deliveries = clone $query_all_deliveries
-                        ->Where('BALLOT_ID', 'like', '%F_%')
-                        ->Where('DR_NO',$var_search_dr_no)
-                        ->get();
-                        $var_downloaded_title = 'FTS Reports for DR No. '.$var_search_dr_no;
-                        $var_date_to_display= Carbon::parse($var_dr_no_dated)->format('d F Y');
-                    }elseif($var_reports_identifier == 2) {
-                        $cloned_query_all_deliveries = clone $query_all_deliveries
-                        ->Where('BALLOT_ID', 'like', '%F_%')
-                        ->where('created_at','like','%'.$var_daily_dr.'%')
-                        ->get();
-                        $var_downloaded_title = 'Daily Reports for FTS for ALL DR Dated '.Carbon::parse($var_daily_dr)->format('d F Y');
-                        $var_date_to_display= Carbon::parse($var_dr_no_dated)->format('d F Y');
-                    }else{
-                        $cloned_query_all_deliveries = clone $query_all_deliveries
-                        ->Where('BALLOT_ID', 'like', '%F_%')
-                        ->whereRaw('updated_at >= ? AND updated_at <= ?', array($var_monthly_dr_from.' 00:00:00', $var_monthly_dr_to.' 23:59:59'))
-                        ->get();
-                        $var_downloaded_title = 'OB Dated DR Reports';
-                        $var_date_to_display= 'From '.Carbon::parse($var_monthly_dr_from)->format('d F Y').' To '.Carbon::parse($var_monthly_dr_to)->format('d F Y').'';
-                    }
-                }
+               
+                
                 $var_total_row = $query_all_deliveries->count();
                 $var_total_sum = $query_all_deliveries->sum('CLUSTER_TOTAL');
                 $view = \View::make('j-views.delivery.delivery_reports_pdf',compact('value','cloned_query_all_deliveries','var_imagepath','var_total_row','var_total_sum','var_copy','var_date_to_display','var_delivered_to','var_downloaded_title','var_description','var_issued_by','var_approved_by','var_received_by','var_inspected_by'));
                 $html_content = $view->render();
+
+           
+
                 PDF::setFooterCallback(function($pdf) {
                 // Position at 15 mm from bottom
                 $pdf->SetY(-15);
