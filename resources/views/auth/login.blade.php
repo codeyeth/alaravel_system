@@ -26,7 +26,7 @@
                             <h3 class="page-title">LOGIN PAGE</h3>
                         </div>
                     </div>
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('login') }}" autocomplete="off">
                         @csrf
                         
                         <div class="card card-small mb-4">
