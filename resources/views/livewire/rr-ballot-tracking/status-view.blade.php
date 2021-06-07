@@ -1,5 +1,5 @@
 <div>
-    <h3 style="text-align: center" class="mb-1"><strong> BALLOT TRACKING STATUS MONITORING </strong></h3>
+    <h3 style="text-align: center" class="mb-1"><strong> BALLOT POLL TRACKING STATUS MONITORING </strong></h3>
     <h5 style="text-align: center" class="mb-4"><i> REALTIME DATA </i></h5>
     
     <div class="d-flex justify-content-sm-center">

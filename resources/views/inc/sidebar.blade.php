@@ -45,7 +45,7 @@
         <li class="nav-item">
           <a class="nav-link {{ $sidebar == 'Ballot Tracking' ? 'active' : ' ' }}" href="{{ asset('/ballot_tracking') }}">
             <i class="material-icons">bar_chart</i>
-            <span>Comelec Ballot Tracking</span>
+            <span>Ballot Poll Tracking</span>
           </a>
         </li>
         @endif
