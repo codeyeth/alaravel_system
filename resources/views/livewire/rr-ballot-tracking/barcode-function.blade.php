@@ -286,34 +286,43 @@
                                             @else
                                             
                                             @if ( $item->new_status_type == "OUT")
-                                            FOR 
+                                            {{-- FOR  --}}
                                             {{-- {{ $item->current_status }} --}}
                                             
                                             {{-- //////////////////////////////////////////////////////////// --}}
                                             
                                             @if( $item->current_status == 'SHEETER')
-                                            PAPER CUTTER SECTION
+                                            FOR PAPER CUTTER SECTION
                                             @endif
                                             
                                             @if( $item->current_status == 'TEMPORARY STORAGE')
-                                            STORAGE SECTION
+                                            FOR STORAGE SECTION
                                             @endif
                                             
                                             @if( $item->current_status == 'VERIFICATION')
-                                            VALIDITY VERIFICATION SECTION
+                                            FOR VALIDITY VERIFICATION SECTION
                                             @endif
                                             
                                             @if( $item->current_status == 'QUARANTINE')
-                                            REJECTED SECTION
+                                            FOR REJECTED SECTION
                                             @endif
                                             
                                             @if( $item->current_status == 'COMELEC DELIVERY')
-                                            DELIVERY SECTION
+                                            FOR DELIVERY SECTION
                                             @endif
                                             
                                             @if( $item->current_status == 'NPO SMD')
-                                            BILLING SECTION
+                                            FOR BILLING SECTION
                                             @endif
+
+                                            @if( $item->current_status == 'OUT FOR DELIVERY')
+                                            IS OUT FOR DELIVERY
+                                            @endif
+                                            
+                                            @if( $item->current_status == 'FOR DELIVERY')
+                                            FOR DELIVERY
+                                            @endif
+
                                             {{-- //////////////////////////////////////////////////////////// --}}
                                             
                                             
@@ -349,7 +358,7 @@
                                             BILLING SECTION
                                             @endif
                                             
-                                            @if( $item->current_status == 'IS OUT FOR DELIVERY')
+                                            @if( $item->current_status == 'OUT FOR DELIVERY')
                                             IS OUT FOR DELIVERY
                                             @endif
                                             

@@ -49,7 +49,7 @@ class DeliverModule extends Component
         if($this->search != ''){
             
             if( Auth::user()->comelec_role == 'COMELEC DELIVERY' && $this->isOutForDeliveryMode == true && $this->isDeliveredMode == false){
-                $updateBallotStatus = Ballots::where('ballot_id', $this->search)->where('is_dr_done', true )->first();
+                $updateBallotStatus = Ballots::where('ballot_id', $this->search)->where('is_dr_done', false )->first();
             }
             
             if( Auth::user()->comelec_role == 'COMELEC DELIVERY' && $this->isDeliveredMode == true && $this->isOutForDeliveryMode == false){
@@ -202,8 +202,8 @@ class DeliverModule extends Component
     {
         if($this->isOutForDeliveryMode == true){
             return view('livewire.rr-ballot-tracking.deliver-module', [
-                'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', 'FOR DELIVERY')->where('is_out_for_delivery', false )->where('is_dr_done', true )->paginate(20),
-                'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('is_dr_done', true )->count(),
+                'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', 'FOR DELIVERY')->where('is_out_for_delivery', false )->where('is_dr_done', false )->paginate(20),
+                'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('is_dr_done', false )->count(),
                 ]
             );
         }

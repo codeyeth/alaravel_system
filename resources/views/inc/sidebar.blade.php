@@ -50,14 +50,14 @@
         </li>
         @endif
         
-        @if(Auth::user()->is_dr)
+        {{-- @if(Auth::user()->is_dr)
         <li class="nav-item">
           <a class="nav-link {{ $sidebar == 'Delivery' ? 'active' : ' ' }}" href="{{ asset('/delivery') }}">
             <i class="material-icons">bar_chart</i>
             <span>Delivery Receipt</span>
           </a>
         </li>
-        @endif
+        @endif --}}
         
         @if(Auth::user()->is_motorpool == 1 || Auth::user()->is_motorpool == 2)
         <li class="nav-item">
