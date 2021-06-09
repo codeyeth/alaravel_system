@@ -498,12 +498,12 @@ class BarcodeFunction extends Component
         $this->search = $convertToBallotId->ballot_id;
         $this->updateBallotStatus();
     }
-
+    
     // BALLOT QUICK UPDATE MODE SHOW CONFIRMATION BUTTONS
     public function quickUpdate($id){
         $this->emit('showConfirmationButtons', $id);
     }
-
+    
     // BALLOT QUICK UPDATE MODE HIDE CONFIRMATION BUTTONS AND SHOW THE PARENT BUTTON WHEN TRANSACTION CANCELLED
     public function cancelQuickUpdate($id){
         $this->emit('hideConfirmationButtons', $id);
@@ -828,10 +828,8 @@ class BarcodeFunction extends Component
                 // IF USER IS NPO SMD AND IS IN BALLOT OUT MODE THE BALLOT MUST HAVE A ASSOCIATED DR
                 if( Auth::user()->comelec_role == 'NPO SMD' && Auth::user()->is_ballot_in == false ){
                     return view('livewire.rr-ballot-tracking.barcode-function', [
-                        'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('new_status_type', $statusType )->paginate(20),
-                        // ->where('is_dr_done', true ) ORIGINAL PROCESS REVERT THIS
-                        'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('new_status_type', $statusType )->count(),
-                        // ->where('is_dr_done', true ) ORIGINAL PROCESS REVERT THIS
+                        'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('is_dr_done', true )->where('new_status_type', $statusType )->paginate(20),
+                        'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->where('current_status', Auth::user()->comelec_role )->where('is_dr_done', true )->where('new_status_type', $statusType )->count(),
                         ]
                     );
                 }elseif( Auth::user()->comelec_role == 'QUARANTINE' && Auth::user()->is_ballot_in == false ){
