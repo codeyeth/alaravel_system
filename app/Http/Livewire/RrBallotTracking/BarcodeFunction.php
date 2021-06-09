@@ -623,7 +623,7 @@ class BarcodeFunction extends Component
                         // $barcoded_receiver = 'TEMPORARY STORAGE';
                         
                         $comelec_role = 'VALIDITY VERIFICATION SECTION';
-                        $barcoded_receiver = 'STORAGE SECTION';
+                        $barcoded_receiver = 'PAPER CUTTER SECTION';
                     }
                     
                     if($comelec_role == 'COMELEC DELIVERY'){
@@ -652,7 +652,7 @@ class BarcodeFunction extends Component
                         // $barcoded_receiver = 'COMELEC DELIVERY';
                         
                         $comelec_role = 'BILLING SECTION';
-                        $barcoded_receiver = 'DELIVERY SECTION';
+                        $barcoded_receiver = 'VALIDITY VERIFICATION SECTION';
                     }
                     
                     broadcast(new RefreshBallotList($comelec_role, $ballot_id, $barcoded_receiver, $statusType, $userName));
