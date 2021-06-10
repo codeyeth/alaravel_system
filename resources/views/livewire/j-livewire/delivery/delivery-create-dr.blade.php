@@ -50,9 +50,7 @@
                 <tr>
                     <th></th>
                     <th>Ballot Control No.</th>
-                    <th>Poll Location Serial Number</th>
-                    <th>Ballot Delivery Location</th>
-                    <th>Quantity</th>
+                    <th>Details</th>
                     <th></th>
                 </tr>
             </thead>
@@ -69,34 +67,37 @@
                         wire:change="searchBallotId($event.target.value, {{ $index }})" required/>
                     </td>
                     <td>
-                        <input type="text" name="ballotlists[{{$index}}][clustered_precint]" class="form-control" wire:model="ballotlists.{{$index}}.clustered_precint" readonly/>
-                    </td>
-                  
-                    <td>
-                        <input type="text" name="ballotlists[{{$index}}][city_mun_prov]" class="form-control" wire:model="ballotlists.{{$index}}.city_mun_prov" readonly/>
-                    </td>
-                    <td>
-                        <input type="text" name="ballotlists[{{$index}}][quantity]" class="form-control" wire:model="ballotlists.{{$index}}.quantity" readonly/>
-                    </td>
-                    <td>
-                        <input type="text" name="ballotlists[{{$index}}][curr_stat]" class="form-control" wire:model="ballotlists.{{$index}}.curr_stat" hidden/>
+                    <a href="#" class="card-post__category badge badge-pill badge-info">{{ $ballotlist['clustered_precint'] }} {{ $ballotlist['city_mun_prov'] }} {{ $ballotlist['quantity'] }}</a>
+                        <input type="text" name="ballotlists[{{$index}}][clustered_precint]" class="form-control" wire:model="ballotlists.{{$index}}.clustered_precint" hidden/>
                     </td>
                     <td>
                         <a href="#" wire:click.prevent="removeBallot({{$index}})" class="text-danger">Remove</a>
+                    </td>
+                    <td>
+                        <input type="text" name="ballotlists[{{$index}}][city_mun_prov]" class="form-control" wire:model="ballotlists.{{$index}}.city_mun_prov" hidden/>
+                    </td>
+                    <td>
+                        <input type="text" name="ballotlists[{{$index}}][quantity]" class="form-control" wire:model="ballotlists.{{$index}}.quantity" hidden/>
+                    </td>
+                    <td>
+                        <input type="text" name="ballotlists[{{$index}}][curr_stat]" class="form-control" wire:model="ballotlists.{{$index}}.curr_stat" hidden/>
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
+
+        <table>
+        <thead>
+        <tr>
+                <th><button class="btn btn-sm btn-secondary" wire:click.prevent="addBallot">+ Add Another Row</button></th>
+                <th>&nbsp;</th>
+                <th>&nbsp;</th>
+                <th><button type="submit" class="btn btn-primary"  @if($showSaveBtn == true) @else disabled @endif><i class="material-icons">save</i> Save </button></th>
+            </tr>
+            </thead>
+        </table>
         <div class="row">
-            <div class="col-md-10">
-                <button class="btn btn-sm btn-secondary" wire:click.prevent="addBallot">+ Add Another Row</button>
-            </div>  
-           
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary"  @if($showSaveBtn == true) @else disabled @endif><i class="material-icons">save</i> Save </button>
-            </div>
-        
             <script>
                 window.addEventListener('searchSucceed', event => {
                     $("focusBallot1").focus();
@@ -108,8 +109,6 @@
                     document.getElementById("focusBallot0").focus();
                 };
             </script>
-
-           
         </div>
     </form>
 

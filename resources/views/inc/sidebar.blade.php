@@ -54,7 +54,7 @@
         <li class="nav-item">
           <a class="nav-link {{ $sidebar == 'Delivery' ? 'active' : ' ' }}" href="{{ asset('/delivery') }}">
             <i class="material-icons">bar_chart</i>
-            <span>Delivery Receipt</span>
+            <span>Delivery Management</span>
           </a>
         </li>
         @endif

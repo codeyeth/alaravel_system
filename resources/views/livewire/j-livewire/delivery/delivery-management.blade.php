@@ -1,9 +1,14 @@
 <div>
+<div class="card-header border-bottom">
+            <h6 class="m-0">Delivery Management <label style="float:right;">  </label></h6>
+        </div>
     <div>
+    
         <div class="row">
             <div class="col-lg-12 mb-4">
+              
                 <div class="card card-small mb-1">
-                    <ul class="nav nav-pills nav-tabs justify-content-end" role="tablist">
+                    <ul class="nav nav-pills nav-tabs " role="tablist">
                         <li class="nav-item">
                             <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="false" wire:ignore.self>Home</a>
                         </li>
@@ -23,6 +28,8 @@
                             <a class="nav-link" id="dr_report_settings-tab" data-toggle="tab" href="#dr_report_settings" role="tab" aria-controls="dr_report_settings" aria-selected="false" wire:ignore.self>Delivery Report Settings</a>
                         </li>
                     </ul>
+
+                   
                     <div class="tab-content" id="myTab">
                         <input type="text" wire:model="wire_dr_reports_identifier" name="input_dr_reports_identifier" hidden >
                         @include('livewire.j-livewire.delivery.delivery-dated-reports-modal') 

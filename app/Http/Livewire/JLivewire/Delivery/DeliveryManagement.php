@@ -271,7 +271,7 @@ class DeliveryManagement extends Component
         ->groupBy('DR_NO')
         ->get();
     $c = $drno->count();
-    $total_row = str_pad($c, 7, '0', STR_PAD_LEFT);
+    $total_row = str_pad($c, 5, '0', STR_PAD_LEFT);
     
     foreach ($this->ballotlists as $index => $ballotlist){
     $this->validate(
@@ -294,7 +294,7 @@ class DeliveryManagement extends Component
 
 
                     Delivery::create([
-                        'DR_NO' => $total_row,
+                        'DR_NO' => 'R_'.$total_row,
                         'BALLOT_ID' => $ballotlist['ballot_id'],
                         'CLUSTERED_PREC' => $ballotlist['clustered_precint'],
                         'CITY_MUN_PROV' => $ballotlist['city_mun_prov'],

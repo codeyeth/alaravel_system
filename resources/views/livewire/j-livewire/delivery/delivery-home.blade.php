@@ -1,19 +1,7 @@
-                                    <div class="stats-small stats-small--1 card card-small">
-                                        <div class="card-body p-0 d-flex">
-                                            <div class="d-flex flex-column m-auto">
-                                                <div class="stats-small__data text-center">
-                                                    <span class="stats-small__label text-uppercase">{{$ballotListCountTitle}}</span>
-                                                    <h6 class="stats-small__value count my-3">{{$ballotListCount}}</h6>
-                                                </div>
-                                                <div class="stats-small__data">
-                                                    <!--if you want to add percentage od increase
-                                                    <span class="stats-small__percentage stats-small_       _percentage--increase">4.7%</span>
-                                                    -->
-                                                </div>
-                                            </div>
-                                            <canvas height="120" class="blog-overview-stats-small-1"></canvas>
-                                        </div>
-                                    </div>
+
+            <ul class="nav nav-pills nav-tabs justify-content-end " role="tablist">
+                    <span class="form-label">{{$ballotListCountTitle}} {{$ballotListCount}}  &nbsp;</span>
+                    </ul>
                           
                             <div class="card-body pt-0 pb-3 text-center">
                                 <div class="row border-bottom py-2 mb-0 bg-light">
