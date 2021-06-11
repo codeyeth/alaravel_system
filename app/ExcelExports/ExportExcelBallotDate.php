@@ -71,11 +71,13 @@ class ExportExcelBallotDate implements FromQuery, WithHeadings, WithMapping, Sho
             }
             
             if( $date_history->old_status == 'COMELEC DELIVERY' ){
-                $old_status = 'DELIVERY SECTION';           
+                // $old_status = 'DELIVERY SECTION';           
+                $old_status = 'OUTGOING DELIVERY SECTION';           
             }
             
             if( $date_history->old_status == 'NPO SMD' ){
-                $old_status = 'BILLING SECTION';           
+                // $old_status = 'BILLING SECTION';           
+                $old_status = 'DELIVERY MANAGEMENT SECTION';           
             }
             
             if( $date_history->old_status == 'OUT FOR DELIVERY' ){

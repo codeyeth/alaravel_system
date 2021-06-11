@@ -175,11 +175,11 @@ class BarcodeFunction extends Component
         }
         
         if( $getBallotDetails->current_status == 'COMELEC DELIVERY' ){
-            $detailsCurrentStatus = 'DELIVERY SECTION';
+            $detailsCurrentStatus = 'OUTGOING DELIVERY SECTION';
         }
         
         if( $getBallotDetails->current_status == 'NPO SMD' ){
-            $detailsCurrentStatus = 'BILLING SECTION';
+            $detailsCurrentStatus = 'DELIVERY MANAGEMENT SECTION';
         }
         
         $this->viewBallotParent = collect([
@@ -533,7 +533,7 @@ class BarcodeFunction extends Component
                     if( Auth::user()->comelec_role == 'SHEETER' && $this->ballotIn == true ){
                         $newStatus = Auth::user()->comelec_role;
                         $for = '';
-                    }elseif( Auth::user()->comelec_role == 'NPO SMD' && $this->ballotIn == false ){
+                    }elseif( Auth::user()->comelec_role == 'COMELEC DELIVERY' && $this->ballotIn == false ){
                         $newStatus = 'FOR DELIVERY';
                         $for = '';
                     }elseif($this->ballotIn == true){
@@ -627,18 +627,10 @@ class BarcodeFunction extends Component
                     }
                     
                     if($comelec_role == 'COMELEC DELIVERY'){
-                        if($updateBallotStatus->is_re_print == true){
-                            // $barcoded_receiver = 'QUARANTINE';
-                            
-                            $comelec_role = 'DELIVERY SECTION';
-                            $barcoded_receiver = 'REJECTED SECTION';
-                            
-                        }else{
-                            // $barcoded_receiver = 'VERIFICATION';
-                            
-                            $comelec_role = 'DELIVERY SECTION';
-                            $barcoded_receiver = 'VALIDITY VERIFICATION SECTION';
-                        }
+                        // $comelec_role = 'DELIVERY SECTION';
+                        // $barcoded_receiver = 'BILLING SECTION';
+                        $comelec_role = 'OUTGOING DELIVERY SECTION';
+                        $barcoded_receiver = 'DELIVERY MANAGEMENT SECTION';
                     }
                     
                     if($comelec_role == 'QUARANTINE'){
@@ -651,8 +643,23 @@ class BarcodeFunction extends Component
                     if($comelec_role == 'NPO SMD'){
                         // $barcoded_receiver = 'COMELEC DELIVERY';
                         
-                        $comelec_role = 'BILLING SECTION';
-                        $barcoded_receiver = 'VALIDITY VERIFICATION SECTION';
+                        // $comelec_role = 'BILLING SECTION';
+                        // $barcoded_receiver = 'VALIDITY VERIFICATION SECTION';
+                        
+                        if($updateBallotStatus->is_re_print == true){
+                            // $barcoded_receiver = 'QUARANTINE';
+                            
+                            // $comelec_role = 'BILLING SECTION';
+                            $comelec_role = 'DELIVERY MANAGEMENT SECTION';
+                            $barcoded_receiver = 'REJECTED SECTION';
+                        }else{
+                            // $barcoded_receiver = 'VERIFICATION';
+                            
+                            // $comelec_role = 'BILLING SECTION';
+                            $comelec_role = 'DELIVERY MANAGEMENT SECTION';
+                            $barcoded_receiver = 'VALIDITY VERIFICATION SECTION';
+                        }
+                        
                     }
                     
                     broadcast(new RefreshBallotList($comelec_role, $ballot_id, $barcoded_receiver, $statusType, $userName));
@@ -678,11 +685,13 @@ class BarcodeFunction extends Component
                     }
                     
                     if( Auth::user()->comelec_role == 'COMELEC DELIVERY' ){
-                        $comelec_role = 'DELIVERY SECTION';
+                        // $comelec_role = 'DELIVERY SECTION';
+                        $comelec_role = 'OUTGOING DELIVERY SECTION';
                     }
                     
                     if( Auth::user()->comelec_role == 'NPO SMD' ){
-                        $comelec_role = 'BILLING SECTION';
+                        // $comelec_role = 'BILLING SECTION';
+                        $comelec_role = 'DELIVERY MANAGEMENT SECTION';
                     }
                     
                     if( Auth::user()->comelec_role == 'VERIFICATION' && $this->verificationBadMode == true ){
@@ -708,11 +717,17 @@ class BarcodeFunction extends Component
                         }
                         
                         if( Auth::user()->barcoded_receiver == 'COMELEC DELIVERY' ){
-                            $barcoded_receiver = 'DELIVERY SECTION';
+                            $barcoded_receiver = 'OUTGOING DELIVERY SECTION';
                         }
                         
                         if( Auth::user()->barcoded_receiver == 'NPO SMD' ){
-                            $barcoded_receiver = 'BILLING SECTION';
+                            // $barcoded_receiver = 'BILLING SECTION';
+                            $barcoded_receiver = 'DELIVERY MANAGEMENT SECTION';
+                        }
+                        
+                        //IF THE BALLOT IS BEING OUT BY THE COMELEC DELIVERY AND WILL BE SUBJECTED FOR DELIVERY
+                        if( Auth::user()->comelec_role == 'COMELEC DELIVERY' && Auth::user()->barcoded_receiver == 'NPO SMD' ){
+                            $barcoded_receiver = 'DELIVERY';
                         }
                         
                     }

@@ -13,7 +13,7 @@
                         {{-- SEARCH INPUT --}}
                         <div class="col-lg-12 col-sm-12">
                             <div class="input-group mb-2">
-                                <input class="form-control form-control-lg mb-0" type="text" placeholder="Ballot ID | Barcode Value here..." wire:model="search" wire:keyup="updateBallotDeliveryStatus" autofocus>
+                                <input class="form-control form-control-lg mb-0" type="text" placeholder="Ballot ID | Barcode Value here..." id="search_input" wire:model="search" wire:keyup="updateBallotDeliveryStatus" autofocus>
                                 <div class="input-group-append">
                                     <button class="btn btn-warning" type="button" wire:click="clearSearch">Clear Search</button>
                                 </div>

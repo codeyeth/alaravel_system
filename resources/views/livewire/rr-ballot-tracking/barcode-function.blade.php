@@ -308,13 +308,14 @@
                                             @endif
                                             
                                             @if( $item->current_status == 'COMELEC DELIVERY')
-                                            FOR DELIVERY SECTION
+                                            FOR OUTGOING DELIVERY SECTION
                                             @endif
                                             
                                             @if( $item->current_status == 'NPO SMD')
-                                            FOR BILLING SECTION
+                                            {{-- FOR BILLING SECTION --}}
+                                            FOR DELIVERY MANAGEMENT SECTION
                                             @endif
-
+                                            
                                             @if( $item->current_status == 'OUT FOR DELIVERY')
                                             IS OUT FOR DELIVERY
                                             @endif
@@ -322,7 +323,7 @@
                                             @if( $item->current_status == 'FOR DELIVERY')
                                             FOR DELIVERY
                                             @endif
-
+                                            
                                             {{-- //////////////////////////////////////////////////////////// --}}
                                             
                                             
@@ -351,11 +352,12 @@
                                             @endif
                                             
                                             @if( $item->current_status == 'COMELEC DELIVERY')
-                                            DELIVERY SECTION
+                                            OUTGOING DELIVERY SECTION
                                             @endif
                                             
                                             @if( $item->current_status == 'NPO SMD')
-                                            BILLING SECTION
+                                            {{-- BILLING SECTION --}}
+                                            DELIVERY MANAGEMENT SECTION
                                             @endif
                                             
                                             @if( $item->current_status == 'OUT FOR DELIVERY')
@@ -516,11 +518,13 @@
                                             @endif
                                             
                                             @if( $history_item->old_status == 'COMELEC DELIVERY' )
-                                            DELIVERY SECTION
+                                            {{-- DELIVERY SECTION --}}
+                                            OUTGOING DELIVERY SECTION
                                             @endif
                                             
                                             @if( $history_item->old_status == 'NPO SMD' )
-                                            BILLING SECTION
+                                            {{-- BILLING SECTION --}}
+                                            DELIVERY MANAGEMENT SECTION
                                             @endif
                                             
                                             @if( $history_item->old_status == 'OUT FOR DELIVERY' )

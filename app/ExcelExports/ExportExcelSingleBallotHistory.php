@@ -63,11 +63,13 @@ class ExportExcelSingleBallotHistory implements FromQuery, WithHeadings, WithMap
             }
             
             if( $single_history->old_status == 'COMELEC DELIVERY' ){
-                $old_status = 'DELIVERY SECTION';           
+                // $old_status = 'DELIVERY SECTION';           
+                $old_status = 'OUTGOING DELIVERY SECTION';           
             }
             
             if( $single_history->old_status == 'NPO SMD' ){
-                $old_status = 'BILLING SECTION';           
+                // $old_status = 'BILLING SECTION';           
+                $old_status = 'DELIVERY MANAGEMENT SECTION';           
             }
             
             if( $single_history->old_status == 'OUT FOR DELIVERY' ){

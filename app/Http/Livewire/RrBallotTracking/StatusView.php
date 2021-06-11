@@ -110,8 +110,8 @@ class StatusView extends Component
                 ->addSlice('STORAGE SECTION', $this->temporaryStorage, '#343a40')
                 ->addSlice('VALIDITY VERIFICATION SECTION', $this->verification, '#17c671')
                 ->addSlice('REJECTED SECTION', $this->quarantine, '#c4183c')
-                ->addSlice('DELIVERY SECTION', $this->comelecDelivery, '#17a2b8')
-                ->addSlice('BILLING SECTION', $this->npoSmd, '#007bff')
+                ->addSlice('OUTGOING DELIVERY SECTION', $this->comelecDelivery, '#17a2b8')
+                ->addSlice('DELIVERY MANAGEMENT SECTION', $this->npoSmd, '#007bff')
                 ->addSlice('No Owner', $this->releasedNoOwner, '#f6ad55'),
                 ]
             );

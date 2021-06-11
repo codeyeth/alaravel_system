@@ -169,8 +169,8 @@
                                     <th style="text-align: center">STORAGE SECTION</th>
                                     <th style="text-align: center">VALIDITY VERIFICATION SECTION</th>
                                     <th style="text-align: center" class="text-danger">REJECTED SECTION</th>
-                                    <th style="text-align: center">DELIVERY SECTION</th>
-                                    <th style="text-align: center">BILLING SECTION</th>
+                                    <th style="text-align: center">OUTGOING DELIVERY SECTION</th>
+                                    <th style="text-align: center">DELIVERY MANAGEMENT SECTION</th>
                                     <th style="text-align: center" class="text-warning">RELEASED BALLOTS PENDING TO RECEIVE</th>
                                 </tr>
                             </thead>

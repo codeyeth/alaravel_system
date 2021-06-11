@@ -2,15 +2,17 @@
     {{-- mb-3 border-bottom --}}
     <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
         <span class="text-uppercase page-subtitle">
-            {{-- {{$sidebar}} --}}
             @if($sidebar == 'Ballot Tracking')
             Ballot Poll Tracking
+            @else
+            {{$sidebar}}
             @endif
         </span>
         <h3 class="page-title">
-            {{-- {{$breadcrumb}} --}}
             @if($breadcrumb == 'Ballot Tracking')
             Ballot Poll Tracking
+            @else
+            {{$breadcrumb}}
             @endif
             @if ($breadcrumb == 'Ballot Tracking' && Auth::user()->comelec_role != '')
             <span style="font-size: 20px;" class="text-success"> 
@@ -33,11 +35,13 @@
                 @endif
                 
                 @if( Auth::user()->comelec_role == 'COMELEC DELIVERY')    
-                DELIVERY SECTION
+                {{-- DELIVERY SECTION --}}
+                OUTGOING DELIVERY SECTION
                 @endif
                 
                 @if( Auth::user()->comelec_role == 'NPO SMD')    
-                BILLING SECTION
+                {{-- BILLING SECTION --}}
+                DELIVERY MANAGEMNET SECTION
                 @endif
                 
             </span>
