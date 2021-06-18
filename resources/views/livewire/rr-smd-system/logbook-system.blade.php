@@ -12,7 +12,7 @@
         <i class="material-icons">
             login
         </i>
-        <strong> LOGBOOK SYSTEM </strong>
+        <strong> LOGBOOK WITH QUEUEING SYSTEM </strong>
     </h3>
     
     <br>
@@ -32,7 +32,7 @@
     <div class="row">
         <div class="col-12 col-sm-12">
             <div class="input-group mb-3">
-                <input class="form-control form-control-lg mb-0" type="text" placeholder="Search by Control Number, Agency/Company Name" wire:model="search" value="">
+                <input class="form-control form-control-lg mb-0" type="text" placeholder="Search by Control Number, Agency/Company Name" wire:model="search" autofocus>
                 <div class="input-group-append">
                     <button class="btn btn-warning" type="button" wire:click="clearSearch">Clear Search</button>
                 </div>

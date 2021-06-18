@@ -54,7 +54,7 @@ class LogbookSystem extends Component
         $logbookCount = LogbookParent::count() + 1;
         $ctrlNumber = str_pad($logbookCount,6,'0',STR_PAD_LEFT);
         $saveLogbookParent = LogbookParent::create([
-            'uuid' => "SMD-LOG-" . $ctrlNumber,
+            'uuid' => "OSSNPO-" . $ctrlNumber,
             'agency_name' => Str::upper($this->agencyName),
             'agency_address' => Str::upper($this->agencyAddress),
             ]

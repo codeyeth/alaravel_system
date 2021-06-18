@@ -47,45 +47,51 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
     
+    protected function credentials(Request $request)
+    {
+        return array_merge([
+            'is_freezed' => false
+        ], $request->only($this->username(), 'password'));
+    }
+    
     protected function authenticated(Request $request)
     {
         $this->validate($request, [
             'email' => 'required',
             'password' => 'required',
-            ]);
-            
-            $user = DB::table('users')->where('email', $request->input('email'))->first();
-            $now = Carbon::now();
-            
-            if (auth()->guard('web')->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
-                $new_sessid   = Session::getId(); //get new session_id after user sign in
-                if($user->session_id != '') {
-                    $last_session = Session::getHandler()->read($user->session_id); 
-                    if ($last_session) {
-                        if (Session::getHandler()->destroy($user->session_id)) {
-                            LoginHistory::create([
-                                'user_id'       =>  Auth::user()->id,
-                                'name'       =>  Auth::user()->name,
-                                'email'       =>  Auth::user()->email,
-                                'action'       =>  'Forced Logout from another Computer!',
-                                'ip'    =>  \Illuminate\Support\Facades\Request::ip(),
-                                ]);
-                            }
-                        }
-                    }
-                    
-                    DB::table('users')->where('id', $user->id)->update(['session_id' => $new_sessid]);
-                    LoginHistory::create([
-                        'user_id'       =>  Auth::user()->id,
-                        'name'       =>  Auth::user()->name,
-                        'email'       =>  Auth::user()->email,
-                        'action'       =>  'Login',
-                        'ip'    =>  \Illuminate\Support\Facades\Request::ip(),
+        ]);
+        
+        $user = DB::table('users')->where('email', $request->input('email'))->first();
+        $now = Carbon::now();
+        
+        if (auth()->guard('web')->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
+            $new_sessid   = Session::getId(); //get new session_id after user sign in
+            if($user->session_id != '') {
+                $last_session = Session::getHandler()->read($user->session_id); 
+                if ($last_session) {
+                    if (Session::getHandler()->destroy($user->session_id)) {
+                        LoginHistory::create([
+                            'user_id'       =>  Auth::user()->id,
+                            'name'       =>  Auth::user()->name,
+                            'email'       =>  Auth::user()->email,
+                            'action'       =>  'Forced Logout from another Computer!',
+                            'ip'    =>  \Illuminate\Support\Facades\Request::ip(),
                         ]);
-                        $user = auth()->guard('web')->user();
-                        return redirect($this->redirectTo);
-                    }   
+                    }
                 }
-                
             }
             
+            DB::table('users')->where('id', $user->id)->update(['session_id' => $new_sessid]);
+            LoginHistory::create([
+                'user_id'       =>  Auth::user()->id,
+                'name'       =>  Auth::user()->name,
+                'email'       =>  Auth::user()->email,
+                'action'       =>  'Login',
+                'ip'    =>  \Illuminate\Support\Facades\Request::ip(),
+            ]);
+            $user = auth()->guard('web')->user();
+            return redirect($this->redirectTo);
+        }   
+    }
+    
+}

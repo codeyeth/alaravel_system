@@ -21,20 +21,17 @@
                         <li class="list-group-item p-3">
                             
                             <span class="d-flex mb-2">
-                                <i class="material-icons mr-1">login</i>
-                                <strong class="mr-1">Logbook System:</strong> 
+                                <strong class="mr-1"> <i class="material-icons mr-1">login</i> Logbook System:</strong> 
                                 <a class="text-accent" href="{{ asset('/logbook_system') }}" target="_blank"><b> View </b></a>
                             </span>
                             
                             <span class="d-flex mb-2">
-                                <i class="material-icons mr-1">add</i>
-                                <strong class="mr-1">Total Sales Invoice Today:</strong>
+                                <strong class="mr-1"><i class="material-icons mr-1">add</i> Total Sales Invoice Today:</strong>
                                 <strong class="text-success"> {{ $salesInvoiceTodayCount }} </strong>
                             </span>
                             
                             <span class="d-flex mb-2">
-                                <i class="material-icons mr-1">add</i>
-                                <strong class="mr-1">Total Posted Transactions Today:</strong>
+                                <strong class="mr-1"> <i class="material-icons mr-1">add</i> Total Posted Transactions Today:</strong>
                                 <strong class="text-success"> {{ $postedTransactionCount }} </strong>
                             </span>
                             
@@ -101,7 +98,7 @@
         
         {{-- J DAILY AND MONTHLY GENERIC SPECIALIZED CLAIMED UNCLAIMED REPORTS --}}
         @include('livewire.j-livewire.smd.jreports_modal')  
-
+        
         
     </div>
 </div>

@@ -34,7 +34,6 @@
 </head>
 
 <body class="h-100">
-    
     {{-- @include('inc.floating_settings') --}}
     
     <div class="container-fluid">
@@ -101,8 +100,9 @@
     
     {{-- BALLOT TRACKING--}}
     @include('livewire.rr-livewire-script.rr-ballot-tracking-script-reprints-module')
+    @if ( $sidebar == 'Ballot Tracking')
     @include('livewire.rr-livewire-script.rr-ballot-tracking-clear-search-script')
-    
+    @endif    
     
     {{-- CDN --}}
     <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
@@ -126,6 +126,6 @@
     <script src="{{ asset('shards_template/scripts/extras.1.1.0.min.js') }}"></script>
     <script src="{{ asset('shards_template/scripts/shards-dashboards.1.1.0.min.js') }}"></script>
     {{-- <script src="{{ asset('shards_template/scripts/app/app-blog-overview.1.1.0.js') }}"></script> --}}
-
+    
 </body>
 </html>
