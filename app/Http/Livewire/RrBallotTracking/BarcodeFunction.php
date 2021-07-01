@@ -183,8 +183,8 @@ class BarcodeFunction extends Component
         }
         
         $this->viewBallotParent = collect([
-            'prov_name' => $getBallotDetails->prov_name,
-            'mun_name' => $getBallotDetails->mun_name,
+            'agency_name' => $getBallotDetails->agency_name,
+            'complete_address' => $getBallotDetails->complete_address,
             'bgy_name' => $getBallotDetails->bgy_name,
             'pollplace' => $getBallotDetails->pollplace,
             'clustered_prec' => $getBallotDetails->clustered_prec,
@@ -805,19 +805,19 @@ class BarcodeFunction extends Component
             if( $this->keywordMode == true ){
                 return view('livewire.rr-ballot-tracking.barcode-function', [
                     'ballotList' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->
-                    orWhere('bgy_name', 'like', '%'.$this->search.'%')->
-                    orWhere('mun_name', 'like', '%'.$this->search.'%')->
-                    orWhere('prov_name', 'like', '%'.$this->search.'%')->
-                    orWhere('pollplace', 'like', '%'.$this->search.'%')->
+                    // orWhere('bgy_name', 'like', '%'.$this->search.'%')->
+                    // orWhere('mun_name', 'like', '%'.$this->search.'%')->
+                    // orWhere('prov_name', 'like', '%'.$this->search.'%')->
+                    // orWhere('pollplace', 'like', '%'.$this->search.'%')->
                     orWhere('current_status', 'like', '%'.$this->search.'%')->
                     orWhere('status_updated_at', 'like', '%'.$this->search.'%')->
                     orWhere('status_updated_by', 'like', '%'.$this->search.'%')->
                     paginate(20),
                     'ballotListCount' => Ballots::where('ballot_id', 'like', '%'.$this->search.'%')->
-                    orWhere('bgy_name', 'like', '%'.$this->search.'%')->
-                    orWhere('mun_name', 'like', '%'.$this->search.'%')->
-                    orWhere('prov_name', 'like', '%'.$this->search.'%')->
-                    orWhere('pollplace', 'like', '%'.$this->search.'%')->
+                    // orWhere('bgy_name', 'like', '%'.$this->search.'%')->
+                    // orWhere('mun_name', 'like', '%'.$this->search.'%')->
+                    // orWhere('prov_name', 'like', '%'.$this->search.'%')->
+                    // orWhere('pollplace', 'like', '%'.$this->search.'%')->
                     orWhere('current_status', 'like', '%'.$this->search.'%')->
                     orWhere('status_updated_at', 'like', '%'.$this->search.'%')->
                     orWhere('status_updated_by', 'like', '%'.$this->search.'%')->

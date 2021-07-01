@@ -15,16 +15,27 @@ class CreateBallotsTable extends Migration
     {
         Schema::create('ballots', function (Blueprint $table) {
             $table->id();
-            $table->string('region');            
-            $table->string('prov_name');            
-            $table->string('mun_name');            
-            $table->string('bgy_name');       
-            $table->string('pollplace');       
-            $table->string('pollstreet');       
-            $table->string('cluster_no');       
-            $table->string('clustered_prec');       
-            $table->string('cluster_total');       
-            $table->string('group_no');       
+            
+            // $table->string('region');            
+            // $table->string('prov_name');            
+            // $table->string('mun_name');            
+            // $table->string('bgy_name');       
+            // $table->string('pollplace');       
+            // $table->string('pollstreet');       
+            // $table->string('cluster_no');       
+            // $table->string('clustered_prec');       
+            // $table->string('cluster_total');       
+            // $table->string('group_no');
+            
+            $table->string('agency_name');            
+            $table->string('complete_address');            
+            $table->string('contact_no');            
+            $table->string('contact_person');    
+            $table->string('or_no');            
+            $table->string('quantity');            
+            $table->string('unit_of_measure');            
+            $table->string('description');            
+            
             $table->string('ballot_id'); 
             
             //CURRENT STATUS AND THE UPDATER

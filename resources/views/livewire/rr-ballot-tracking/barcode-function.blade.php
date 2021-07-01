@@ -247,9 +247,9 @@
                                     <th scope="col" class="border-0" style="text-align: right">Ballot Control #</th>
                                     <th scope="col" class="border-0" style="text-align: right"></th>
                                     {{-- <th scope="col" class="border-0" style="text-align: right">Ballot Location</th> --}}
-                                    <th scope="col" class="border-0" style="text-align: right">Ballot Delivery Location</th>
+                                    <th scope="col" class="border-0" style="text-align: right">Ballot Agency/Company</th>
                                     {{-- <th scope="col" class="border-0" style="text-align: left">Ballot Pollplace</th> --}}
-                                    <th scope="col" class="border-0" style="text-align: left">Ballot Poll Location</th>
+                                    <th scope="col" class="border-0" style="text-align: left">Ballot Delivery Location</th>
                                     <th scope="col" class="border-0" style="text-align: right">Current Status/Location</th>
                                     <th scope="col" class="border-0" style="text-align: left">Status BY</th>
                                     <th scope="col" class="border-0" style="text-align: left"></th>
@@ -278,8 +278,8 @@
                                             </div>
                                             @endif --}}
                                         </td>
-                                        <td align="right"><small>{{ $item->bgy_name }} - {{ $item->mun_name }} - {{ $item->prov_name }}</small> </td>
-                                        <td align="left"><small> {{ $item->pollplace }}</small> </td>
+                                        <td align="right"> {{ $item->agency_name }} </td>
+                                        <td align="left"><small> {{ $item->complete_address }}</small> </td>
                                         <td align="right">
                                             @if ($item->current_status == 'PRINTER')
                                             <span class="text-danger"><b> BALLOT NOT YET PRINTED </b></span> 
@@ -644,7 +644,6 @@
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
                                     <div class="form-group col-md-4">
-                                        {{-- <strong class="text-muted d-block mb-2">Ballot ID </strong> --}}
                                         <strong class="text-muted d-block mb-2">Ballot Control # </strong>
                                         <input type="text" class="form-control" wire:model="viewBallotParent.ballot_id" >
                                     </div>
@@ -652,20 +651,18 @@
                             </div>
                         </div>
                         
+                        <hr class="hr_dashed">
+
                         <div class="row">
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
-                                    <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">Barangay </strong>
-                                        <input type="text" class="form-control" wire:model="viewBallotParent.bgy_name" >
+                                    <div class="form-group col-md-6">
+                                        <strong class="text-muted d-block mb-2">Agency Name </strong>
+                                        <input type="text" class="form-control" wire:model="viewBallotParent.agency_name" >
                                     </div>
-                                    <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">Municipality </strong>
-                                        <input type="text" class="form-control" wire:model="viewBallotParent.mun_name" >
-                                    </div>
-                                    <div class="form-group col-md-4">
-                                        <strong class="text-muted d-block mb-2">Province </strong>
-                                        <input type="text" class="form-control" wire:model="viewBallotParent.prov_name" >
+                                    <div class="form-group col-md-6">
+                                        <strong class="text-muted d-block mb-2">Complete Address </strong>
+                                        <input type="text" class="form-control" wire:model="viewBallotParent.complete_address" >
                                     </div>
                                 </div>
                             </div>
@@ -699,6 +696,8 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <hr class="hr_dashed">
                         
                         <div class="row">
                             <div class="col-sm-12 col-md-12">

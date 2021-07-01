@@ -55,8 +55,8 @@ class StatusView extends Component
     }
     
     public function countMetrics(){
-        $this->totalBallots = Ballots::sum('cluster_total');
-        $this->printedBallots = Ballots::where('current_status', '!=', 'PRINTER')->sum('cluster_total');
+        $this->totalBallots = Ballots::sum('quantity');
+        $this->printedBallots = Ballots::where('current_status', '!=', 'PRINTER')->sum('quantity');
         $this->remainingBallots = $this->totalBallots - $this->printedBallots;
         
         //REPRINTS
@@ -67,17 +67,17 @@ class StatusView extends Component
         $this->printedRePrintsPrinting = BadBallots::where('is_reprint_batch_start', true)->where('is_reprint_done', false)->count();
         $this->printedRePrintsToVerify = BadBallots::where('is_reprint_done', true)->where('is_reprint_done_successful_by_id', null)->count();
         
-        $this->outForDeliveryBallots = Ballots::where('is_out_for_delivery', true)->where('is_delivered', false)->sum('cluster_total');
-        $this->deliveredBallots = Ballots::where('is_delivered', true)->sum('cluster_total');
+        $this->outForDeliveryBallots = Ballots::where('is_out_for_delivery', true)->where('is_delivered', false)->sum('quantity');
+        $this->deliveredBallots = Ballots::where('is_delivered', true)->sum('quantity');
         
         //// HANDLERS POSSESSION COUNT
-        $this->sheeter = Ballots::where('current_status', 'SHEETER')->where('new_status_type', 'IN')->sum('cluster_total');
-        $this->temporaryStorage = Ballots::where('current_status', 'TEMPORARY STORAGE')->where('new_status_type', 'IN')->sum('cluster_total');
-        $this->verification = Ballots::where('current_status', 'VERIFICATION')->where('new_status_type', 'IN')->sum('cluster_total');
-        $this->quarantine = Ballots::where('current_status', 'QUARANTINE')->where('new_status_type', 'IN')->sum('cluster_total');
-        $this->comelecDelivery = Ballots::where('current_status', 'COMELEC DELIVERY')->where('new_status_type', 'IN')->sum('cluster_total');
-        $this->npoSmd = Ballots::where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->sum('cluster_total');
-        $this->releasedNoOwner = Ballots::where('new_status_type', 'OUT')->sum('cluster_total');
+        $this->sheeter = Ballots::where('current_status', 'SHEETER')->where('new_status_type', 'IN')->sum('quantity');
+        $this->temporaryStorage = Ballots::where('current_status', 'TEMPORARY STORAGE')->where('new_status_type', 'IN')->sum('quantity');
+        $this->verification = Ballots::where('current_status', 'VERIFICATION')->where('new_status_type', 'IN')->sum('quantity');
+        $this->quarantine = Ballots::where('current_status', 'QUARANTINE')->where('new_status_type', 'IN')->sum('quantity');
+        $this->comelecDelivery = Ballots::where('current_status', 'COMELEC DELIVERY')->where('new_status_type', 'IN')->sum('quantity');
+        $this->npoSmd = Ballots::where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->sum('quantity');
+        $this->releasedNoOwner = Ballots::where('new_status_type', 'OUT')->sum('quantity');
     }
     
     public function mount(){

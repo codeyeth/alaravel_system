@@ -15,10 +15,10 @@ class HomeDashboard extends Component
     public $possesionBallots;
     
     public function mount(){
-        $this->allBallots = Ballots::sum('cluster_total');
-        $this->allPrintedBallots = Ballots::where('current_status', '!=', 'PRINTER')->sum('cluster_total');
-        $this->remainingBallots = Ballots::where('current_status', 'PRINTER')->sum('cluster_total');
-        $this->possesionBallots = Ballots::where('current_status', Auth::user()->comelec_role)->sum('cluster_total');
+        // $this->allBallots = Ballots::sum('cluster_total');
+        // $this->allPrintedBallots = Ballots::where('current_status', '!=', 'PRINTER')->sum('cluster_total');
+        // $this->remainingBallots = Ballots::where('current_status', 'PRINTER')->sum('cluster_total');
+        // $this->possesionBallots = Ballots::where('current_status', Auth::user()->comelec_role)->sum('cluster_total');
     }
     
     public function render()
