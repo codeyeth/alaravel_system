@@ -185,10 +185,9 @@ class BarcodeFunction extends Component
         $this->viewBallotParent = collect([
             'agency_name' => $getBallotDetails->agency_name,
             'complete_address' => $getBallotDetails->complete_address,
-            'bgy_name' => $getBallotDetails->bgy_name,
-            'pollplace' => $getBallotDetails->pollplace,
-            'clustered_prec' => $getBallotDetails->clustered_prec,
-            'cluster_total' => $getBallotDetails->cluster_total,
+            'description' => $getBallotDetails->description,
+            'unit_of_measure' => $getBallotDetails->unit_of_measure,
+            'quantity' => $getBallotDetails->quantity,
             'ballot_id' => $getBallotDetails->ballot_id,
             // 'current_status' => $getBallotDetails->current_status,
             'current_status' => $detailsCurrentStatus,

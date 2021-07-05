@@ -3,14 +3,14 @@
     <div class="col-12 col-sm-4 text-center text-sm-left mb-0">
         <span class="text-uppercase page-subtitle">
             @if($sidebar == 'Ballot Tracking')
-            Ballot Poll Tracking
+            Ballot Tracking
             @else
             {{$sidebar}}
             @endif
         </span>
         <h3 class="page-title">
             @if($breadcrumb == 'Ballot Tracking')
-            Ballot Poll Tracking
+            Ballot Tracking
             @else
             {{$breadcrumb}}
             @endif
