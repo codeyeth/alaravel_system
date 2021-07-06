@@ -672,9 +672,8 @@
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
                                     <div class="form-group col-md-12">
-                                        {{-- <strong class="text-muted d-block mb-2">Pollplace </strong> --}}
-                                        <strong class="text-muted d-block mb-2">Ballot Poll Location </strong>
-                                        <input type="text" class="form-control" wire:model="viewBallotParent.pollplace" >
+                                        <strong class="text-muted d-block mb-2">Description </strong>
+                                        <input type="text" class="form-control" wire:model="viewBallotParent.description" >
                                     </div>
                                 </div>
                             </div>
@@ -684,14 +683,12 @@
                             <div class="col-sm-12 col-md-12">
                                 <div class="form-row">
                                     <div class="form-group col-md-10">
-                                        {{-- <strong class="text-muted d-block mb-2">Clustered Precinct </strong> --}}
-                                        <strong class="text-muted d-block mb-2">Poll Location Serial Number </strong>
-                                        <input type="text" class="form-control" wire:model="viewBallotParent.clustered_prec" >
+                                        <strong class="text-muted d-block mb-2">Unit of Measure </strong>
+                                        <input type="text" class="form-control" wire:model="viewBallotParent.unit_of_measure" >
                                     </div>
                                     <div class="form-group col-md-2">
-                                        {{-- <strong class="text-muted d-block mb-2">Cluster Total </strong> --}}
-                                        <strong class="text-muted d-block mb-2">Ballot Total </strong>
-                                        <input type="text" class="form-control" wire:model="viewBallotParent.cluster_total" >
+                                        <strong class="text-muted d-block mb-2">Quantity </strong>
+                                        <input type="text" class="form-control" wire:model="viewBallotParent.quantity" >
                                     </div>
                                 </div>
                             </div>

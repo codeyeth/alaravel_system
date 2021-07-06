@@ -23,8 +23,7 @@ class ExportExcelDelivered implements FromQuery, WithHeadings, WithMapping, Shou
     public function headings(): array
     {
         return [
-            // ['ID', 'BALLOT ID', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'POLLPLACE', 'POLLSTREET', 'CLUSTER NO', 'CLUSTERED PREC', 'CLUSTER TOTAL', 'GROUP NO', 'DELIVERED BY', 'DELIVERED AT' ],
-            ['ID', 'BALLOT CONTROL #', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'POLLING LOCATION', 'POLLING STREET', 'LOCATION CLUSTER NO', 'POLL LOCATION SERIAL NO', 'BALLOT TOTAL', 'GROUP NO', 'DELIVERED BY', 'DELIVERED AT' ],
+            ['ID', 'BALLOT CONTROL #', 'AGENCY/COMPANY NAME', 'ADDRESS', 'CONTACT NO', 'CONTACT PERSON', 'OR NO', 'QUANTITY', 'UNIT', 'DESCRIPTION', 'DELIVERED BY', 'DELIVERED AT' ],
         ];
     }
     
@@ -35,16 +34,14 @@ class ExportExcelDelivered implements FromQuery, WithHeadings, WithMapping, Shou
         return [
             $all_delivered->id,
             $all_delivered->ballot_id,
-            $all_delivered->region,
-            $all_delivered->prov_name,
-            $all_delivered->mun_name,
-            $all_delivered->bgy_name,
-            $all_delivered->pollplace,
-            $all_delivered->pollstreet,
-            $all_delivered->cluster_no,
-            $all_delivered->clustered_prec,
-            $all_delivered->cluster_total,
-            $all_delivered->group_no,
+            $all_delivered->agency_name,
+            $all_delivered->complete_address,
+            $all_delivered->contact_no,
+            $all_delivered->contact_person,
+            $all_delivered->or_no,
+            $all_delivered->quantity,
+            $all_delivered->unit_of_measure,
+            $all_delivered->description,
             $all_delivered->is_delivered_by,
             $delivered_at->toDayDateTimeString(),
         ];

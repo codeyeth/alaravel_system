@@ -23,8 +23,7 @@ class ExportExcelOutForDelivery implements FromQuery, WithHeadings, WithMapping,
     public function headings(): array
     {
         return [
-            // ['ID', 'BALLOT ID', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'POLLPLACE', 'POLLSTREET', 'CLUSTER NO', 'CLUSTERED PREC', 'CLUSTER TOTAL', 'GROUP NO', 'OUT FOR DELIVERY BY', 'OUT FOR DELIVERY AT' ],
-            ['ID', 'BALLOT CONTROL #', 'REGION', 'PROVINCE', 'MUNICIPALITY', 'BARANGAY', 'POLLING LOCATION', 'POLLING STREET', 'LOCATION CLUSTER NO', 'POLL LOCATION SERIAL NO', 'BALLOT TOTAL', 'GROUP NO', 'OUT FOR DELIVERY BY', 'OUT FOR DELIVERY AT' ],
+            ['ID', 'BALLOT CONTROL #', 'AGENCY/COMPANY NAME', 'ADDRESS', 'CONTACT NO', 'CONTACT PERSON', 'OR NO', 'QUANTITY', 'UNIT', 'DESCRIPTION', 'DELIVERED BY', 'DELIVERED AT' ],
         ];
     }
     
@@ -35,16 +34,14 @@ class ExportExcelOutForDelivery implements FromQuery, WithHeadings, WithMapping,
         return [
             $all_out_for_delivery->id,
             $all_out_for_delivery->ballot_id,
-            $all_out_for_delivery->region,
-            $all_out_for_delivery->prov_name,
-            $all_out_for_delivery->mun_name,
-            $all_out_for_delivery->bgy_name,
-            $all_out_for_delivery->pollplace,
-            $all_out_for_delivery->pollstreet,
-            $all_out_for_delivery->cluster_no,
-            $all_out_for_delivery->clustered_prec,
-            $all_out_for_delivery->cluster_total,
-            $all_out_for_delivery->group_no,
+            $all_out_for_delivery->agency_name,
+            $all_out_for_delivery->complete_address,
+            $all_out_for_delivery->contact_no,
+            $all_out_for_delivery->contact_person,
+            $all_out_for_delivery->or_no,
+            $all_out_for_delivery->quantity,
+            $all_out_for_delivery->unit_of_measure,
+            $all_out_for_delivery->description,            
             $all_out_for_delivery->is_out_for_delivery_by,
             $out_for_delivery_at->toDayDateTimeString(),
         ];
