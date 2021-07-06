@@ -121,7 +121,7 @@
                             @endif
                             
                             @if ( $searchMode == true && Auth::user()->is_ballot_tracking == true && Auth::user()->is_admin == true && Auth::user()->comelec_role == 'QUARANTINE' )
-                            <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalWastage">
+                            <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalWastageMgt">
                                 <i class="material-icons">bar_chart</i> Wastage Management
                             </button>
                             <div style="margin-left: 10px;"></div>
@@ -396,7 +396,7 @@
                                         </td>
                                         <td style="text-align: right">
                                             @if( $item->is_re_print == true && $item->is_re_print_done == false)
-                                          
+                                            
                                             @if ( $item->current_status == "QUARANTINE" && $item->new_status_type == "IN" && Auth::user()->comelec_role == "QUARANTINE" && Auth::user()->is_admin == true)
                                             <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#modalBadBallots" wire:click.preventDefault="setBadBallotId({{ $item->id }})"> <i class="material-icons">text_snippet</i> Bad Ballots </button>
                                             @endif
@@ -412,9 +412,9 @@
                                             @if( $item->is_re_print == true && $item->is_re_print_done == false)
                                             
                                             @if ( $item->current_status == "QUARANTINE" && $item->new_status_type == "IN" && Auth::user()->comelec_role == "QUARANTINE" && Auth::user()->is_admin == true)
-                                            <button class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalWastage"> <i class="material-icons">bar_chart</i> Wastages </button>
+                                            <button type="button" class="btn btn-sm btn-danger" data-toggle="modal" data-target="#modalWastage" wire:click.preventDefault="setWastage({{ $item->id }})"> <i class="material-icons">bar_chart</i> Wastages </button>
                                             @endif
-
+                                            
                                             @endif
                                         </td>
                                         
@@ -748,6 +748,11 @@
         {{-- REPORTING MODULE --}}
         @livewire('rr-ballot-tracking.report-module')
         
+        {{-- ADD WASTAGE --}}
+        @if( $showWastagesModal == true )
+        @livewire('rr-ballot-tracking.add-wastage', [ 'post' => $post ])
+        @endif
+
         {{-- WASTAGE MANAGEMENT --}}
         @livewire('rr-ballot-tracking.wastage-module')
         

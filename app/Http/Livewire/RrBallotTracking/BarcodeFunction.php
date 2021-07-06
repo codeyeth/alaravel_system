@@ -78,6 +78,11 @@ class BarcodeFunction extends Component
     public $descriptionOthers = false;
     // public $quickUpdateMode = false;
     
+    
+    //WASTAGES
+    public $post = null;
+    public $showWastagesModal = false;
+    
     //WEBSOCKETS
     // Special Syntax: ['echo:{channel},{event}' => '{method}']
     // protected $listeners = ['echo:RefreshBallotListChannel,RefreshBallotList' => 'refreshContent'];
@@ -430,6 +435,15 @@ class BarcodeFunction extends Component
         $this->allRePrintDone = false;
         session()->flash('messageBadBallots', 'Re-Printing Done Successfully!');
     }
+    
+    //WASTAGES
+    public function setWastage($ballotId){
+        $this->showWastagesModal = false;
+        $this->post = $ballotId;
+        $this->showWastagesModal = true;
+    }
+    
+    //WASTAGES
     
     //ALTER THE BALLOT STATUS
     public function alterBallotStatus($id){
