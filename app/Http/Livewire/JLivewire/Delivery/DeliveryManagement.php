@@ -16,6 +16,22 @@ class DeliveryManagement extends Component
 {
     use WithPagination;
     protected $paginationTheme = 'bootstrap';
+    //variable for new dr
+    public $showdrClientDatabaseTable = false;
+    public $showdrProductsDatabaseTable = false;
+    public $productsdrDatabase = [];
+    public $clientdrDatabase = [];
+    public $viewReceiptDetails = [];
+    public $companyAddress;
+    public $companyName;
+    public $companyContact;
+    public $modalDrNo;
+    public $modalViewDrNo;
+    public $viewAgency;
+    public $viewAddress;
+    public $viewContact;
+    //end variable for new dr
+
 
     public $copies;
     public $title;
@@ -45,6 +61,52 @@ class DeliveryManagement extends Component
     public $wire_dr_types_identifier;
     
     public $wire_search_dr_home;
+
+
+
+
+//function for new dr
+public function searchdrClientDatabase(){
+    if($this->companyName != ''){
+        $this->clientdrDatabase = Ballots::where('agency_name', 'like', '%'.$this->companyName.'%')->where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->get();
+        $this->showdrClientDatabaseTable = true;
+    }else{
+        $this->clientdrDatabase = [];
+        $this->showdrClientDatabaseTable = false;
+    }
+}
+
+public function getClientDatabase($clientId){
+    $clientData = Ballots::find($clientId);
+    $this->companyName = $clientData->agency_name;
+    $this->companyAddress = $clientData->complete_address;
+    $this->companyContact = $clientData->contact_no;
+    $this->companyID = $clientData->id;
+    //$this->clientdrDatabase = [];
+    $this->showdrClientDatabaseTable = false;
+}
+
+public function modalGetDrNo($id)
+{
+    $clientDatas = Delivery::where('id',$id)->first();
+    $this->modalDrNo = $clientDatas->DR_NO;
+}
+public function ViewDrNo($id)
+{
+
+    $viewdata = Delivery::where('id',$id)->first();
+
+    $this->viewReceiptDetails = Delivery::where('DR_NO',$viewdata->DR_NO )->get();
+    $this->viewAgency = $viewdata->agency_name; 
+    $this->viewAddress = $viewdata->CITY_MUN_PROV; 
+    $this->viewContact = $viewdata->contact_no; 
+    $this->modalViewDrNo = $viewdata->DR_NO; 
+}
+//end function for new dr
+
+
+
+
 
     
     public function function_dr_reports_identifier($id){ 
@@ -156,7 +218,7 @@ class DeliveryManagement extends Component
     public function addBallot()
     {
             $this->loopCount++;
-            $this->ballotlists[] =  ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => ''];
+            $this->ballotlists[] =  ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '', 'description' =>'', 'agency_name' => '', 'contact_no' => ''];
     }
 
 
@@ -179,19 +241,26 @@ class DeliveryManagement extends Component
 
     public function mount()
     {   
-        $this->ballotlists =  [['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '']];
+        $this->ballotlists =  [['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '' , 'description' => '' , 'agency_name' => '', 'contact_no' => '']];
+      
     }
     
     public function searchBallotId($ballotId, $indexKey){
             $search_in_ballot = Ballots::where('ballot_id', $ballotId)->Where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->first();
             $search_in_delivery = Delivery::where('BALLOT_ID', $ballotId)->first();
             $search_in_ballot_smd = Ballots::where('ballot_id', $ballotId)->Where('current_status','!=', 'NPO SMD')->first();
+
+         
+            //$search_in_ballot_not_current_agency = Ballots::where('ballot_id', $ballotId)->Where('current_status','!=', 'NPO SMD')->first();
             if($search_in_ballot_smd != null){
                 $this->showSaveBtn = false;
                 $this->canShowData = false;
-                $this->ballotlists[$indexKey]['clustered_precint'] = $search_in_ballot_smd->clustered_prec;
-                $this->ballotlists[$indexKey]['city_mun_prov'] = $search_in_ballot_smd->prov_name . ' ' . $search_in_ballot_smd->mun_name . ' ' . $search_in_ballot_smd->bgy_name;
-                $this->ballotlists[$indexKey]['quantity'] = $search_in_ballot_smd->cluster_total;
+                $this->ballotlists[$indexKey]['clustered_precint'] = $search_in_ballot_smd->unit_of_measure;
+                $this->ballotlists[$indexKey]['city_mun_prov'] = $search_in_ballot_smd->complete_address;
+                $this->ballotlists[$indexKey]['quantity'] = $search_in_ballot_smd->quantity;
+                $this->ballotlists[$indexKey]['description'] = $search_in_ballot_smd->description;
+                $this->ballotlists[$indexKey]['agency_name'] = $search_in_ballot_smd->agency_name;
+                $this->ballotlists[$indexKey]['contact_no'] = $search_in_ballot_smd->contact_no;
                 $this->ballotlists[$indexKey]['curr_stat'] = $search_in_ballot_smd->current_status;
                 session()->flash('messageDR', 'Ballot Control No. not in Delivery Area. Status: '.$search_in_ballot_smd->current_status.' ');
                 $addOneField = false;
@@ -201,6 +270,9 @@ class DeliveryManagement extends Component
                 $this->ballotlists[$indexKey]['clustered_precint'] = "No Data Found!";
                 $this->ballotlists[$indexKey]['city_mun_prov'] = "No Data Found!";
                 $this->ballotlists[$indexKey]['quantity'] =  "No Data Found!";
+                $this->ballotlists[$indexKey]['description'] =  "No Data Found!";
+                $this->ballotlists[$indexKey]['agency_name'] =  "No Data Found!";
+                $this->ballotlists[$indexKey]['contact_no'] =  "No Data Found!";
                 $this->ballotlists[$indexKey]['curr_stat'] =  "NPO SMD";
                 session()->flash('messageDR', 'Invalid Ballot Control No. ');
                 $addOneField = false;
@@ -211,6 +283,9 @@ class DeliveryManagement extends Component
                 $this->ballotlists[$indexKey]['clustered_precint'] = $search_in_delivery->CLUSTERED_PREC;
                 $this->ballotlists[$indexKey]['city_mun_prov'] = $search_in_delivery->CITY_MUN_PROV;
                 $this->ballotlists[$indexKey]['quantity'] = $search_in_delivery->CLUSTER_TOTAL;
+                $this->ballotlists[$indexKey]['description'] = $search_in_delivery->description;
+                $this->ballotlists[$indexKey]['agency_name'] = $search_in_delivery->agency_name;
+                $this->ballotlists[$indexKey]['contact_no'] = $search_in_delivery->contact_no;
                 $this->ballotlists[$indexKey]['curr_stat'] = 'NPO SMD';
                 session()->flash('messageDR', 'Ballot Control No. '.$ballotId.' in Line '.$line_error.' already have Receipt No. Receipt No.' .$search_in_delivery->DR_NO.' ');
                 $addOneField = false;
@@ -226,9 +301,12 @@ class DeliveryManagement extends Component
                         $line_error = $indexKey + 1;
                         $this->canShowData = false;
                         $this->showSaveBtn = false;
-                        $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
-                        $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
-                        $this->ballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
+                        $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->unit_of_measure;
+                        $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->complete_address;
+                        $this->ballotlists[$indexKey]['quantity'] = $searchResult->quantity;
+                        $this->ballotlists[$indexKey]['description'] = $searchResult->description;
+                        $this->ballotlists[$indexKey]['agency_name'] = $searchResult->agency_name;
+                        $this->ballotlists[$indexKey]['contact_no'] = $searchResult->contact_no;
                         $this->ballotlists[$indexKey]['curr_stat'] = $searchResult->current_status;
                         session()->flash('messageDR', 'Ballot Control No. '.$ballotId.' Duplicate Entry at Line '.$line_error.'' );
                     }
@@ -236,16 +314,27 @@ class DeliveryManagement extends Component
                 
                     if( $this->canShowData == true ){
                         $this->showSaveBtn = true;
-                        $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->clustered_prec;
-                        $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->prov_name . ' ' . $searchResult->mun_name . ' ' . $searchResult->bgy_name;
-                        $this->ballotlists[$indexKey]['quantity'] = $searchResult->cluster_total;
+                        if($this->companyName !== $searchResult->agency_name){
+                            $addOneField = false;
+                            session()->flash('messageDR', ' '.$searchResult->ballot_id.' Product is Not in Current Selected Agency' );
+                            $this->ballotlists[$indexKey]['ballot_id'] = '---------';
+                            
+                        }else{
+                        $this->ballotlists[$indexKey]['clustered_precint'] = $searchResult->unit_of_measure;
+                        $this->ballotlists[$indexKey]['city_mun_prov'] = $searchResult->complete_address;
+                        $this->ballotlists[$indexKey]['quantity'] = $searchResult->quantity;
+                        $this->ballotlists[$indexKey]['description'] = $searchResult->description;
+                        $this->ballotlists[$indexKey]['agency_name'] = $searchResult->agency_name;
+                        $this->ballotlists[$indexKey]['contact_no'] = $searchResult->contact_no;
                         $this->ballotlists[$indexKey]['curr_stat'] = $searchResult->current_status;
+                    }
                         $addOneField = true;
                         
                         //IF SEARCH SUCCESS
                         $idFocus = $indexKey + 1;
                         $this->dispatchBrowserEvent('searchSucceed', ['idFocus' => $idFocus]);
                         $this->addBallot();
+                      
                     }
               }
 
@@ -290,16 +379,15 @@ class DeliveryManagement extends Component
 }
   
     foreach ($this->ballotlists as $index => $ballotlist){
-   
-
-
                     Delivery::create([
                         'DR_NO' => 'R_'.$total_row,
                         'BALLOT_ID' => $ballotlist['ballot_id'],
                         'CLUSTERED_PREC' => $ballotlist['clustered_precint'],
                         'CITY_MUN_PROV' => $ballotlist['city_mun_prov'],
                         'CLUSTER_TOTAL' => $ballotlist['quantity'],
-                        'curr_stat' => $ballotlist['curr_stat']
+                        'description' => $ballotlist['description'],
+                        'agency_name' => $ballotlist['agency_name'],
+                        'contact_no' => $ballotlist['contact_no']
                         ]);
                         $update_selected = DB::table('ballots')
                         ->where('ballot_id', $ballotlist['ballot_id'])
@@ -310,7 +398,7 @@ class DeliveryManagement extends Component
                                   ]);
                         session()->flash('message', 'DR Number Created!');
                     }
-                    $this->ballotlists = [ ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '', 'curr_stat' => ''] ];
+                    $this->ballotlists = [ ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '', 'curr_stat' => '', 'description' => '' , 'agency_name' => '', 'contact_no' => ''] ];
                    
                 }
 
@@ -425,7 +513,28 @@ class DeliveryManagement extends Component
                 $monthlydrlistresult = 'Search Result Found: '.(clone $ballot_query)->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->wire_monthly_datefrom.' 00:00:00', $this->wire_monthly_dateto.' 23:59:59'))->count();
 
         }
-        return view('livewire.j-livewire.delivery.delivery-management', compact('descriptionList','deliveredList','copyList','titleList','nameList','ballotList','ballotListCount','ballotListCountTitle','config_query','drlist','drlistresult','monthlydrlist','monthlydrlistresult'));
+
+
+
+
+
+
+
+
+
+        //data for new dr
+
+        $ready_to_dr = Ballots::where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->paginate(10);
+        if ( $this->companyName == '' &&  $this->companyAddress &&  $this->companyContact){
+            $ready_to_dr_add = Ballots::where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->paginate(5);
+        }else{
+            $ready_to_dr_add = Ballots::where('agency_name',$this->companyName)->where('complete_address',$this->companyAddress)->where('contact_no',$this->companyContact)->where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->paginate(5);
+        }
+
+        //end for new dr
+
+        $receipt_list = DB::table('deliveries')->where('BALLOT_ID','<>','')->groupby('DR_NO')->paginate(10);
+        return view('livewire.j-livewire.delivery.delivery-management', compact('receipt_list','ready_to_dr','ready_to_dr_add','descriptionList','deliveredList','copyList','titleList','nameList','ballotList','ballotListCount','ballotListCountTitle','config_query','drlist','drlistresult','monthlydrlist','monthlydrlistresult'));
     }
 }
  

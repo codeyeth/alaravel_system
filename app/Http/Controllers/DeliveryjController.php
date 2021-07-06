@@ -131,6 +131,76 @@ class DeliveryjController extends Controller
         //
     }
 
+    public function receipt(){
+        ini_set('memory_limit', '-1');
+        set_time_limit(43200);
+        $var_copies = Request::all();
+        $var_imagepath = public_path();
+        $query_all_delivery_config = DB::table('delivery_configs')->get();
+        $var_dr_no = request()->get('new_input_for_dr_no');
+        $var_issued_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_issued'))->first();
+        $var_approved_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_approved'))->first();
+        $var_received_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_received'))->first();
+        $var_inspected_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_inspected'))->first();
+        $var_copy = DB::table('delivery_configs')
+        ->where('copies','<>','')
+        ->whereIn('id',$var_copies['modal_input_copies'])
+        ->get();
+        $query_all_deliveries = DB::table('deliveries')
+        ->where('BALLOT_ID','<>','');
+
+ 
+        for ($i = 0; $i < $var_copy->count(); $i++) {
+            foreach($var_copy as $i => $value){
+                        $cloned_query_all_deliveries = clone $query_all_deliveries
+                        ->where('BALLOT_ID','<>','')
+                        ->Where('DR_NO',$var_dr_no)
+                        ->get();
+                        $var_downloaded_title = 'Delivery Receipt No. '.$var_dr_no;
+                
+                $var_total_row = $query_all_deliveries->count();
+                $var_total_sum = $query_all_deliveries->sum('CLUSTER_TOTAL');
+                $view = \View::make('j-views.delivery.delivery_receipt_pdf',compact('var_dr_no','value','cloned_query_all_deliveries','var_imagepath','var_total_row','var_total_sum','var_copy','var_downloaded_title','var_issued_by','var_approved_by','var_received_by','var_inspected_by'));
+                $html_content = $view->render();
+
+           
+
+                PDF::setFooterCallback(function($pdf) {
+                // Position at 15 mm from bottom
+                $pdf->SetY(-15);
+                // Set font
+                $pdf->SetFont('helvetica', 'I', 8);
+                // Page number
+                $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+                });
+                PDF::SetTitle("List of users");
+                PDF::AddPage();
+                PDF::writeHTML($html_content, true, false, true, false, '');
+                PDF::Output(public_path('DeliveryFiles/'.$var_downloaded_title.' ' .  $value->copies . '.pdf'), 'F');
+                PDF::reset(); 
+                } 
+            }
+          
+            $time_generate = Carbon::now();
+            $zip = new ZipArchive;
+            $fileName = $var_downloaded_title.' - '.$time_generate->toDateString() . '.zip';
+            if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE){
+                $files = File::files(public_path('DeliveryFiles'));
+                foreach ($files as $key => $value) {
+                    $relativeNameInZipFile = basename($value);
+                    $zip->addFile($value, $relativeNameInZipFile);
+                }
+                $zip->close();
+            }
+            File::cleanDirectory(public_path('DeliveryFiles'));
+            return response()->download(public_path($fileName))->deleteFileAfterSend(true);
+
+
+
+        
+
+    }
+
      public function save_dr_pdf()
      {
         ini_set('memory_limit', '-1');

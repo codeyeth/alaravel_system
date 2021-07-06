@@ -5,7 +5,7 @@
                         <h6 class="m-0">Delivery Reports Configuration <label style="float:right;">Add and Remove data to be used in Reports </label></h6> 
                     </div>  
                         <div class="row">
-                            <div class="col-lg-8 mb-4">
+                            <div class="col-lg-12 mb-4">
                                 <!---start of issued by-->
                                 <div class="card card-small mb-4">
                                     <div class="card-header border-bottom">
@@ -92,7 +92,7 @@
                                     </ul>
                                 </div>
                                 <!---end of issued by-->
-                                <div class="form-row">
+                               <!-- <div class="form-row">
                                     <div class="col-lg-6 mb-4">
                                         <div class="card card-small mb-4">
                                             <div class="card-header border-bottom">
@@ -210,8 +210,9 @@
                                         </div>
                                     </div>
                                 </div>
+                                -->
                             </div>
-                            <div class="col-lg-4 mb-4">
+                            <div class="col-lg-6 mb-4">
                                 <div class="card card-small mb-4">
                                     <div class="card-header border-bottom">
                                         <h6 class="m-0">List of Positions / Title  <label style="float:right;">{{$titleList->count()}} </label></h6>
@@ -266,7 +267,9 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <div class="card card-small mb-4">
+                                </div>
+                                <div class="col-lg-6 mb-4">
+                                <div class="card card-small mb-6">
                                     <div class="card-header border-bottom">
                                         <h6 class="m-0">List of Copies For <label style="float:right;">{{$copyList->count()}} </label></h6>
                                     </div>
