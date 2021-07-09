@@ -17,6 +17,7 @@ class AddDescriptionToDeliveriesTable extends Migration
             $table->string('description')->nullable();
             $table->string('agency_name')->nullable();
             $table->string('contact_no')->nullable();
+            $table->string('complete_address')->nullable();
         });
     }
 

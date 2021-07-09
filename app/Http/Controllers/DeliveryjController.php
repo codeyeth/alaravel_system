@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Request;
 use App\Models\User;
 use App\Models\Delivery;
+use App\Models\Receipt;
 use PDF;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Input;
@@ -200,6 +201,100 @@ class DeliveryjController extends Controller
         
 
     }
+
+
+
+
+
+    public function report(){
+        ini_set('memory_limit', '-1');
+        set_time_limit(43200);
+        $var_copies = Request::all();
+        $var_imagepath = public_path();
+        $query_all_delivery_config = DB::table('delivery_configs')->get();
+        $new_var_monthly_dr_from = request()->get('new_input_ob_monthly_datefrom');
+        $new_var_monthly_dr_to = request()->get('new_input_ob_monthly_dateto');
+        $var_issued_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_issued'))->first();
+        $var_approved_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_approved'))->first();
+        $var_received_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_received'))->first();
+        $var_inspected_by = (clone $query_all_delivery_config)->Where('id', request()->get('modal_input_inspected'))->first();
+        $var_copy = DB::table('delivery_configs')
+        ->where('copies','<>','')
+        ->whereIn('id',$var_copies['modal_input_copies'])
+        ->get();
+       // $query_all_deliveries = Receipt::where('BALLOT_ID','<>','');
+
+ 
+        for ($i = 0; $i < $var_copy->count(); $i++) {
+            foreach($var_copy as $i => $value){
+                $cloned_query_all_deliveries = Receipt::whereRaw('updated_at >= ? AND updated_at <= ?', array($new_var_monthly_dr_from.' 00:00:00', $new_var_monthly_dr_to.' 23:59:59'))
+                ->get();
+                $var_downloaded_title = 'Delivery Report From '.Carbon::parse($new_var_monthly_dr_from)->format('d F Y').' To '.Carbon::parse($new_var_monthly_dr_to)->format('d F Y').'';
+               
+                
+               // $var_total_row = $cloned_query_all_deliveries->deliveries->count();
+                //$var_total_sum = $cloned_query_all_deliveries->deliveries->sum('CLUSTER_TOTAL');
+                $view = \View::make('j-views.delivery.delivery_reports_new_pdf',compact('new_var_monthly_dr_from','new_var_monthly_dr_to','value','cloned_query_all_deliveries','var_imagepath','var_copy','var_issued_by','var_approved_by','var_received_by','var_inspected_by'));
+                $html_content = $view->render();
+
+           
+
+                PDF::setFooterCallback(function($pdf) {
+                // Position at 15 mm from bottom
+                $pdf->SetY(-15);
+                // Set font
+                $pdf->SetFont('helvetica', 'I', 8);
+                // Page number
+                $pdf->Cell(0, 10, 'Page '.$pdf->getAliasNumPage().'/'.$pdf->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+                });
+                PDF::SetTitle("List of users");
+                PDF::AddPage();
+                PDF::writeHTML($html_content, true, false, true, false, '');
+                PDF::Output(public_path('DeliveryFiles/'.$var_downloaded_title.' ' .  $value->copies . '.pdf'), 'F');
+                PDF::reset(); 
+                } 
+            }
+          
+            $time_generate = Carbon::now();
+            $zip = new ZipArchive;
+            $fileName = $var_downloaded_title.' - '.$time_generate->toDateString() . '.zip';
+            if ($zip->open(public_path($fileName), ZipArchive::CREATE) === TRUE){
+                $files = File::files(public_path('DeliveryFiles'));
+                foreach ($files as $key => $value) {
+                    $relativeNameInZipFile = basename($value);
+                    $zip->addFile($value, $relativeNameInZipFile);
+                }
+                $zip->close();
+            }
+            File::cleanDirectory(public_path('DeliveryFiles'));
+            return response()->download(public_path($fileName))->deleteFileAfterSend(true);
+
+
+
+        
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
      public function save_dr_pdf()
      {

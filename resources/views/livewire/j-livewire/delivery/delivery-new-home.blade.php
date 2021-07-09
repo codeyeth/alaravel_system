@@ -1,12 +1,12 @@
 
             <ul class="nav nav-pills nav-tabs justify-content-end " role="tablist">
-                    <span class="form-label">No. of Ballots Ready to be DR : {{$ready_to_dr->count()}}&nbsp;   </span>
+                   <span class="form-label">{{$ready_to_dr_count}}   </span>
                     </ul>
                           
                             <div class="card-body pt-0 pb-3 text-center">
                                 <div class="row border-bottom py-2 mb-0 bg-light">
                                     <div class="col-12 col-sm-12">
-                                        <input class="form-control form-control-lg mb-0" type="text" placeholder="Search by Ballot Control No. or Receipt No." wire:model="wire_search_dr_home" >
+                                        <input class="form-control form-control-lg mb-0" type="text" placeholder="Search by Ballot Control No. or Company Name" wire:model="new_wire_search_dr_home" >
                                     </div>
                                 </div>
                             </div>
@@ -22,6 +22,7 @@
                                             <th scope="col" class="border-0">Quantity</th>
                                             <th scope="col" class="border-0">Unit of Measure</th>
                                             <th scope="col" class="border-0">Description</th>
+                                            <th scope="col" class="border-0">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -33,6 +34,13 @@
                                     <td>{{ $item->quantity }}</td>
                                     <td>{{ $item->unit_of_measure }}</td>
                                     <td>{{ $item->description }}</td>
+                                    <td>
+                                    @if ($item->is_dr_done == 0)
+                                    <span class="badge badge-secondary">NO DR</span>
+                                    @else
+                                    <span class="badge badge-success">DELIVERED</span> 
+                                    @endif
+                                   </td>
                                  
                                 </tr>
                                 @endforeach

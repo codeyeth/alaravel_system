@@ -78,6 +78,7 @@ Route::get('/download_pdf_dr', ['as' => 'look', 'uses' => 'DeliveryjController@s
 
 
 Route::get('/view_dr_receipt', ['as' => 'receipt', 'uses' => 'DeliveryjController@receipt']);
+Route::get('/view_dr_report', ['as' => 'report', 'uses' => 'DeliveryjController@report']);
 
 Route::get('/view_sales_invoice', ['as' => 'catch', 'uses' => 'SmdjController@sales_invoice']);
 Route::get('/view_delivery_receipt', ['as' => 'caught', 'uses' => 'SmdjController@delivery_receipt']);

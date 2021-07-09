@@ -28,9 +28,7 @@
                         <li class="nav-item">
                             <a class="nav-link" id="daily_dr_report-tab" data-toggle="tab" href="#daily_dr_report" role="tab" aria-controls="daily_dr_report" aria-selected="false" wire:ignore.self wire:click="function_dr_reports_identifier(2)">Daily Report</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" id="monthly_dr_report-tab" data-toggle="tab" href="#monthly_dr_report" role="tab" aria-controls="monthly_dr_report" aria-selected="false" wire:ignore.self wire:click="function_dr_reports_identifier(3)">Monthly Report</a>
-                        </li>
+                     
                           -->
                     
                       
@@ -39,6 +37,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="receipt_list-tab" data-toggle="tab" href="#receipt_list" role="tab" aria-controls="receipt_list" aria-selected="false" wire:ignore.self>List of Delivery Receipt</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" id="delivery_report-tab" data-toggle="tab" href="#delivery_report" role="tab" aria-controls="delivery_report" aria-selected="false" wire:ignore.self>Delivery Report</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="dr_report_settings-tab" data-toggle="tab" href="#dr_report_settings" role="tab" aria-controls="dr_report_settings" aria-selected="false" wire:ignore.self>Delivery Report Settings</a>
@@ -69,10 +70,311 @@
                             </div>
                         </div>
 
-                        <div class="tab-pane fade show" id="monthly_dr_report" role="tabpanel" aria-labelledby="monthly_dr_report-tab" wire:ignore.self>  
+                        <div class="tab-pane fade show" id="delivery_report" role="tabpanel" aria-labelledby="delivery_report" wire:ignore.self>  
                             <div class="card-header border-bottom">
-                                Generate Monthly Report <label style="float:right;"> {{$monthlydrlistresult}} </label><br><br>
-                                @include('livewire.j-livewire.delivery.delivery-monthly-dr-report')
+                                Generate Delivery Report <label style="float:right;">{{$report_number}}</label><br><br>
+                          
+
+
+
+
+
+
+
+
+
+
+
+
+                                <div class="row border-bottom py-2 bg-light">
+<div class="col-12 col-sm-3">
+<input type="date" name="new_input_ob_monthly_datefrom" id="new_id_ob_monthly_datefrom" wire:model="new_wire_monthly_datefrom" class="input-sm form-control" value="<?php echo date('Y-m-d\TH:i'); ?>">
+  </div>
+  <div class="col-12 col-sm-3">
+  <input type="date" name="new_input_ob_monthly_dateto" id="new_id_ob_monthly_dateto" wire:model="new_wire_monthly_dateto" class="input-sm form-control" value="<?php echo date('Y-m-d\TH:i'); ?>">
+  </div>
+  <div class="col-12 col-sm-2">
+  &nbsp;
+  </div>
+  <div class="col-12 col-sm-4"><label style="float:right;">
+
+  <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modal_delivery_report">
+                            Generate Reports  &rarr;
+                          </button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          <div class="modal fade" id="modal_delivery_report" tabindex="-1" role="dialog" aria-labelledby="modal_delivery_report" aria-hidden="true" wire:ignore.self>
+      <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLongTitle">Generate and Download Delivery Report</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                      </button>
+              </div>
+              {{Form::open(['route' => 'report', 'method' => 'GET', 'autocomplete'=>'off'])}} 
+              <div class="modal-body">
+              <div class="row">
+                      <div class="col-sm-12 col-md-12">
+                          <div class="form-row">
+                              <div class="form-group col-md-6">
+                                  <strong class="text-muted d-block mb-2">Date From:</strong>
+                                  <input type="date" name="new_input_ob_monthly_datefrom" id="new_id_ob_monthly_datefrom" wire:model="new_wire_monthly_datefrom" class="input-sm form-control" value="<?php echo date('Y-m-d\TH:i'); ?>">
+                              </div>
+                              <div class="form-group col-md-6">
+                                  <strong class="text-muted d-block mb-2">Date To:</strong>
+                                  <input type="date" name="new_input_ob_monthly_dateto" id="new_id_ob_monthly_dateto" wire:model="new_wire_monthly_dateto" class="input-sm form-control" value="<?php echo date('Y-m-d\TH:i'); ?>">
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-12 col-md-12">
+                          <div class="form-row">
+             
+                        <input type="hidden" name="new_input_for_dr_no" wire:model="modalDrNo">
+                              <div class="form-group col-md-12">
+                                  <strong class="text-muted d-block mb-2">Copies for (can select multiple):</strong>
+                                  <div class="dropdown">
+                                      <button type="button" class="col-md-12 mb-2 btn btn-white mr-2 " id="sampleDropdownMenu" data-toggle="dropdown">Select Copies For:&nbsp;<i class="fas fa-arrow-down"></i></button>
+                                      <div class="dropdown-menu col-md-12">
+                                          @foreach((clone $config_query->where('copies','<>','')) as $copy)
+                                          <a class="dropdown-item " >
+                                              <input type="checkbox" id="modal_id_copies" name="modal_input_copies[]" value="{{$copy->id}}"> {{$copy->copies}}
+                                          </a>
+                                          @endforeach
+                                      </div>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                
+                  <div class="row">
+                      <div class="col-sm-12 col-md-12">
+                          <div class="form-row">
+                              <div class="form-group col-md-6">
+                                  <strong class="text-muted d-block mb-2">Issued By:</strong>
+                                  <select id="modal_id_issued" name="modal_input_issued" class="form-control" required>
+                                      @if(count((clone $config_query->where('personnel','<>','')->where('authorization','Issued by'))) > 0)
+                                      <option selected disabled value="">Choose Personnel</option>
+                                      @foreach((clone $config_query->where('personnel','<>','')->where('authorization','Issued by')) as $post)
+                                      <option value="{{$post->id}}">{{$post->personnel}}</option>
+                                      @endforeach
+                                      @else
+                                      <option selected disabled value="">No Person Authorized for Inspected by:</option>
+                                      @endif
+                                  </select>
+                              </div>
+                              <div class="form-group col-md-6">
+                                  <strong class="text-muted d-block mb-2">Approved by:</strong>
+                                  <select id="modal_id_approved" name="modal_input_approved" class="form-control" required>
+                                      @if(count((clone $config_query->where('personnel','<>','')->where('authorization','Approved by'))) > 0)
+                                      <option selected disabled value="">Choose Personnel</option>
+                                      @foreach((clone $config_query->where('personnel','<>','')->where('authorization','Approved by')) as $post)
+                                      <option value="{{$post->id}}">{{$post->personnel}}</option>
+                                      @endforeach
+                                      @else
+                                      <option selected disabled value="">No Person Authorized for Inspected by:</option>
+                                      @endif
+                                  </select>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="row">
+                      <div class="col-sm-12 col-md-12">
+                          <div class="form-row">
+                              <div class="form-group col-md-6">
+                                  <strong class="text-muted d-block mb-2">Received by:</strong>
+                                  <select id="modal_id_received" name="modal_input_received" class="form-control" required>
+                                      @if(count((clone $config_query->where('personnel','<>','')->where('authorization','Received by'))) > 0)
+                                      <option selected disabled value="">Choose Personnel</option>
+                                      @foreach((clone $config_query->where('personnel','<>','')->where('authorization','Received by')) as $post)
+                                      <option value="{{$post->id}}">{{$post->personnel}}</option>
+                                      @endforeach
+                                      @else
+                                      <option selected disabled value="">No Person Authorized for Inspected by:</option>
+                                      @endif
+                                  </select>
+                              </div>
+                              <div class="form-group col-md-6">
+                                  <strong class="text-muted d-block mb-2">Inspected by:</strong>
+                                  <select id="modal_id_inspected" name="modal_input_inspected" class="form-control" required>
+                                      @if(count((clone $config_query->where('personnel','<>','')->where('authorization','Inspected by'))) > 0)
+                                      <option selected disabled value="">Choose Personnel</option>
+                                      @foreach((clone $config_query->where('personnel','<>','')->where('authorization','Inspected by')) as $post)
+                                      <option value="{{$post->id}}">{{$post->personnel}}</option>
+                                      @endforeach
+                                      @else
+                                      <option selected disabled value="">No Person Authorized for Inspected by:</option>
+                                      @endif
+                                  </select>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                  {{ Form::button('<i class="material-icons">download</i> Download',['type' => 'submit','class'=>'btn btn-success']) }}
+                  {{ Form::close() }}
+              </div>
+          </div>
+      </div>
+  </div>
+
+
+
+
+
+
+                          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          
+
+      </label>
+  </div>
+  
+</div>
+
+
+        
+<ul class="list-group list-group-flush">
+  <li class="list-group-item p-0 pb-3 text-center">
+    @if (count($report_list) > 0)
+      <table class="table table-hover mb-0">
+        <thead class="bg-light">
+          <tr>
+          <th scope="col" class="border-0">Receipt No.</th>
+          <th scope="col" class="border-0">Company Name</th>
+          <th scope="col" class="border-0">Ballot Delivery Location</th>
+          <th scope="col" class="border-0">Contact Details</th>
+          <th scope="col" class="border-0">Date and Time Created</th>
+          <th scope="col" class="border-0">View Items</th> 
+
+          </tr>
+        </thead>
+        <tbody>
+          @foreach ($report_list as $item)
+            <tr>
+              <td>{{ $item->DR_NO }}</td>
+              <td>{{ $item->agency_name }}</td>
+              <td>{{ $item->CITY_MUN_PROV }}</td>
+              <td>{{ $item->contact_no }}</td>
+              <td>{{ $item->created_at }}</td>
+              <td>
+              <button class="btn btn-sm btn-accent" data-toggle="modal" data-target="#modal_view_receipt" wire:click="ViewDrNo({{ $item->id }})" >
+              <i class="material-icons">search</i>
+                          </button>
+              </td>
+              
+         
+            </tr>
+          @endforeach
+         </tbody>
+        </table>
+      @else<br>
+      <p style="text-align: center">No Data found.</p>    
+      @endif
+  </li>
+  <li class="list-group-item px-3">
+                  {{ $report_list->links() }}
+                  </li>
+                </ul>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                             </div>
                         </div>
 
@@ -166,6 +468,7 @@
                                             <th scope="col" class="border-0">Quantity</th>
                                             <th scope="col" class="border-0">Unit of Measure</th>
                                             <th scope="col" class="border-0">Description</th>
+                                        
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -177,6 +480,7 @@
                                     <td>{{ $item->quantity }}</td>
                                     <td>{{ $item->unit_of_measure }}</td>
                                     <td>{{ $item->description }}</td>
+                                
                                  
                                 </tr>
                                 @endforeach
@@ -358,6 +662,9 @@
                     <td>
                         <input type="text" name="ballotlists[{{$index}}][contact_no]" class="form-control" wire:model="ballotlists.{{$index}}.contact_no" hidden/>
                     </td>
+                    <td>
+                        <input type="text" name="ballotlists[{{$index}}][complete_address]" class="form-control" wire:model="ballotlists.{{$index}}.complete_address" hidden/>
+                    </td>
                 </tr>
                 @endforeach
             </tbody>
@@ -397,7 +704,13 @@
    
                             <div class="card-body pt-0 pb-3">
                                 <div class="row border-bottom py-2 mb-0 bg-light">&nbsp;&nbsp;&nbsp;List of Delivery Receipt Created </div>
-                              
+                            </div>
+                            <div class="card-body pt-0 pb-3 text-center">
+                                <div class="row border-bottom py-2 mb-0 bg-light">
+                                    <div class="col-12 col-sm-12">
+                                        <input class="form-control form-control-lg mb-0" type="text" placeholder="Search by Ballot Control No. or Receipt No. or Company Name" wire:model="wire_search_receipt_list" >
+                                    </div>
+                                </div>
                             </div>
                             
 <ul class="list-group list-group-flush">
@@ -637,7 +950,7 @@
               <div class="modal-body">
                   <div class="row">
                       <div class="col-sm-12 col-md-12">
-                      <input type="text" name="view_input_for_dr_no" wire:model="modalViewDrNo">
+                      <input type="hidden" name="view_input_for_dr_no" wire:model="modalViewDrNo">
                           <div class="form-row">
                           <div class="form-group col-md-12">
                           <table style="page-break-inside:auto">
@@ -652,10 +965,10 @@
 
     <tr style="page-break-inside:avoid; page-break-after:auto">
       <th width="20%" style="font-size:17px; text-align:left;">
-     
+        DR No.:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$modalViewDrNo}}<br>
         COMPANY:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$viewAgency}}<br>
         DELIVERY ADDRESS:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$viewAddress}}<br>
-        CONTACT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$viewContact}}<br>
+        CONTACT:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{$viewContact}}<br>
       </th>
       <th width="80%" style="text-align:left; font-size:17px">
         <u></u><br>

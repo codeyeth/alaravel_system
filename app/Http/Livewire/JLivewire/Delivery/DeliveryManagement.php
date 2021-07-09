@@ -5,6 +5,7 @@ namespace App\Http\Livewire\JLivewire\Delivery;
 use Livewire\Component;
 use App\Models\Delivery;
 use App\Models\Ballots;
+use App\Models\Receipt;
 use App\Models\DeliveryConfig;
 use Livewire\WithPagination;
 use Illuminate\Support\Facades\DB;
@@ -30,6 +31,10 @@ class DeliveryManagement extends Component
     public $viewAgency;
     public $viewAddress;
     public $viewContact;
+    public $new_wire_search_dr_home;
+    public $new_wire_monthly_datefrom ='';
+    public $new_wire_monthly_dateto = '';
+    public $wire_search_receipt_list;
     //end variable for new dr
 
 
@@ -68,7 +73,7 @@ class DeliveryManagement extends Component
 //function for new dr
 public function searchdrClientDatabase(){
     if($this->companyName != ''){
-        $this->clientdrDatabase = Ballots::where('agency_name', 'like', '%'.$this->companyName.'%')->where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->get();
+        $this->clientdrDatabase = Ballots::where('agency_name', 'like', '%'.$this->companyName.'%')->where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->groupBy('agency_name')->groupBy('complete_address')->groupBy('contact_no')->get();
         $this->showdrClientDatabaseTable = true;
     }else{
         $this->clientdrDatabase = [];
@@ -218,7 +223,7 @@ public function ViewDrNo($id)
     public function addBallot()
     {
             $this->loopCount++;
-            $this->ballotlists[] =  ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '', 'description' =>'', 'agency_name' => '', 'contact_no' => ''];
+            $this->ballotlists[] =  ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '', 'description' =>'', 'agency_name' => '', 'contact_no' => '', 'complete_address' => ''];
     }
 
 
@@ -241,7 +246,7 @@ public function ViewDrNo($id)
 
     public function mount()
     {   
-        $this->ballotlists =  [['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '' , 'description' => '' , 'agency_name' => '', 'contact_no' => '']];
+        $this->ballotlists =  [['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '' , 'description' => '' , 'agency_name' => '', 'contact_no' => '', 'complete_address' => '']];
       
     }
     
@@ -261,6 +266,7 @@ public function ViewDrNo($id)
                 $this->ballotlists[$indexKey]['description'] = $search_in_ballot_smd->description;
                 $this->ballotlists[$indexKey]['agency_name'] = $search_in_ballot_smd->agency_name;
                 $this->ballotlists[$indexKey]['contact_no'] = $search_in_ballot_smd->contact_no;
+                $this->ballotlists[$indexKey]['complete_address'] = $search_in_ballot_smd->complete_address;
                 $this->ballotlists[$indexKey]['curr_stat'] = $search_in_ballot_smd->current_status;
                 session()->flash('messageDR', 'Ballot Control No. not in Delivery Area. Status: '.$search_in_ballot_smd->current_status.' ');
                 $addOneField = false;
@@ -273,6 +279,7 @@ public function ViewDrNo($id)
                 $this->ballotlists[$indexKey]['description'] =  "No Data Found!";
                 $this->ballotlists[$indexKey]['agency_name'] =  "No Data Found!";
                 $this->ballotlists[$indexKey]['contact_no'] =  "No Data Found!";
+                $this->ballotlists[$indexKey]['complete_address'] =  "No Data Found!";
                 $this->ballotlists[$indexKey]['curr_stat'] =  "NPO SMD";
                 session()->flash('messageDR', 'Invalid Ballot Control No. ');
                 $addOneField = false;
@@ -286,6 +293,7 @@ public function ViewDrNo($id)
                 $this->ballotlists[$indexKey]['description'] = $search_in_delivery->description;
                 $this->ballotlists[$indexKey]['agency_name'] = $search_in_delivery->agency_name;
                 $this->ballotlists[$indexKey]['contact_no'] = $search_in_delivery->contact_no;
+                $this->ballotlists[$indexKey]['complete_address'] = $search_in_delivery->complete_address;
                 $this->ballotlists[$indexKey]['curr_stat'] = 'NPO SMD';
                 session()->flash('messageDR', 'Ballot Control No. '.$ballotId.' in Line '.$line_error.' already have Receipt No. Receipt No.' .$search_in_delivery->DR_NO.' ');
                 $addOneField = false;
@@ -307,6 +315,7 @@ public function ViewDrNo($id)
                         $this->ballotlists[$indexKey]['description'] = $searchResult->description;
                         $this->ballotlists[$indexKey]['agency_name'] = $searchResult->agency_name;
                         $this->ballotlists[$indexKey]['contact_no'] = $searchResult->contact_no;
+                        $this->ballotlists[$indexKey]['complete_address'] = $searchResult->complete_address;
                         $this->ballotlists[$indexKey]['curr_stat'] = $searchResult->current_status;
                         session()->flash('messageDR', 'Ballot Control No. '.$ballotId.' Duplicate Entry at Line '.$line_error.'' );
                     }
@@ -326,6 +335,7 @@ public function ViewDrNo($id)
                         $this->ballotlists[$indexKey]['description'] = $searchResult->description;
                         $this->ballotlists[$indexKey]['agency_name'] = $searchResult->agency_name;
                         $this->ballotlists[$indexKey]['contact_no'] = $searchResult->contact_no;
+                        $this->ballotlists[$indexKey]['complete_address'] = $searchResult->complete_address;
                         $this->ballotlists[$indexKey]['curr_stat'] = $searchResult->current_status;
                     }
                         $addOneField = true;
@@ -377,7 +387,12 @@ public function ViewDrNo($id)
         ]
     );
 }
-  
+Receipt::create([
+    'dr_no' => 'R_'.$total_row,
+    'company' => $ballotlist['agency_name'],
+    'contact' => $ballotlist['contact_no'],
+    'address' => $ballotlist['complete_address']
+    ]);
     foreach ($this->ballotlists as $index => $ballotlist){
                     Delivery::create([
                         'DR_NO' => 'R_'.$total_row,
@@ -387,7 +402,8 @@ public function ViewDrNo($id)
                         'CLUSTER_TOTAL' => $ballotlist['quantity'],
                         'description' => $ballotlist['description'],
                         'agency_name' => $ballotlist['agency_name'],
-                        'contact_no' => $ballotlist['contact_no']
+                        'contact_no' => $ballotlist['contact_no'],
+                        'complete_address' => $ballotlist['complete_address']
                         ]);
                         $update_selected = DB::table('ballots')
                         ->where('ballot_id', $ballotlist['ballot_id'])
@@ -398,7 +414,8 @@ public function ViewDrNo($id)
                                   ]);
                         session()->flash('message', 'DR Number Created!');
                     }
-                    $this->ballotlists = [ ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '', 'curr_stat' => '', 'description' => '' , 'agency_name' => '', 'contact_no' => ''] ];
+               
+                    $this->ballotlists = [ ['ballot_id' => '', 'clustered_precint' => '', 'city_mun_prov' => '', 'quantity' => '', 'curr_stat' => '', 'description' => '' , 'agency_name' => '', 'contact_no' => '', 'complete_address' => ''] ];
                    
                 }
 
@@ -524,17 +541,52 @@ public function ViewDrNo($id)
 
         //data for new dr
 
+        if ( $this->new_wire_search_dr_home == '' ){
         $ready_to_dr = Ballots::where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->paginate(10);
-        if ( $this->companyName == '' &&  $this->companyAddress &&  $this->companyContact){
-            $ready_to_dr_add = Ballots::where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->paginate(5);
+        $ready_to_dr_count = 'Total Number of Items: '.count($ready_to_dr);
         }else{
-            $ready_to_dr_add = Ballots::where('agency_name',$this->companyName)->where('complete_address',$this->companyAddress)->where('contact_no',$this->companyContact)->where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->paginate(5);
+        $ready_to_dr = DB::table('ballots')->where('current_status', 'NPO SMD')->where('new_status_type', 'IN')
+        ->where(function($query){
+            $query->where('agency_name','like','%'.$this->new_wire_search_dr_home.'%');
+            $query->orWhere('ballot_id','like','%'.$this->new_wire_search_dr_home.'%');
+         
+        })->paginate(10);
+        $ready_to_dr_count = 'Result Found: '.count($ready_to_dr);
+
+    }
+        
+        
+
+
+        if ( $this->companyName == '' &&  $this->companyAddress &&  $this->companyContact){
+            $ready_to_dr_add = Ballots::where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->where('is_dr_done', 0)->paginate(5);
+        }else{
+            $ready_to_dr_add = Ballots::where('agency_name',$this->companyName)->where('complete_address',$this->companyAddress)->where('contact_no',$this->companyContact)->where('current_status', 'NPO SMD')->where('new_status_type', 'IN')->where('is_dr_done', 0)->paginate(5);
         }
 
-        //end for new dr
+      
 
+
+        if ( $this->wire_search_receipt_list == '' ){
         $receipt_list = DB::table('deliveries')->where('BALLOT_ID','<>','')->groupby('DR_NO')->paginate(10);
-        return view('livewire.j-livewire.delivery.delivery-management', compact('receipt_list','ready_to_dr','ready_to_dr_add','descriptionList','deliveredList','copyList','titleList','nameList','ballotList','ballotListCount','ballotListCountTitle','config_query','drlist','drlistresult','monthlydrlist','monthlydrlistresult'));
+        }else{
+        $receipt_list = DB::table('deliveries')->where('agency_name','like','%'.$this->wire_search_receipt_list.'%')->orWhere('DR_NO','like','%'.$this->wire_search_receipt_list.'%')->orWhere('BALLOT_ID','like','%'.$this->wire_search_receipt_list.'%')->groupby('DR_NO')->paginate(10);
+    }
+
+     
+
+
+        if ($this->new_wire_monthly_datefrom == '' || $this->new_wire_monthly_dateto == '' ){
+            $report_list = DB::table('deliveries')->where('BALLOT_ID','<>','')->groupby('DR_NO')->paginate(10);
+            $report_number = 'Total Number of DR : '.count($report_list);
+        }else{
+            $report_list = DB::table('deliveries')->where('BALLOT_ID','<>','')->whereRaw('updated_at >= ? AND updated_at <= ?', array($this->new_wire_monthly_datefrom.' 00:00:00', $this->new_wire_monthly_dateto.' 23:59:59'))->groupby('DR_NO')->paginate(10);
+            $report_number = 'Result Found: '.count($report_list);
+        }
+          //end for new dr
+
+    
+        return view('livewire.j-livewire.delivery.delivery-management', compact('ready_to_dr_count','report_number','report_list','receipt_list','ready_to_dr','ready_to_dr_add','descriptionList','deliveredList','copyList','titleList','nameList','ballotList','ballotListCount','ballotListCountTitle','config_query','drlist','drlistresult','monthlydrlist','monthlydrlistresult'));
     }
 }
  
