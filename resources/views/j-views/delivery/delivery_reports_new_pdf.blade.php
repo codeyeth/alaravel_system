@@ -99,7 +99,12 @@
  @endforeach
  <tr>
  <td colspan="4" style="height:15px; border:0.1px solid #000000; text-align:left; font-size:10px; "><b>Total</b></td>
- <td style="height:15px; border:0.1px solid #000000; text-align:center; font-size:10px; "><b>{{$item->sum('CLUSTER_TOTAL')}}</b> </td>
+ <td style="height:15px; border:0.1px solid #000000; text-align:center; font-size:10px; "><b>
+ @php
+                        $total_af = App\Models\Delivery::whereRaw('updated_at >= ? AND updated_at <= ?', array($new_var_monthly_dr_from.' 00:00:00', $new_var_monthly_dr_to.' 23:59:59'))->get()
+                        @endphp
+                          {{ $total_af->sum('CLUSTER_TOTAL')}}
+ </b> </td>
  </tr>
 
 

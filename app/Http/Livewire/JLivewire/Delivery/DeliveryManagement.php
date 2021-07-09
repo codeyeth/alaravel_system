@@ -388,7 +388,7 @@ public function ViewDrNo($id)
     );
 }
 Receipt::create([
-    'dr_no' => 'R_'.$total_row,
+    'DR_NO' => 'R_'.$total_row,
     'company' => $ballotlist['agency_name'],
     'contact' => $ballotlist['contact_no'],
     'address' => $ballotlist['complete_address']
